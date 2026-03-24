@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Estudante extends Model
+{
+    protected $table = "estudantes";
+    protected $fillable = [
+        'name',
+        'email',
+        'rg',
+        'cpf',
+        'birth_date',
+        'phone',
+        'address',
+        'father_name',
+        'mother_name',
+        'course',
+        'semester',
+        'year_completion',
+        'instituicao_id',
+        'start_time',
+        'end_time',
+        'days_of_week',
+        'has_scholarship',
+        'scholarship_type',
+        'observation',
+        'status',
+    ];
+}
