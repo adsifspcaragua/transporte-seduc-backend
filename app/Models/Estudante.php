@@ -29,4 +29,10 @@ class Estudante extends Model
         'observation',
         'status',
     ];
+
+
+    public function documentos()
+{
+    return $this->hasMany(Documento::class, 'estudante_id');
+}
 }
