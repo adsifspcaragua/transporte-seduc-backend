@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\{StoreUserRequest, UpdateUserRequest};
 use App\Models\User;
+use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
@@ -16,8 +16,9 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $users = User::paginate(10);
-            return response()->json($users, 200);
+            $users = User::all();
+            return response()->json(new UserResource($users),200);
+            
 
         } catch (\Exception $ex) {
             return response()->json([
@@ -33,13 +34,14 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
+        // return response()->json(["user" => new UserResource($user), "message" => "BLalalal"])
         try{
             $user = new User();
             $user->fill($data);
             $user->password = Hash::make($data['password']);
             $user->save();
 
-            return response()->json($user, 201);
+            return response()->json(new UserResource($user),201);
         }catch(\Exception $ex){
             return response()->json([
                 'message' => 'Falha ao cadastrar usuário'
@@ -54,7 +56,7 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            return response()->json($user, 200);
+            return response()->json(new UserResource($user),200);
 
         } catch (\Exception $ex) {
             return response()->json([
@@ -70,7 +72,7 @@ class UserController extends Controller
     {
         try {
             $user->update($request->validated()['user']);
-            return response()->json($user, 200);
+            return response()->json(new UserResource($user),200);
 
         } catch (\Exception $ex) {
             return response()->json([
