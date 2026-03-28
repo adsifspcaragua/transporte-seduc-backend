@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('inscricaos', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('cpf')->nullable();
+            $table->string('cpf')->unique();
             $table->string('rg')->nullable();
             $table->date('date_of_birth')->nullable();
             $table->string('phone')->nullable();
-            $table->string('email')->nullable();
+            $table->string('email')->unique();
 
             $table->string('cep')->nullable();
             $table->string('address')->nullable();
