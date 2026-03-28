@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inscricao_documentos', function (Blueprint $table) {
-            $table->id();
-            $table->string('type');
-            $table->string('file_path');
-            $table->timestamps();
+        Schema::table('inscricao_documentos', function (Blueprint $table) {
+            $table->foreignId('inscricao_id')->references('id')->on('inscricaos')->unique()->cascadeDelete();
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inscricao_documentos');
+        Schema::table('inscricao_documentos', function (Blueprint $table) {
+            //
+        });
     }
 };
