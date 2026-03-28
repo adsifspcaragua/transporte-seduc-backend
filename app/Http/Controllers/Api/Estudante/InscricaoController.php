@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Estudante;
+namespace App\Http\Controllers\Api\Estudante;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -68,7 +68,7 @@ class InscricaoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Inscricao $inscricao)
+    public function update(UpdateInscricaoRequest $request, Inscricao $inscricao)
     {
         try {
             $data = $request->validated()['user'];

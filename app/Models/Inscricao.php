@@ -24,4 +24,12 @@ class Inscricao extends Model
         'accepted_terms',
         'accepted_terms_2'
     ];
+
+    public function inscricao_instituicao(){
+        return $this->hasOne(InscricaoInstituicoes::class);
+    }
+
+    public function inscricao_documentos(){
+        // return $this->hasMany(InscricaoDocumentos::class);
+    }
 }
