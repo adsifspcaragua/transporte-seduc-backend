@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Estudante extends Model
 {
     protected $table = "estudantes";
+    protected $casts = [
+    'days_of_week' => 'array',
+    ];
     protected $fillable = [
         'name',
         'email',
@@ -28,5 +31,14 @@ class Estudante extends Model
         'scholarship_type',
         'observation',
         'status',
+        'line_id',
+        'port',
+        'user_id'
     ];
+
+
+    public function documentos()
+{
+    return $this->hasMany(Documento::class, 'estudante_id');
+}
 }

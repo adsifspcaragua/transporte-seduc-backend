@@ -31,7 +31,7 @@ return new class extends Migration
             $table->json('days_of_week');
             $table->boolean('has_scholarship');
             $table->string('scholarship_type')->nullable();
-            $table->string('observation');
+            $table->string('observation')->nullable();
             $table->string('status');
             $table->timestamps();
         });
