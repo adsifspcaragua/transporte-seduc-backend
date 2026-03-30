@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Role;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRoleRequest;
+use App\Http\Requests\UpdateRoleRequest;
 use App\Http\Resources\RoleResource;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -16,7 +17,12 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return new RoleResource(Role::all());
+        $role = Role::all();
+
+        if($role->isEmpty()){
+            return response()->json(["message" =>"Nenhum cargo cadastrado"], 200);
+        }
+        return RoleResource::collection($role);
     }
 
     /**
@@ -25,17 +31,20 @@ class RoleController extends Controller
     public function store(StoreRoleRequest $request)
     {
 
-        $request->validate();
-        // DB::beginTransaction();
+
+        DB::beginTransaction();
         try{
 
-            $role = Role::create([
-                "title" => $request->title
+            $role = Role::create($request->validated());
+
+            DB::commit();
+           return response()->json([
+                'data' => new RoleResource($role),
+                'message' => 'Cargo criado com sucesso'
             ]);
 
-            return new RoleResource($role);
-
         }catch(\Exception $e){
+            DB::rollBack();
             return response()->json(["message" =>"Falha ao criar cargo", "erro" => $e], 401);
         }
 
@@ -47,7 +56,12 @@ class RoleController extends Controller
     public function show(string $id)
     {
         try{
-            return new RoleResource(Role::findOrFail($id));
+            $role = Role::findOrFail($id);
+
+            if(is_null($role)){
+                return response()->json(["message" =>"Cargo nao encontrado"], 404);
+            }
+            return new RoleResource($role);
         }catch(\Exception $e){
             return response()->json(["message" =>"Falha ao buscar cargo", "erro" => $e], 401);
         }
@@ -56,19 +70,23 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateRoleRequest $request, string $id)
     {
+        DB::beginTransaction();
           try{
             $role = Role::findOrFail($id);
 
-            $role->update([
-                "title" => $request->title
+            $role->update($request->validated());
+
+            DB::commit();
+
+           return response()->json([
+                'data' => new RoleResource($role),
+                'message' => 'Cargo atualizado com sucesso'
             ]);
-
-
-            return new RoleResource($role);
         }catch(\Exception $e){
-            return response()->json(["message" =>"Falha ao editar cargo", "erro" => $e], 401);
+            DB::rollBack();
+            return response()->json(["message" =>"Falha ao atualizar cargo", "erro" => $e], 401);
         }
     }
 
@@ -77,6 +95,20 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        Role::findOrFail($id)->delete;
+        try{
+
+            $role = Role::findOrFail($id);
+
+            $role_exibir = $role;
+
+            $role->delete();
+
+            return response()->json([
+                'data' => new RoleResource($role_exibir),
+                'message' => 'Cargo deletado com sucesso'
+            ]);
+        }catch(\Exception $e){
+            return response()->json(["message" =>"Falha ao deletar cargo", "erro" => $e->getMessage()], 401);
+        }
     }
 }

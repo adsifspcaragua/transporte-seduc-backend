@@ -5,14 +5,14 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreEstudanteRequest extends FormRequest
+class UpdateEstudanteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,10 +22,10 @@ class StoreEstudanteRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+          return [
             "name" => "required|string|max:255",
-            "email" => "required|email|unique:estudantes,email",
-            "cpf" => "string|min:11|max:11|unique:estudantes,cpf",
+            "email" => "required|email|unique:estudantes,email," . $this->route('estudante')?->id,
+            "cpf" => "string|min:11|max:11|unique:estudantes,cpf," . $this->route('estudante')?->id,
             "birth_date" => "date|before:today|date_format:Y-m-d",
             'rg' => 'required|string|min:8|max:11',
             'phone' => 'required|string|max:15',
@@ -43,10 +43,6 @@ class StoreEstudanteRequest extends FormRequest
             'has_scholarship' => 'required|boolean',
             'scholarship_type' => 'nullable|string|max:255',
             'observation' => 'nullable|string|max:1000',
-            'line_id' => 'required|integer',
-            'port' => 'required|string|max:255',
-            'status' => 'required|string|max:255',
-            'user_id' => 'required|integer'
         ];
     }
 }
