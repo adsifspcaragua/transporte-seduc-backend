@@ -75,7 +75,7 @@ class InstituicoesController extends Controller
             $instituicao->update($request->validated());
             return response()->json([
                 'data' => new InstituicoesResource($instituicao),
-                'message' => 'instituicao atualizada com sucesso'
+                'message' => 'Instituicao atualizada com sucesso'
             ],200);
 
         }catch(\Exception $e) {
