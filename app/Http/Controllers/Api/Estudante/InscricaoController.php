@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Estudante;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Inscricao;
-use App\Http\Requests\{StoreInscricaoRequest, UpdateInscricaoRequest};
+use App\Http\Requests\Inscricao\{StoreInscricaoRequest, UpdateInscricaoRequest};
 use App\Http\Resources\InscricaoResource;
 
 class InscricaoController extends Controller
@@ -17,7 +17,10 @@ class InscricaoController extends Controller
     {
         try {
             $inscricao = Inscricao::all();
-            return response()->json(new InscricaoResource($inscricao),200);
+            if($inscricao->isEmpty()) {
+                return response()->json(["message" => "Nenhuma inscricao cadastrada"], 200);
+            }
+            return InscricaoResource::collection($inscricao);
             
 
         } catch (\Exception $ex) {
@@ -32,18 +35,15 @@ class InscricaoController extends Controller
      */
     public function create(StoreInscricaoRequest $request)
     {
-         $data = $request->validated();
+        try {
+            $inscricao = Inscricao::create($request->validated());
 
-        try{
-            
-            $inscricao = new Inscricao();
-            $inscricao->fill($data);
-            $inscricao->save();
-
-        }catch(\Exception $ex){
             return response()->json([
-                'message' => 'Falha ao criar inscrição'
-            ], 500);
+                "data" => new InscricaoResource($inscricao),
+                "message" => "Inscrição criada com sucesso"
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erro ao criar inscrição.'], 500);
         }
     }
 
@@ -53,14 +53,20 @@ class InscricaoController extends Controller
      */
     public function show(string $id)
     {
-        try {
-            $inscricao = Inscricao::findOrFail($id);
-            return response()->json(new InscricaoResource($inscricao),200);
 
-        } catch (\Exception $ex) {
-            return response()->json([
-                'message' => 'Inscricao não encontrada'
-            ], 404);
+        try {
+            $inscricao = Inscricao::find($id);
+
+            if(is_null($inscricao)) {
+                return response()->json(["message" => "Inscricao não encontrada"], 404);
+            }
+
+            return new InscricaoResource([
+                "data" => new InscricaoResource($inscricao),
+                "message" => "Incricao encontrado com sucesso"
+            ],200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erro ao buscar inscrição.'], 500);
         }
     }
 
@@ -83,7 +89,10 @@ class InscricaoController extends Controller
             ], 403);
             }
             $inscricao->update($data);
-            return response()->json(new InscricaoResource($inscricao),200);
+            return response()->json([
+                "data" => new InscricaoResource($inscricao),
+                'message' => 'Inscricao atualizada com sucesso'],200);
+            
 
         } catch (\Exception $ex) {
             return response()->json([

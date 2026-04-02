@@ -17,12 +17,15 @@ class UserController extends Controller
     {
         try {
             $users = User::all();
-            return response()->json(new UserResource($users),200);
+            if($users->isEmpty()){
+                return response()->json(["message" => "Nenhum usuário cadastrado"], 200);
+            }
+            return response()->json(UserResource::collection($users),200);
             
 
         } catch (\Exception $ex) {
             return response()->json([
-                'message' => 'Nenhum usuário encontrado'
+                'message' => 'Erro ao buscar por usuários'
             ], 404);
         }
     }
@@ -34,7 +37,6 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        // return response()->json(["user" => new UserResource($user), "message" => "BLalalal"])
         try{
             $user = new User();
             $user->fill($data);
@@ -56,7 +58,10 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            return response()->json(new UserResource($user),200);
+            return new UserResource([
+                "data" => new UserResource($user),
+                "message" => "Usuário encontrado com sucesso"
+            ],200);
 
         } catch (\Exception $ex) {
             return response()->json([
@@ -72,7 +77,9 @@ class UserController extends Controller
     {
         try {
             $user->update($request->validated()['user']);
-            return response()->json(new UserResource($user),200);
+            return response()->json([
+                "data" => new UserResource($user),
+                'message' => 'Usuário atualizada com sucesso'],200);
 
         } catch (\Exception $ex) {
             return response()->json([
