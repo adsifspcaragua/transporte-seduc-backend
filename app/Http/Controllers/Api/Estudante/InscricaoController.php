@@ -16,8 +16,8 @@ class InscricaoController extends Controller
     public function index()
     {
         try {
-            $inscricao = Inscricao::all();
-            return response()->json(new InscricaoResource($inscricao),200);
+            $inscricoes = Inscricao::all();
+            return response()->json(InscricaoResource::collection($inscricoes),200);
             
 
         } catch (\Exception $ex) {
@@ -30,7 +30,7 @@ class InscricaoController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(StoreInscricaoRequest $request)
+    public function store(StoreInscricaoRequest $request)
     {
          $data = $request->validated();
 
@@ -40,6 +40,7 @@ class InscricaoController extends Controller
             $inscricao->fill($data);
             $inscricao->save();
 
+            return response()->json(new InscricaoResource($inscricao),201);
         }catch(\Exception $ex){
             return response()->json([
                 'message' => 'Falha ao criar inscrição'
@@ -54,7 +55,12 @@ class InscricaoController extends Controller
     public function show(string $id)
     {
         try {
-            $inscricao = Inscricao::findOrFail($id);
+            $inscricao = Inscricao::find($id);
+            if(!$inscricao){
+                return response()->json([
+                    'message' => 'Inscrição não encontrada'
+                ], 404);
+            }
             return response()->json(new InscricaoResource($inscricao),200);
 
         } catch (\Exception $ex) {
@@ -71,7 +77,7 @@ class InscricaoController extends Controller
     public function update(UpdateInscricaoRequest $request, Inscricao $inscricao)
     {
         try {
-            $data = $request->validated()['user'];
+            $data = $request->validated();
 
             if($this->camposPreenchidos($data)){
                 $data = [...$data, "status" => "completo"];
