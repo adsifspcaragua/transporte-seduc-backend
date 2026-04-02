@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Estudante;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Inscricao\{StoreInscricaoIntituicoesRequest, UpdateInscricaoIntituicoesRequest};
+use App\Http\Requests\Inscricao\Instituicao\{StoreInscricaoIntituicoesRequest, UpdateInscricaoIntituicoesRequest};
 use App\Models\InscricaoInstituicoes;
 use App\Http\Resources\Inscricao\InscricaoInstituicaoResource;
 class InscricaoInstituicaoController extends Controller

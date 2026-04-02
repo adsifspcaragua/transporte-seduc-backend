@@ -23,6 +23,7 @@ class StoreInscricaoRequest extends FormRequest
     public function rules(): array
     {
         return [ 
+            'estudante_id' => 'required|integer|exists:estudantes,id',
             'name' => "nullable|string|min:3|max:255",
             'cpf' => "required|string|min:11|max:11|unique:inscricaos,cpf",
             'rg' => "nullable|string|min:8|max:11",

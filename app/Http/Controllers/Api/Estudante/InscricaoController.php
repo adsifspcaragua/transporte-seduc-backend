@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Inscricao;
 use App\Http\Requests\Inscricao\{StoreInscricaoRequest, UpdateInscricaoRequest};
-use App\Http\Resources\InscricaoResource;
+use App\Http\Resources\Inscricao\InscricaoResource;
 
 class InscricaoController extends Controller
 {
@@ -33,7 +33,7 @@ class InscricaoController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(StoreInscricaoRequest $request)
+    public function store(StoreInscricaoRequest $request)
     {
         try {
             $inscricao = Inscricao::create($request->validated());

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Inscricao;
+namespace App\Http\Requests\Inscricao\Instituicao;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreInscricaoIntituicoesRequest extends FormRequest
+class UpdateInscricaoIntituicoesRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -20,13 +20,6 @@ class StoreInscricaoIntituicoesRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    protected function prepareForValidation()
-    {
-        $this->merge([
-            'inscricao_id' => $this->route('inscricao')?->id,
-        ]);
-    }
-
     public function rules(): array
     {
         return [
@@ -41,7 +34,6 @@ class StoreInscricaoIntituicoesRequest extends FormRequest
             'days_of_week.*' => 'integer|between:0,6',
             'has_scholarship' => 'required|boolean',
             'scholarship_type' => 'nullable|string|min:3|max:255|required_if:has_scholarship,true',
-            'inscricao_id' => "required|integer|exists:inscricaos,id",
             //'line_id'  => 'required|integer|exists:lines,id', MODIFICAR
         ];
     }
