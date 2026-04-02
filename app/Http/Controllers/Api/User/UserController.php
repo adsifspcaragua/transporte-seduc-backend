@@ -17,15 +17,20 @@ class UserController extends Controller
     {
         try {
             $users = User::all();
-            if($users->isEmpty()){
-                return response()->json(["message" => "Nenhum usuário cadastrado"], 200);
+
+            if(is_null($users)) {
+                return response()->json(["message" => "Nenhum usuário encontrado"], 404);
             }
-            return response()->json(UserResource::collection($users),200);
-            
+
+            return response()->json(
+                [
+                    "data" => UserResource::collection($users),
+                    "message"=> "Usuários inscritos"
+                ], 200);
 
         } catch (\Exception $ex) {
             return response()->json([
-                'message' => 'Erro ao buscar por usuários'
+                'message' => 'Nenhum usuário encontrado'
             ], 404);
         }
     }
@@ -57,15 +62,20 @@ class UserController extends Controller
     public function show(string $id)
     {
         try {
-            $user = User::findOrFail($id);
-            return new UserResource([
-                "data" => new UserResource($user),
-                "message" => "Usuário encontrado com sucesso"
-            ],200);
+            $user = User::find($id);
+            if(is_null($user)) {
+                return response()->json(["message" => "Usuário não encontrada"], 404);
+            }
+            return response()->json(
+                [
+                    "data" => new UserResource($user),
+                    "message"=> "Usuário encontrado"
+                ], 200);
 
         } catch (\Exception $ex) {
             return response()->json([
-                'message' => 'Usuário não encontrado'
+                'message' => 'Usuário não encontrado',
+                
             ], 404);
         }
     }
@@ -76,14 +86,15 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         try {
-            $user->update($request->validated()['user']);
+            $user->update($request->validated());
             return response()->json([
                 "data" => new UserResource($user),
                 'message' => 'Usuário atualizada com sucesso'],200);
 
         } catch (\Exception $ex) {
             return response()->json([
-                'message' => 'Falha ao atualizar usuário'
+                'message' => 'Falha ao atualizar usuário',
+                'error' => $ex->getMessage()
             ], 500);
         }
     }
