@@ -77,7 +77,7 @@ class InscricaoController extends Controller
     public function update(UpdateInscricaoRequest $request, Inscricao $inscricao)
     {
         try {
-            $data = $request->validated()['user'];
+            $data = $request->validated();
 
             if($this->camposPreenchidos($data)){
                 $data = [...$data, "status" => "completo"];
