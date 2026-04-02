@@ -19,7 +19,7 @@ class InscricaoResource extends JsonResource
             'name' => $this->name,
             'cpf' => $this->cpf,
             'rg' => $this->rg,
-            'date_of_birth' => $this->date_of_birth?->format('Y-m-d'),
+            'date_of_birth' => $this->date_of_birth,
             'phone' => $this->phone,
             'email' => $this->email,
             'cep' => $this->cep,
@@ -30,8 +30,8 @@ class InscricaoResource extends JsonResource
             'status' => $this->status,
             'accepted_terms' => $this->accepted_terms,
             'accepted_terms_2' => $this->accepted_terms_2,
-            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
         ];
     }
 }

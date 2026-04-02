@@ -28,24 +28,25 @@ class InscricaoController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function store(StoreInscricaoRequest $request)
     {
-        try {
-            $inscricao = Inscricao::create($request->validated());
+        
+        try{
+            $data = $request->validated();
+            $inscricao = new Inscricao();
+            $inscricao->fill($data);
+            $inscricao->save();
 
+            return response()->json(new InscricaoResource($inscricao),201);
+
+        }catch(\Exception $ex){
             return response()->json([
-                "data" => new InscricaoResource($inscricao),
-                "message" => "Inscrição criada com sucesso"
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Erro ao criar inscrição.'], 500);
+                'message' => 'Falha ao criar inscrição',
+                'error' => $ex->getMessage()
+            ], 500);
         }
     }
-
-
+       
 
     public function show(string $id)
     {
@@ -56,8 +57,8 @@ class InscricaoController extends Controller
             if(is_null($inscricao)) {
                 return response()->json(["message" => "Inscricao não encontrada"], 404);
             }
-
-            return new InscricaoResource([
+            
+            return response()->json([
                 "data" => new InscricaoResource($inscricao),
                 "message" => "Incricao encontrado com sucesso"
             ],200);
@@ -73,19 +74,22 @@ class InscricaoController extends Controller
         try {
             $data = $request->validated();
 
-            if($this->camposPreenchidos($data)){
-                $data = [...$data, "status" => "completo"];
-            }
-
+            
             if($inscricao->status === "completo"){
                 return response()->json([
                 'message' => 'A inscrição já está completa'
             ], 403);
             }
             $inscricao->update($data);
+
+            if($this->camposPreenchidos($inscricao)){
+                $inscricao->update(["status" => "completo"]);
+            }
+
             return response()->json([
                 "data" => new InscricaoResource($inscricao),
-                'message' => 'Inscricao atualizada com sucesso'],200);
+                'message' => 'Inscricao atualizada com sucesso'],200
+            );
             
 
         } catch (\Exception $ex) {
@@ -120,7 +124,7 @@ class InscricaoController extends Controller
     }
 
 
-    private function camposPreenchidos(array $inscricao){
+    private function camposPreenchidos(Inscricao $inscricao){
         $camposObrigatorios = [
             'name',
             'cpf',
@@ -136,7 +140,8 @@ class InscricaoController extends Controller
         ];
 
         foreach ($camposObrigatorios as $campo) {
-            if (empty($data[$campo])) {
+
+            if (empty($inscricao[$campo])) {
                 return false;
             }
         }

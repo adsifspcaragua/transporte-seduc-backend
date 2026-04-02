@@ -28,43 +28,50 @@ public function rules(): array
 
   
     return [ 
-        'name' => "nullable|string|min:3|max:255",
-         
-        'cpf' => [
-            'required',
-            'string',
-            'size:11',
-            Rule::unique('inscricaos', 'cpf')
-                ->ignore($this->route('inscricao')->id)
-        ],
+    'name' => "sometimes|string|min:3|max:255",
+     
+    'cpf' => [
+        'sometimes',
+        'string',
+        'size:11',
+        Rule::unique('inscricaos', 'cpf')
+            ->ignore($this->route('inscricao')->id)
+    ],
 
-        'rg' => "nullable|string|min:8|max:11",
+    'rg' => [
+        "sometimes",
+        "string",
+        "min:8",
+        "max:11",
+        
+    ],
 
-        'date_of_birth' => "required|date|before:today|date_format:Y-m-d",
+    'date_of_birth' => "sometimes|date|before:today|date_format:Y-m-d",
 
-        'phone'=> 'nullable|string|max:15',
+    'phone'=> ["sometimes","string", "max:15", Rule::unique('inscricaos', 'phone')
+            ->ignore($this->route('inscricao')->id)],
 
-        'email' => [
-            'required',
-            'email',
-            Rule::unique('inscricaos', 'email')
-                ->ignore($this->route('inscricao')->id)
-        ],
+    'email' => [
+        'sometimes',
+        'email',
+        Rule::unique('inscricaos', 'email')
+            ->ignore($this->route('inscricao')->id)
+    ],
 
-        'cep' => "nullable|string|size:8",
+    'cep' => "sometimes|string|size:8",
 
-        'address' => "nullable|string|min:3|max:255",
+    'address' => "sometimes|string|min:3|max:255",
 
-        'neighborhood' => "nullable|string|min:3|max:255",
+    'neighborhood' => "sometimes|string|min:3|max:255",
 
-        'city' => "nullable|string|min:3|max:255",
+    'city' => "sometimes|string|min:3|max:255",
 
-        'number' => "nullable|integer|min:1",
+    'number' => "sometimes|integer|min:1",
 
-        'accepted_terms' => "boolean",
-        'accepted_terms_2' => "boolean",
+    'accepted_terms' => "sometimes|boolean",
+    'accepted_terms_2' => "sometimes|boolean",
 
-        'status' => "prohibited",
-    ];
+    'status' => "prohibited",
+];
 }
 }

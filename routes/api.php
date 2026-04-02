@@ -41,11 +41,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('estudantes', EstudanteController::class);
     Route::apiResource('estudantes/{estudante_id}/documentos', DocumentoController::class);
     
+    
+    });
     Route::apiResource('inscricao', InscricaoController::class);
     Route::apiResource('inscricao/{inscricao_id}/instituicao', InscricaoInstituicaoController::class);
 
     Route::apiResource('instituicao', InstituicoesController::class);
-
-});
     
     
