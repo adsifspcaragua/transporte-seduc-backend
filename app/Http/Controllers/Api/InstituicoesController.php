@@ -10,9 +10,7 @@ use App\Models\Instituicoes;
 
 class InstituicoesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     {
         $instituicoes = Instituicoes::all();
@@ -26,9 +24,7 @@ class InstituicoesController extends Controller
             ],200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(StoreInstituicoesRequest $request)
     {
         try{
@@ -44,9 +40,7 @@ class InstituicoesController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
         try{
@@ -65,9 +59,7 @@ class InstituicoesController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+   
     public function update(UpdateInstituicoesRequest $request, string $id)
     {
         try{
@@ -85,9 +77,7 @@ class InstituicoesController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
 

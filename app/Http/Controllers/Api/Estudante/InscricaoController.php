@@ -10,9 +10,7 @@ use App\Http\Resources\Inscricao\InscricaoResource;
 
 class InscricaoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     {
         try {
@@ -48,9 +46,7 @@ class InscricaoController extends Controller
     }
 
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
 
@@ -71,9 +67,7 @@ class InscricaoController extends Controller
     }
 
 
-    /**
-     * Update the specified resource in storage.
-     */
+   
     public function update(UpdateInscricaoRequest $request, Inscricao $inscricao)
     {
         try {
@@ -101,9 +95,7 @@ class InscricaoController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
         //

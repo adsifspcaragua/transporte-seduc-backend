@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class EstudanteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     {
         $estudantes = Estudante::all();
@@ -25,9 +23,7 @@ class EstudanteController extends Controller
        return EstudanteResource::collection($estudantes);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(StoreEstudanteRequest $request)
     {
         DB::beginTransaction();
@@ -46,9 +42,7 @@ class EstudanteController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
         try{
@@ -67,9 +61,7 @@ class EstudanteController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+   
     public function update(UpdateEstudanteRequest $request, string $id)
     {
         DB::beginTransaction();
@@ -90,9 +82,7 @@ class EstudanteController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
 

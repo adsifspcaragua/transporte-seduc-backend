@@ -8,9 +8,7 @@ use App\Models\InscricaoInstituicoes;
 use App\Http\Resources\Inscricao\InscricaoInstituicaoResource;
 class InscricaoInstituicaoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     {
         $inscricoes_instituicao = InscricaoInstituicoes::all();
@@ -39,9 +37,7 @@ class InscricaoInstituicaoController extends Controller
     }
 
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
          try {
@@ -61,9 +57,7 @@ class InscricaoInstituicaoController extends Controller
     }
 
 
-    /**
-     * Update the specified resource in storage.
-     */
+   
     public function update(UpdateInscricaoIntituicoesRequest $request, InscricaoInstituicoes  $inscricao_instituicao)
     {
         try {
@@ -78,9 +72,7 @@ class InscricaoInstituicaoController extends Controller
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
         //

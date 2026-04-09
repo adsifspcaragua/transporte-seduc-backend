@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class InscricaoDocumentoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index(string $inscricao_id)
     {
         try{
@@ -37,9 +35,7 @@ class InscricaoDocumentoController extends Controller
         
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(StoreInscricaoDocumentoRequest $request)
     {
         DB::beginTransaction();
@@ -64,9 +60,7 @@ class InscricaoDocumentoController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id, string $inscricao_id)
     {
         try{
@@ -91,9 +85,7 @@ class InscricaoDocumentoController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+   
     public function update(UpdateInscricaoDocumentoRequest $request, string $inscricao_id, string $id)
     {
          DB::beginTransaction();
@@ -126,9 +118,7 @@ class InscricaoDocumentoController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $inscricao_id, string $id)
     {
         try{
