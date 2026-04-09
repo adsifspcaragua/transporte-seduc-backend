@@ -4,6 +4,7 @@ namespace App\Http\Resources\Inscricao;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\InstituicoesResource;
 
 
 class InscricaoInstituicaoResource extends JsonResource
@@ -19,10 +20,9 @@ class InscricaoInstituicaoResource extends JsonResource
             'id'                  => $this->id,
             'course'              => $this->course,
             'semester'            => $this->semester,
-            'expected_completion' => $this->expected_completion?->format('Y-m-d'),
+            'expected_completion' => $this->expected_completion,
             'instituicao_id'      => $this->instituicao_id,
-            //'instituicao'         => new InstituicaoResource($this->whenLoaded('instituicao')), MODIFICAR
-            'shift'               => $this->shift,
+            'instituicao'         => new InstituicoesResource($this->whenLoaded('instituicao')),
             'shift_label'         => match($this->shift) {
                 1 => 'Matutino',
                 2 => 'Noturno',
@@ -30,7 +30,6 @@ class InscricaoInstituicaoResource extends JsonResource
             },
             'city_destination'    => $this->city_destination,
             'used_transport'      => $this->used_transport,
-            'days_of_week'        => $this->days_of_week,
             'days_of_week_labels' => collect($this->days_of_week)->map(fn($day) => match($day) {
                 0 => 'Domingo',
                 1 => 'Segunda-feira',
@@ -41,7 +40,7 @@ class InscricaoInstituicaoResource extends JsonResource
                 6 => 'Sábado',
                 default => 'Desconhecido',
             }),
-            //'line_id'             => $this->line_id,
+            'line_id'             => $this->line_id,
             //'line'                => new LineResource($this->whenLoaded('line')), MODIFICAR
             'has_scholarship'     => $this->has_scholarship,
             'scholarship_type'    => $this->scholarship_type,

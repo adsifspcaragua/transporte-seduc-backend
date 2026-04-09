@@ -23,12 +23,13 @@ class StoreInscricaoIntituicoesRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'inscricao_id' => $this->route('inscricao')?->id,
+            'inscricao_id' => $this->route('inscricao_id'),
         ]);
     }
 
     public function rules(): array
     {
+        
         return [
             'course' => 'required|string|min:3|max:255',
             'semester'  => 'required|string|min:1|max:50',
@@ -41,7 +42,7 @@ class StoreInscricaoIntituicoesRequest extends FormRequest
             'days_of_week.*' => 'integer|between:0,6',
             'has_scholarship' => 'required|boolean',
             'scholarship_type' => 'nullable|string|min:3|max:255|required_if:has_scholarship,true',
-            'inscricao_id' => "required|integer|exists:inscricaos,id",
+            "inscricao_id" => 'required|integer|exists:inscricaos,id|unique:inscricao_instituicaos,inscricao_id',
             //'line_id'  => 'required|integer|exists:lines,id', MODIFICAR
         ];
     }

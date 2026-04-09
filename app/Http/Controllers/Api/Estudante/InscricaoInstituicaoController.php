@@ -22,32 +22,35 @@ class InscricaoInstituicaoController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(StoreInscricaoIntituicoesRequest $request)
+    public function store(StoreInscricaoIntituicoesRequest $request)
     {
+        
         try {
-            $inscricao = InscricaoInstituicoes::create($request->validated());
+            $data = $request->validated();
+            $inscricao = InscricaoInstituicoes::create([...$data, 'line_id'=> 0]);
 
             return response()->json([
                 "data" => new InscricaoInstituicaoResource($inscricao),
                 "message" => "Inscrição criada com sucesso"
             ], 201);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Erro ao criar inscrição.'], 500);
+            return response()->json(['message' => 'Erro ao criar inscrição.', 'error' => $e->getMessage()], 500);
         }
     }
 
 
 
-    public function show(string $id)
+    public function show(string $id, string $instituicao)
     {
          try {
-            $inscricao_instituicao = InscricaoInstituicoes::find($id);
+
+            $inscricao_instituicao = InscricaoInstituicoes::find($instituicao);
 
             if(is_null($inscricao_instituicao)) {
                 return response()->json(["message" => "Inscricao não encontrada"], 404);
             }
 
-            return new InscricaoInstituicaoResource([
+            return response()->json([
                 "data" => new InscricaoInstituicaoResource($inscricao_instituicao),
                 "message" => "Incricao encontrado com sucesso"
             ],200);
@@ -58,10 +61,15 @@ class InscricaoInstituicaoController extends Controller
 
 
    
-    public function update(UpdateInscricaoIntituicoesRequest $request, InscricaoInstituicoes  $inscricao_instituicao)
+    public function update(UpdateInscricaoIntituicoesRequest $request, InscricaoInstituicoes  $inscricaoInstituicao)
     {
         try {
-            $inscricao_instituicao->update($request->validated());
+
+            $inscricao_instituicao = InscricaoInstituicoes::find($request->route("instituicao"));
+            $data = $request->validated();
+
+            
+            $inscricao_instituicao->update($data);
 
             return response()->json([
                 "data" => new InscricaoInstituicaoResource($inscricao_instituicao),

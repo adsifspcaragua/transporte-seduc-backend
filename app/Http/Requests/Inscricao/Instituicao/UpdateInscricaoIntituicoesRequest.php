@@ -15,6 +15,13 @@ class UpdateInscricaoIntituicoesRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'inscricao_id' => $this->route('inscricao_id'),
+        ]);
+    }
+    
     /**
      * Get the validation rules that apply to the request.
      *

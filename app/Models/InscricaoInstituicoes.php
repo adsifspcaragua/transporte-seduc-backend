@@ -22,8 +22,14 @@ class InscricaoInstituicoes extends Model
             'inscricao_id'
     ];
 
+    protected $casts = [
+        'days_of_week' => 'array',
+    ];
+
+
+
     public function inscricao(){
-        return $this->belongsTo(Inscricao::class);
+        return $this->belongsTo(Inscricao::class, "inscricao_id");
     }
 
 
