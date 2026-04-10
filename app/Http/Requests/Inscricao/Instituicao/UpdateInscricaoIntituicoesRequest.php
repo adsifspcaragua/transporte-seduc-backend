@@ -33,7 +33,7 @@ class UpdateInscricaoIntituicoesRequest extends FormRequest
             'course' => 'required|string|min:3|max:255',
             'semester'  => 'required|string|min:1|max:50',
             'expected_completion' => 'required|date|after_or_equal:today',
-            'instituicao_id' => "required|integer|exists:instituicaos,id",
+            'instituicao_id' => "required|integer|exists:instituicoes,id",
             'shift' => 'required|integer|in:1,2',
             'city_destination' => 'required|string|min:3|max:255',
             'used_transport' => 'required|boolean',

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('instituicoes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->json('lines_ids');
+            $table->json('linhas_ids')->nullable();
             $table->timestamps();
         });
     }

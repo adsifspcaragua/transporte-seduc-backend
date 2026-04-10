@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateInstituicoesRequest extends FormRequest
+class UpdateInstituicaoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,9 @@ class UpdateInstituicoesRequest extends FormRequest
     {
         $id = $this->route('instituicao');
         return [
-            'name' => "required|string|min:3|max:255|unique:instituicaos,id,{$id}"
+            'name' => "required|string|min:3|max:255|unique:instituicoes,id,{$id}",
+            'linhas_ids' => 'nullable|array',
+            'linhas_ids.*' => 'nullable|integer',
         ];
     }
 }

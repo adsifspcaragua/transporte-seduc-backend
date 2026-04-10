@@ -34,7 +34,7 @@ class StoreInscricaoIntituicoesRequest extends FormRequest
             'course' => 'required|string|min:3|max:255',
             'semester'  => 'required|string|min:1|max:50',
             'expected_completion' => 'required|date|after_or_equal:today',
-            'instituicao_id' => "required|integer|exists:instituicaos,id",
+            'instituicao_id' => "required|integer|exists:instituicoes,id",
             'shift' => 'required|integer|in:1,2',
             'city_destination' => 'required|string|min:3|max:255',
             'used_transport' => 'required|boolean',
@@ -42,7 +42,7 @@ class StoreInscricaoIntituicoesRequest extends FormRequest
             'days_of_week.*' => 'integer|between:0,6',
             'has_scholarship' => 'required|boolean',
             'scholarship_type' => 'nullable|string|min:3|max:255|required_if:has_scholarship,true',
-            "inscricao_id" => 'required|integer|exists:inscricaos,id|unique:inscricao_instituicaos,inscricao_id',
+            "inscricao_id" => 'required|integer|exists:inscricaos,id|unique:inscricao_instituicoes,inscricao_id',
             //'line_id'  => 'required|integer|exists:lines,id', MODIFICAR
         ];
     }
