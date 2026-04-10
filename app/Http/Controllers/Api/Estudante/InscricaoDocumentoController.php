@@ -1,29 +1,29 @@
 <?php
 
-namespace App\Http\Controllers\Api\Estudante\Documento;
+namespace App\Http\Controllers\Estudante;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Documento\StoreDocumentoRequest;
-use App\Http\Requests\Documento\UpdateDocumentoRequest;
-use App\Http\Resources\Documento\DocumentoResource;
-use App\Models\Documento;
 use Illuminate\Http\Request;
+use App\Http\Resources\Inscricao\InscricaoDocumentoResource;
+use App\Http\Requests\Inscricao\Documento\{StoreInscricaoDocumentoRequest, UpdateInscricaoDocumentoRequest};
+use App\Models\InscricaoDocumento;
 use Illuminate\Support\Facades\DB;
 
-class DocumentoController extends Controller
+
+class InscricaoDocumentoController extends Controller
 {
     
-    public function index(string $estudante_id)
+    public function index(string $inscricao_id)
     {
         try{
 
-            $documentos = Documento::where('estudante_id', $estudante_id)->get();
+            $documentos = InscricaoDocumento::where('inscricao_id', $inscricao_id)->get();
     
             if($documentos->isEmpty()){
-                return response()->json("Sem documentos do estudante cadastrado.", 200);
+                return response()->json("Sem documentos cadastrados na inscricao.", 200);
             }
             return response()->json([
-                "documento" => DocumentoResource::collection($documentos),
+                "documento" => InscricaoDocumentoResource::collection($documentos),
                 "message"   => "Documentos exibidos com sucesso."
             ]);
         }catch(\Exception $e){
@@ -36,15 +36,15 @@ class DocumentoController extends Controller
     }
 
     
-    public function store(StoreDocumentoRequest $request, string $estudante_id)
+    public function store(StoreInscricaoDocumentoRequest $request)
     {
         DB::beginTransaction();
         try{
-            $documento = Documento::create($request->validate());
+            $documento = InscricaoDocumento::create($request->validate());
 
             DB::commit();
                return response()->json([
-                "documento" => new DocumentoResource($documento),
+                "documento" => new InscricaoDocumentoResource($documento),
                 "message"   => "Documento cadastrado com sucesso."
             ]);
 
@@ -61,16 +61,20 @@ class DocumentoController extends Controller
     }
 
 
-    public function show(string $id, string $estudante_id)
+    public function show(string $id, string $inscricao_id)
     {
         try{
-            $documento = Documento::findOrFail($id);
+            $documento = InscricaoDocumento::find($id);
             
-            if ($documento->estudante_id !== $estudante_id) {
+            if ($documento->inscricao_id !== $inscricao_id) {
                 abort(404);
             }
+
+            if(is_null($documento)) {
+                return response()->json(["message" => "Documento não encontrada"], 404);
+            }
             return response()->json([
-                "documento" => new DocumentoResource($documento),
+                "documento" => new InscricaoDocumentoResource($documento),
                 "message"   => "Documento exibido com sucesso."
             ]);
         }catch(\Exception $e){
@@ -82,21 +86,25 @@ class DocumentoController extends Controller
     }
 
    
-    public function update(UpdateDocumentoRequest $request, string $estudante_id, string $id)
+    public function update(UpdateInscricaoDocumentoRequest $request, string $inscricao_id, string $id)
     {
          DB::beginTransaction();
         try{
-            $documento = Documento::findOrFail($id);
+            $documento = InscricaoDocumento::findOrFail($id);
 
-            if ($documento->estudante_id !== $estudante_id) {
+            if ($documento->inscricao_id !== $inscricao_id) {
                 abort(404);
+            }
+
+            if(is_null($documento)) {
+                return response()->json(["message" => "Documento não encontrada"], 404);
             }
 
             $documento->update($request->validate());
 
             DB::commit();
             return response()->json([
-                "documento" => new DocumentoResource($documento),
+                "documento" => new InscricaoDocumentoResource($documento),
                 "message"   => "Documento atualizado com sucesso."
             ]);
 
@@ -111,11 +119,11 @@ class DocumentoController extends Controller
     }
 
 
-    public function destroy(string $estudante_id, string $id)
+    public function destroy(string $inscricao_id, string $id)
     {
         try{
-            $documento = Documento::findOrFail($id);
-            if ($documento->estudante_id !== $estudante_id) {
+            $documento = InscricaoDocumento::findOrFail($id);
+            if ($documento->inscricao_id !== $inscricao_id) {
                 abort(404);
             }
             $documento_exibir = $documento;
@@ -123,7 +131,7 @@ class DocumentoController extends Controller
             $documento->delete();
 
             return response()->json([
-                "documento" => new DocumentoResource($documento_exibir),
+                "documento" => new InscricaoDocumentoResource($documento_exibir),
                 "message"   => "Documento deletado com sucesso."
             ]);
         }

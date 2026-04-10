@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -25,11 +26,18 @@ class UpdateUserRequest extends FormRequest
         $userId = $this->route('user')?->id;
         return [
             "email" => "required|email|unique:users,email,{$userId}",
-            "user.name" => "required|string|max:255",
-            "user.password" => "required|min:8",
-            "user.cpf" => "string|min:11|max:11|unique:users,cpf",
-            "user.matricula" => "integer|unique:users,matricula",
-            "user.data_nascimento" => "date|before:today|date_format:Y-m-d",
+            "name" => "required|string|max:255",
+            "password" => "required|min:8",
+            "cpf" =>  [
+                'string',
+                'min:11',
+                'max:11',
+                Rule::unique('users', 'cpf')->ignore($userId),
+            ],
+            "matricula" => [
+                "integer",
+                Rule::unique('users', 'matricula')->ignore($userId),],
+            "data_nascimento" => "date|before:today|date_format:Y-m-d",
             
         ];
     }

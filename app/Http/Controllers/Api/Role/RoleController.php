@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     {
         $role = Role::all();
@@ -25,9 +23,7 @@ class RoleController extends Controller
         return RoleResource::collection($role);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(StoreRoleRequest $request)
     {
 
@@ -50,9 +46,7 @@ class RoleController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
         try{
@@ -67,9 +61,7 @@ class RoleController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+   
     public function update(UpdateRoleRequest $request, string $id)
     {
         DB::beginTransaction();
@@ -90,9 +82,7 @@ class RoleController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
         try{

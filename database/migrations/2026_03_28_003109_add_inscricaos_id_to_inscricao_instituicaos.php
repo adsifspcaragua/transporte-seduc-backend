@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('inscricao_instituicaos', function (Blueprint $table) {
             $table->foreignId('inscricao_id')->references('id')->on('inscricaos')->unique()->cascadeDelete();
+            
         });
     }
 

@@ -10,15 +10,21 @@ use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     {
         try {
             $users = User::all();
-            return response()->json(new UserResource($users),200);
-            
+
+            if(is_null($users)) {
+                return response()->json(["message" => "Nenhum usuário encontrado"], 404);
+            }
+
+            return response()->json(
+                [
+                    "data" => UserResource::collection($users),
+                    "message"=> "Usuários inscritos"
+                ], 200);
 
         } catch (\Exception $ex) {
             return response()->json([
@@ -27,14 +33,11 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(StoreUserRequest $request)
     {
         $data = $request->validated();
 
-        // return response()->json(["user" => new UserResource($user), "message" => "BLalalal"])
         try{
             $user = new User();
             $user->fill($data);
@@ -49,41 +52,46 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
         try {
-            $user = User::findOrFail($id);
-            return response()->json(new UserResource($user),200);
+            $user = User::find($id);
+            if(is_null($user)) {
+                return response()->json(["message" => "Usuário não encontrada"], 404);
+            }
+            return response()->json(
+                [
+                    "data" => new UserResource($user),
+                    "message"=> "Usuário encontrado"
+                ], 200);
 
         } catch (\Exception $ex) {
             return response()->json([
-                'message' => 'Usuário não encontrado'
+                'message' => 'Usuário não encontrado',
+                
             ], 404);
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+   
     public function update(UpdateUserRequest $request, User $user)
     {
         try {
-            $user->update($request->validated()['user']);
-            return response()->json(new UserResource($user),200);
+            $user->update($request->validated());
+            return response()->json([
+                "data" => new UserResource($user),
+                'message' => 'Usuário atualizada com sucesso'],200);
 
         } catch (\Exception $ex) {
             return response()->json([
-                'message' => 'Falha ao atualizar usuário'
+                'message' => 'Falha ao atualizar usuário',
+                'error' => $ex->getMessage()
             ], 500);
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
         try {
