@@ -27,7 +27,6 @@ return new class extends Migration
             $table->foreignId('instituicao_id')->constrained('instituicoes');
             $table->unsignedInteger('linha_id')->nullable();
             $table->unsignedInteger('user_id')->nullable();
-            $table->foreignId('inscricao_id')->references('id')->on('inscricoes')->unique();
             $table->timestamps();
 
         });
