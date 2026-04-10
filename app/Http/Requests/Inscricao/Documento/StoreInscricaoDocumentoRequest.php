@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Inscricao\Documento;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreInscricaoIntituicoes extends FormRequest
+class StoreInscricaoDocumentoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,9 @@ class StoreInscricaoIntituicoes extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'type' => "required|string",
+            'file_path' => "required|string|max:100",
+            'inscricao_id' => 'required|exists:inscricaos,id'
         ];
     }
 }

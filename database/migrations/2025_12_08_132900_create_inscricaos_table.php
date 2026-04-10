@@ -19,14 +19,12 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->unique();
-
             $table->string('cep')->nullable();
             $table->string('address')->nullable();
             $table->string('neighborhood')->nullable();
             $table->string('city')->nullable();
             $table->string('number')->nullable();
             $table->string('status')->default('incomplete');
-            $table->integer('inscricao_instituicao_id')->nullable();
             $table->boolean('accepted_terms')->default(false);
             $table->boolean('accepted_terms_2')->default(false);
             $table->timestamps();
