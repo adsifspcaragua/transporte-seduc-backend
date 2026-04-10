@@ -11,38 +11,38 @@ class Estudante extends Model
     'days_of_week' => 'array',
     ];
     protected $fillable = [
-        'name',
-        'email',
-        'rg',
-        'cpf',
-        'birth_date',
-        'phone',
-        'address',
-        'father_name',
-        'mother_name',
-        'course',
-        'semester',
-        'year_completion',
-        'instituicao_id',
-        'start_time',
-        'end_time',
-        'days_of_week',
-        'has_scholarship',
-        'scholarship_type',
-        'observation',
-        'status',
-        'line_id',
-        'port',
-        'user_id'
+        "id", 
+        "name", 
+        "email",
+        "cpf",
+        "birth_date", 
+        "phone",
+        "address", 
+        "start_time", 
+        "end_time", 
+        "days_of_week", 
+        "observation", 
+        "status", 
+        "linha_id", 
+        "user_id",
+        "instituicao_id", 
+        "inscricao_id"
     ];
 
 
-    public function documentos()
-{
-    return $this->hasMany(Documento::class, 'estudante_id');
-}
-
     public function inscricao(){
-        return $this->belongsTo(Inscricao::class);
+        return $this->belongsTo(Inscricao::class, "inscricao_id");
+    }
+
+    public function instituicao(){
+        return $this->belongsTo(Instituicao::class, "instituicao_id");
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class, "user_id");
+    }
+
+     public function linha(){
+        //return $this->belongsTo(Linha::class, "linha_id");
     }
 }
