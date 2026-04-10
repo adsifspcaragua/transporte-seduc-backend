@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inscricaos', function (Blueprint $table) {
+        Schema::create('inscricoes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('cpf')->unique();
             $table->string('rg')->nullable();
-            $table->date('date_of_birth')->nullable();
+            $table->date('birth_date')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->unique();
             $table->string('cep')->nullable();
@@ -24,7 +24,10 @@ return new class extends Migration
             $table->string('neighborhood')->nullable();
             $table->string('city')->nullable();
             $table->string('number')->nullable();
-            $table->string('status')->default('incomplete');
+            $table->string('father_name');
+            $table->string('mother_name');
+            $table->text('observation')->nullable();
+            $table->string('status')->default('incompleto');
             $table->boolean('accepted_terms')->default(false);
             $table->boolean('accepted_terms_2')->default(false);
             $table->timestamps();
@@ -36,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inscricaos');
+        Schema::dropIfExists('inscricoes');
     }
 };

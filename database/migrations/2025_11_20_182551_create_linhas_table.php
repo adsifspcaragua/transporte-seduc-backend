@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('inscricao_instituicaos', function (Blueprint $table) {
-            $table->foreignId('inscricao_id')->references('id')->on('inscricaos')->unique()->cascadeDelete();
-            
+        Schema::create('linhas', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('description')->nullable();
+            $table->time('departure_time')->nullable();
+            $table->time('return_time')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -22,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('inscricao_instituicaos', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('linhas');
     }
 };

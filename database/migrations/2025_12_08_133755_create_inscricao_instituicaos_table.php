@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('course');
             $table->string('semester');
             $table->date('expected_completion'); // DATA
-            $table->foreignId('instituicao_id')->constrained('instituicaos');
+            $table->foreignId('instituicao_id')->constrained('instituicoes');
             $table->integer('shift'); // MATUTINO / NOTURNO
             $table->string('city_destination');
             $table->boolean('used_transport');
@@ -25,6 +25,7 @@ return new class extends Migration
             $table->boolean('has_scholarship');
             $table->string('scholarship_type')->nullable();
             $table->timestamps();
+            $table->foreignId('inscricao_id')->references('id')->on('inscricoes')->unique()->cascadeDelete();
         });
     }
 
