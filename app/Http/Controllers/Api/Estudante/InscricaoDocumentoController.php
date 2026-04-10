@@ -1,22 +1,27 @@
 <?php
 
-namespace App\Http\Controllers\Estudante;
+namespace App\Http\Controllers\Api\Estudante;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Resources\Inscricao\InscricaoDocumentoResource;
 use App\Http\Requests\Inscricao\Documento\{StoreInscricaoDocumentoRequest, UpdateInscricaoDocumentoRequest};
+use App\Http\Resources\Inscricao\InscricaoDocumentoResource;
+use App\Models\Inscricao;
 use App\Models\InscricaoDocumento;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 
 class InscricaoDocumentoController extends Controller
 {
-    
+   
     public function index(string $inscricao_id)
     {
         try{
-
+              $inscricao = Inscricao::findOrFail($inscricao_id);
+        if($inscricao->isEmpty()) {
+            abort(404, "Inscrição não encontrada");
+            
+        }
             $documentos = InscricaoDocumento::where('inscricao_id', $inscricao_id)->get();
     
             if($documentos->isEmpty()){
@@ -26,21 +31,24 @@ class InscricaoDocumentoController extends Controller
                 "documento" => InscricaoDocumentoResource::collection($documentos),
                 "message"   => "Documentos exibidos com sucesso."
             ]);
-        }catch(\Exception $e){
+        }catch(\Throwable $t){
             return response()->json([
                 "message" => "Erro ao exibir documentos",
-                "error" => $e->getMessage()
+                "error" => $t->getMessage()
             ], 500);
         }
         
     }
 
     
-    public function store(StoreInscricaoDocumentoRequest $request)
+    public function store(StoreInscricaoDocumentoRequest $request, string $inscricao_id)
     {
+       
         DB::beginTransaction();
         try{
-            $documento = InscricaoDocumento::create($request->validate());
+            $inscricao = Inscricao::findOrFail($inscricao_id);
+        
+            $documento = InscricaoDocumento::create($request->validated());
 
             DB::commit();
                return response()->json([
@@ -49,11 +57,11 @@ class InscricaoDocumentoController extends Controller
             ]);
 
         }
-        catch(\Exception $e){
+        catch(\Throwable $t){
             DB::rollBack();
             return response()->json([
                 "message" => "Erro ao cadastrar documento",
-                "error" => $e->getMessage()
+                "error" => $t->getMessage()
             ], 500);
         }
 
@@ -61,13 +69,16 @@ class InscricaoDocumentoController extends Controller
     }
 
 
-    public function show(string $id, string $inscricao_id)
+    public function show(string $inscricao_id, string $id)
     {
         try{
+           
+            $inscricao = Inscricao::findOrFail($inscricao_id);
+           
             $documento = InscricaoDocumento::find($id);
-            
-            if ($documento->inscricao_id !== $inscricao_id) {
-                abort(404);
+            if ($documento->inscricao_id != $inscricao_id) {
+                
+                abort("404", "Documento não encontrado para esta inscrição");
             }
 
             if(is_null($documento)) {
@@ -77,11 +88,11 @@ class InscricaoDocumentoController extends Controller
                 "documento" => new InscricaoDocumentoResource($documento),
                 "message"   => "Documento exibido com sucesso."
             ]);
-        }catch(\Exception $e){
+        }catch(\Throwable $t){
               return response()->json([
                 "message" => "Erro ao exibir documento",
-                "error" => $e->getMessage()
-            ], 500);
+                "error" => $t->getMessage()
+            ], 404);
         }
     }
 
@@ -90,17 +101,19 @@ class InscricaoDocumentoController extends Controller
     {
          DB::beginTransaction();
         try{
+            $inscricao = Inscricao::findOrFail($inscricao_id);
+           
             $documento = InscricaoDocumento::findOrFail($id);
 
-            if ($documento->inscricao_id !== $inscricao_id) {
-                abort(404);
+            if ($documento->inscricao_id != $inscricao_id) {
+                abort("404", "Documento não encontrado para esta inscrição");
             }
 
             if(is_null($documento)) {
                 return response()->json(["message" => "Documento não encontrada"], 404);
             }
 
-            $documento->update($request->validate());
+            $documento->update($request->validated());
 
             DB::commit();
             return response()->json([
@@ -109,11 +122,11 @@ class InscricaoDocumentoController extends Controller
             ]);
 
         }
-        catch(\Exception $e){
+        catch(\Throwable $t){
             DB::rollBack();
             return response()->json([
                 "message" => "Erro ao atualizar documento",
-                "error" => $e->getMessage()
+                "error" => $t->getMessage()
             ], 500);
         }
     }
@@ -122,9 +135,11 @@ class InscricaoDocumentoController extends Controller
     public function destroy(string $inscricao_id, string $id)
     {
         try{
+            $inscricao = Inscricao::findOrFail($inscricao_id);
+           
             $documento = InscricaoDocumento::findOrFail($id);
-            if ($documento->inscricao_id !== $inscricao_id) {
-                abort(404);
+            if ($documento->inscricao_id != $inscricao_id) {
+                 abort("404", "Documento não encontrado para esta inscrição");
             }
             $documento_exibir = $documento;
     
@@ -135,10 +150,10 @@ class InscricaoDocumentoController extends Controller
                 "message"   => "Documento deletado com sucesso."
             ]);
         }
-        catch(\Exception $e){
+        catch(\Throwable $t){
               return response()->json([
                 "message" => "Erro ao deletado documento",
-                "error" => $e->getMessage()
+                "error" => $t->getMessage()
             ], 500);
         }
     }
