@@ -18,6 +18,7 @@ class InscricaoDocumentoResource extends JsonResource
             'id' => $this->id,
             'type' => $this->type,
             'file_path' => $this->file_path,
+            'status' => $this->status,
             'inscricao_id' => $this->inscricao_id
         ];
     }

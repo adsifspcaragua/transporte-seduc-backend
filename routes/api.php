@@ -1,14 +1,13 @@
 <?php
 
-use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\Estudante\{EstudanteController, InscricaoController, InscricaoInstituicaoController};
-use App\Http\Controllers\Api\Estudante\Documento\DocumentoController;
-use App\Http\Controllers\Api\Estudante\InscricaoDocumentoController;
-use App\Http\Controllers\Api\InstituicoesController;
-use App\Http\Controllers\Api\Role\RoleController;
-use App\Http\Controllers\Api\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Estudante\{EstudanteController, InscricaoController, InscricaoDocumentoController, InscricaoInstituicaoController};
+use App\Http\Controllers\Api\Estudante\Documento\DocumentoController;
+use App\Http\Controllers\Api\InstituicaoController;
+use App\Http\Controllers\Api\Role\RoleController;
+use App\Http\Controllers\Api\User\UserController;
 
 
 
@@ -47,7 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('inscricoes', InscricaoController::class);
     Route::apiResource('inscricoes/{inscricao_id}/instituicoes', InscricaoInstituicaoController::class);
 
-    Route::apiResource('instituicoes', InstituicoesController::class);
+    Route::apiResource('instituicoes', InstituicaoController::class);
     
     
     Route::apiResource('inscricoes/{inscricao_id}/documentos', InscricaoDocumentoController::class);

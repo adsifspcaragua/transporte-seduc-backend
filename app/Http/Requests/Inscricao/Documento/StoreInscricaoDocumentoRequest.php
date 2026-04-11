@@ -25,7 +25,8 @@ class StoreInscricaoDocumentoRequest extends FormRequest
         return [
             'type' => "required|string",
             'file_path' => "required|string|max:100",
-            'inscricao_id' => "required|exists:inscricaos,id"
+            'status' => "prohibited",
+            'inscricao_id' => "required|exists:inscricaos,id|unique:inscricao_documentos,inscricao_id"
         ];
     }
 }
