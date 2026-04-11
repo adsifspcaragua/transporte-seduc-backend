@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('city_destination');
             $table->boolean('used_transport');
             $table->json('days_of_week');
-            $table->integer('line_id');
             $table->boolean('has_scholarship');
             $table->string('scholarship_type')->nullable();
             $table->timestamps();

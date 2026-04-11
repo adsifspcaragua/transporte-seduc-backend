@@ -15,7 +15,6 @@ class InscricaoInstituicoes extends Model
             'city_destination',
             'used_transport',
             'days_of_week',
-            'line_id',
             'has_scholarship',
             'scholarship_type',
             'instituicao_id',
