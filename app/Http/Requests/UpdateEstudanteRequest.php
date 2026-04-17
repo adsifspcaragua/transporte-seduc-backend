@@ -28,21 +28,20 @@ class UpdateEstudanteRequest extends FormRequest
             "cpf" => "string|min:11|max:11|unique:estudantes,cpf," . $this->route('estudante')?->id,
             "birth_date" => "date|before:today|date_format:Y-m-d",
             'rg' => 'required|string|min:8|max:11',
-            'phone' => 'required|string|max:15',
+            'phone' => 'required|string|max:15|unique:estudantes,phone',
             'address' => 'required|string|max:255',
-            'father_name' => 'required|string|max:255',
-            'mother_name' => 'required|string|max:255',
-            'course' => 'required|string|max:255',
-            'semester' => 'required|integer|min:1|max:20',
-            'year_completion' => 'required|string|max:4',
             'instituicao_id' => 'required|string',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'days_of_week' => 'required|array',
             'days_of_week.*' => 'string',
-            'has_scholarship' => 'required|boolean',
-            'scholarship_type' => 'nullable|string|max:255',
             'observation' => 'nullable|string|max:1000',
+            'status' => 'required|string|max:255',
+            'linha_id' => 'nullable|integer',
+            'instituicao_id' => 'required|string|exists:instituicoes,id',
+            'inscricao_id' => 'required|string|exists:inscricoes,id|unique:estudantes,inscricao_id',
+            'user_id' => 'nullable|integer|exists:users,id|unique:estudantes,user_id,' . $this->route('estudante')?->id
         ];
     }
 }
+

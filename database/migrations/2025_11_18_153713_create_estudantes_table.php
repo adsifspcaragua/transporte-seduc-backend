@@ -15,25 +15,20 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('rg');
             $table->string('cpf')->unique();
             $table->date('birth_date');
             $table->string('phone');
             $table->string('address');
-            $table->string('father_name');
-            $table->string('mother_name');
-            $table->string('course');
-            $table->integer('semester');
-            $table->string('year_completion');
-            $table->string('instituicao_id');
             $table->time('start_time');
             $table->time('end_time');
             $table->json('days_of_week');
-            $table->boolean('has_scholarship');
-            $table->string('scholarship_type')->nullable();
             $table->string('observation')->nullable();
-            $table->string('status');
+            $table->string('status')->default("Em espera");
+            $table->foreignId('instituicao_id')->constrained('instituicoes');
+            $table->unsignedInteger('linha_id')->nullable();
+            $table->unsignedInteger('user_id')->nullable();
             $table->timestamps();
+
         });
     }
 

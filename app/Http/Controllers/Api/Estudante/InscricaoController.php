@@ -37,6 +37,12 @@ class InscricaoController extends Controller
             $inscricao->fill($data);
             $inscricao->save();
 
+            if($this->camposPreenchidos($inscricao)){
+                $inscricao->update(["status" => "completo"]);
+            }else{
+                 $inscricao->update(["status" => "incompleto"]);
+            }
+
             return response()->json(new InscricaoResource($inscricao),201);
         }catch(\Exception $ex){
             return response()->json([
@@ -68,12 +74,19 @@ class InscricaoController extends Controller
 
 
    
-    public function update(UpdateInscricaoRequest $request, Inscricao $inscricao)
+    public function update(UpdateInscricaoRequest $request, $id)
     {
         try {
+            $inscricao = Inscricao::find($id);
+
+            if(is_null($inscricao)){
+                return response()->json([
+                    'message' => "Incrição não encontrada"
+                ]);
+            }
+
             $data = $request->validated();
 
-            
             if($inscricao->status === "completo"){
                 return response()->json([
                 'message' => 'A inscrição já está completa'
@@ -128,7 +141,7 @@ class InscricaoController extends Controller
             'name',
             'cpf',
             'rg',
-            'date_of_birth',
+            'birth_date',
             'phone',
             'email',
             'cep',
@@ -136,15 +149,22 @@ class InscricaoController extends Controller
             'neighborhood',
             'city',
             'number',
+            'mother_name',
+            'father_name',
+            'accepted_terms',
+            'accepted_terms_2'
         ];
 
         foreach ($camposObrigatorios as $campo) {
 
+            
             if (empty($inscricao[$campo])) {
+                
                 return false;
             }
         }
 
-        return $inscricao['accepted_terms'] === true && $inscricao['accepted_terms_2'] === true;
-    }
+        
+        return true;
+}
 }

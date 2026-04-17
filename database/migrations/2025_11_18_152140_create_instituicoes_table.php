@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('inscricao_instituicaos', function (Blueprint $table) {
-            $table->foreignId('inscricao_id')->references('id')->on('inscricaos')->unique()->cascadeDelete();
-            
+        Schema::create('instituicoes', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->json('linhas_ids')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -22,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('inscricao_instituicaos', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('instituicoes');
     }
 };

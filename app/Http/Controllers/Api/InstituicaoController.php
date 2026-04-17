@@ -4,33 +4,33 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\{StoreInstituicoesRequest, UpdateInstituicoesRequest};
-use App\Http\Resources\InstituicoesResource;
-use App\Models\Instituicoes;
+use App\Http\Requests\{StoreInstituicaoRequest, UpdateInstituicaoRequest};
+use App\Http\Resources\InstituicaoResource;
+use App\Models\Instituicao;
 
-class InstituicoesController extends Controller
+class InstituicaoController extends Controller
 {
     
     public function index()
     {
-        $instituicoes = Instituicoes::all();
+        $instituicoes = Instituicao::all();
         
         if($instituicoes->isEmpty()) {
             return response()->json(["message" => "Nenhuma instituicao cadastrada"], 200);
         }
         return response()->json([
-                "instituicao" => InstituicoesResource::collection($instituicoes),
+                "instituicao" => InstituicaoResource::collection($instituicoes),
                 "message" => "Instituicao encontrada com sucesso"
             ],200);
     }
 
     
-    public function store(StoreInstituicoesRequest $request)
+    public function store(StoreInstituicaoRequest $request)
     {
         try{
-            $instituicao = Instituicoes::create($request->validated());
+            $instituicao = Instituicao::create($request->validated());
            return response()->json([
-            'data' => new InstituicoesResource($instituicao),
+            'data' => new InstituicaoResource($instituicao),
             'message' => 'Instituição criada com sucesso'
             ]);
         }catch(\Exception $e) {
@@ -44,12 +44,12 @@ class InstituicoesController extends Controller
     public function show(string $id)
     {
         try{
-            $instituicao = Instituicoes::find($id);
+            $instituicao = Instituicao::find($id);
             if(is_null($instituicao)) {
                 return response()->json(["message" => "Instituição não encontrada"], 404);
             }
             return response()->json([
-                "instituicao" => new InstituicoesResource($instituicao),
+                "instituicao" => new InstituicaoResource($instituicao),
                 "message" => "Instituicao encontrada com sucesso"
             ],200);
         }catch(\Exception $e) {
@@ -60,13 +60,14 @@ class InstituicoesController extends Controller
     }
 
    
-    public function update(UpdateInstituicoesRequest $request, string $id)
+    public function update(UpdateInstituicaoRequest $request, string $id)
     {
         try{
-            $instituicao = Instituicoes::find($id);
+
+            $instituicao = Instituicao::find($id);
             $instituicao->update($request->validated());
             return response()->json([
-                'data' => new InstituicoesResource($instituicao),
+                'data' => new InstituicaoResource($instituicao),
                 'message' => 'Instituicao atualizada com sucesso'
             ],200);
 
@@ -82,11 +83,17 @@ class InstituicoesController extends Controller
     {
 
         try{
-            $instituicao = Instituicoes::find($id);
+            $instituicao = Instituicao::find($id);
+            
+            if(is_null($instituicao)){
+                return response()->json([
+                'message' => 'Instituicao não encontrada'
+            ]);
+            }
             $instituicao_exibir = $instituicao;
             $instituicao->delete();
             return response()->json([
-                'data' => new InstituicoesResource( $instituicao_exibir),
+                'data' => new InstituicaoResource( $instituicao_exibir),
                 'message' => 'Instituicao deletado com sucesso'
             ]);
         }catch(\Exception $e) {

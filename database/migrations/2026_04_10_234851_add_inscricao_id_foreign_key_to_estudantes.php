@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('inscricao_documentos', function (Blueprint $table) {
-            $table->foreignId('inscricao_id')->references('id')->on('inscricaos')->unique()->cascadeDelete();
-            
+        Schema::table('estudantes', function (Blueprint $table) {
+            $table->foreignId('inscricao_id')->references('id')->on('inscricoes')->unique();
         });
     }
 
@@ -22,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('inscricao_documentos', function (Blueprint $table) {
+        Schema::table('estudantes', function (Blueprint $table) {
             //
         });
     }

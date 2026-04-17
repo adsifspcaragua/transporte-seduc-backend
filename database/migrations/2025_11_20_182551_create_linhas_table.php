@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('estudantes', function (Blueprint $table) {
-            $table->bigInteger('line_id')->after('days_of_week');;
-            $table->string('port')->after('line_id');
+        Schema::create('linhas', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('description')->nullable();
+            $table->time('departure_time')->nullable();
+            $table->time('return_time')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -22,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('estudantes', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('linhas');
     }
 };

@@ -11,20 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inscricao_instituicaos', function (Blueprint $table) {
+        Schema::create('inscricao_instituicoes', function (Blueprint $table) {
             $table->id();
             $table->string('course');
             $table->string('semester');
             $table->date('expected_completion'); // DATA
-            $table->foreignId('instituicao_id')->constrained('instituicaos');
+            $table->foreignId('instituicao_id')->constrained('instituicoes');
             $table->integer('shift'); // MATUTINO / NOTURNO
             $table->string('city_destination');
             $table->boolean('used_transport');
             $table->json('days_of_week');
-            $table->integer('line_id');
             $table->boolean('has_scholarship');
             $table->string('scholarship_type')->nullable();
             $table->timestamps();
+            $table->foreignId('inscricao_id')->references('id')->on('inscricoes')->unique()->cascadeDelete();
         });
     }
 
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inscricao_instituicaos');
+        Schema::dropIfExists('inscricao_instituicoes');
     }
 };

@@ -43,6 +43,7 @@ class InscricaoInstituicaoController extends Controller
     public function show(string $id, string $instituicao)
     {
          try {
+           
 
             $inscricao_instituicao = InscricaoInstituicoes::find($instituicao);
 
@@ -61,13 +62,17 @@ class InscricaoInstituicaoController extends Controller
 
 
    
-    public function update(UpdateInscricaoIntituicoesRequest $request, InscricaoInstituicoes  $inscricaoInstituicao)
+    public function update(UpdateInscricaoIntituicoesRequest $request, string $inscricao, string $instituicao)
     {
         try {
 
-            $inscricao_instituicao = InscricaoInstituicoes::find($request->route("instituicao"));
+            $inscricao_instituicao = InscricaoInstituicoes::find($instituicao);
             $data = $request->validated();
 
+            if(is_null($inscricao_instituicao)){
+                return response()->json([
+                'message' => 'Inscricao não encontrada'],404);
+            }
             
             $inscricao_instituicao->update($data);
 

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('type');
             $table->string('file_path');
+            $table->string('status')->default("Em analise");
+            $table->foreignId('inscricao_id')->references('id')->on('inscricoes')->unique()->cascadeDelete();
             $table->timestamps();
         });
     }
