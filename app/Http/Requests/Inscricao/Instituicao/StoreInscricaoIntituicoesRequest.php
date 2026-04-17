@@ -42,8 +42,8 @@ class StoreInscricaoIntituicoesRequest extends FormRequest
             'days_of_week.*' => 'integer|between:0,6',
             'has_scholarship' => 'required|boolean',
             'scholarship_type' => 'nullable|string|min:3|max:255|required_if:has_scholarship,true',
-            "inscricao_id" => 'required|integer|exists:inscricaos,id|unique:inscricao_instituicoes,inscricao_id',
-            //'line_id'  => 'required|integer|exists:lines,id', MODIFICAR
+            "inscricao_id" => 'required|integer|exists:inscricoes,id|unique:inscricao_instituicoes,inscricao_id',
+            
         ];
     }
 }

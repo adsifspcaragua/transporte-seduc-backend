@@ -43,10 +43,10 @@ Route::middleware('auth:sanctum')->group(function () {
     
     
     });
-    Route::apiResource('inscricoes', InscricaoController::class);
-    Route::apiResource('inscricoes/{inscricao_id}/instituicoes', InscricaoInstituicaoController::class);
+    Route::apiResource('inscricao', InscricaoController::class);
+    Route::apiResource('inscricao/{inscricao_id}/instituicao', InscricaoInstituicaoController::class);
 
-    Route::apiResource('instituicoes', InstituicaoController::class);
+    Route::apiResource('instituicao', InstituicaoController::class);
     
     
-    Route::apiResource('inscricoes/{inscricao_id}/documentos', InscricaoDocumentoController::class);
+    Route::apiResource('inscricao/{inscricao_id}/documentos', InscricaoDocumentoController::class);

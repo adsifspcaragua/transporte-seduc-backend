@@ -26,28 +26,28 @@ class UpdateInscricaoRequest extends FormRequest
 public function rules(): array
 {
 
-  
+    
     return [ 
             'name' => "sometimes|string|min:3|max:255",
             'cpf' => [
                 'sometimes',
                 'string',
                 'size:11',
-                Rule::unique('inscricaos', 'cpf')
-                    ->ignore($this->route('inscricao')->id)
+                Rule::unique('inscricoes', 'cpf')
+                    ->ignore($this->route('inscricao'))
             ],
             'rg' => "sometimes|string|min:8|max:11",
-            "father_name" => 'required|string|min:3|max:255',
-            "mother_name" => 'required|string|min:3|max:255',
+            "father_name" => 'sometimes|string|min:3|max:255',
+            "mother_name" => 'sometimes|string|min:3|max:255',
             'birth_date' => "sometimes|date|before:today|date_format:Y-m-d",
             
-            'phone'=> ["sometimes","string", "max:15", Rule::unique('inscricaos', 'phone')
-                    ->ignore($this->route('inscricao')->id)],
+            'phone'=> ["sometimes","string", "max:15", Rule::unique('inscricoes', 'phone')
+                    ->ignore($this->route('inscricao'))],
             'email' => [
                 'sometimes',
                 'email',
-                Rule::unique('inscricaos', 'email')
-                    ->ignore($this->route('inscricao')->id)
+                Rule::unique('inscricoes', 'email')
+                    ->ignore($this->route('inscricao'))
             ],
             'cep' => "sometimes|string|size:8",
             'address' => "sometimes|string|min:3|max:255",

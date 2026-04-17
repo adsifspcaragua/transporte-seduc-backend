@@ -63,6 +63,7 @@ class InstituicaoController extends Controller
     public function update(UpdateInstituicaoRequest $request, string $id)
     {
         try{
+
             $instituicao = Instituicao::find($id);
             $instituicao->update($request->validated());
             return response()->json([
@@ -83,6 +84,12 @@ class InstituicaoController extends Controller
 
         try{
             $instituicao = Instituicao::find($id);
+            
+            if(is_null($instituicao)){
+                return response()->json([
+                'message' => 'Instituicao não encontrada'
+            ]);
+            }
             $instituicao_exibir = $instituicao;
             $instituicao->delete();
             return response()->json([

@@ -29,13 +29,13 @@ public function rules(): array
   
     return [ 
         'name' => "required|string|min:3|max:255",
-        'cpf' => 'required|string|size:11|unique:inscricaos,cpf',
+        'cpf' => 'required|string|size:11|unique:inscricoes,cpf',
         'rg' => "nullable|string|min:8|max:11",
         "father_name" => 'required|string|min:3|max:255',
         "mother_name" => 'required|string|min:3|max:255',
         'birth_date' => "required|date|before:today|date_format:Y-m-d",
-        'phone'=> 'nullable|string|max:15|unique:inscricaos,phone',
-        'email' => 'required|email|unique:inscricaos,email',
+        'phone'=> 'nullable|string|max:15|unique:inscricoes,phone',
+        'email' => 'required|email|unique:inscricoes,email',
         'cep' => "nullable|string|size:8",
         'address' => "nullable|string|min:3|max:255",
         'neighborhood' => "nullable|string|min:3|max:255",

@@ -24,9 +24,9 @@ class UpdateInstituicaoRequest extends FormRequest
     {
         $id = $this->route('instituicao');
         return [
-            'name' => "required|string|min:3|max:255|unique:instituicoes,id,{$id}",
-            'linhas_ids' => 'nullable|array',
-            'linhas_ids.*' => 'nullable|integer',
+            'name' => "sometimes|string|min:3|max:255|unique:instituicoes,id,{$id}",
+            'linhas_ids' => 'sometimes|array',
+            'linhas_ids.*' => 'sometimes|integer',
         ];
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Resources\Inscricao;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\InstituicoesResource;
+use App\Http\Resources\InstituicaoResource;
 
 
 class InscricaoInstituicaoResource extends JsonResource
@@ -22,7 +22,7 @@ class InscricaoInstituicaoResource extends JsonResource
             'semester'            => $this->semester,
             'expected_completion' => $this->expected_completion,
             'instituicao_id'      => $this->instituicao_id,
-            'instituicao'         => new InstituicoesResource($this->whenLoaded('instituicao')),
+            'instituicao'         => new InstituicaoResource($this->whenLoaded('instituicao')),
             'shift_label'         => match($this->shift) {
                 1 => 'Matutino',
                 2 => 'Noturno',

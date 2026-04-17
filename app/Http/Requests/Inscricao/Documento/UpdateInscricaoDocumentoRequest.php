@@ -26,7 +26,7 @@ class UpdateInscricaoDocumentoRequest extends FormRequest
             'type' => "required|string",
             'file_path' => "required|string|max:100",
             'status' => "sometimes|max:255",
-            'inscricao_id' => "required|exists:inscricaos,id|unique:inscricao_documentos,inscricao_id" . $this->route('documento')?->id
+            'inscricao_id' => "required|exists:inscricoes,id|unique:inscricao_documentos,inscricao_id" . $this->route('documento')?->id
         ];
     }
 }
