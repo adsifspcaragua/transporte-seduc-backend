@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\{StoreInstituicaoRequest, UpdateInstituicaoRequest};
 use App\Http\Resources\InstituicaoResource;
@@ -19,7 +19,7 @@ class InstituicaoController extends Controller
             return response()->json(["message" => "Nenhuma instituicao cadastrada"], 200);
         }
         return response()->json([
-                "instituicao" => InstituicaoResource::collection($instituicoes),
+                "data" => InstituicaoResource::collection($instituicoes),
                 "message" => "Instituicao encontrada com sucesso"
             ],200);
     }
@@ -28,11 +28,12 @@ class InstituicaoController extends Controller
     public function store(StoreInstituicaoRequest $request)
     {
         try{
+            
             $instituicao = Instituicao::create($request->validated());
-           return response()->json([
+            return response()->json([
             'data' => new InstituicaoResource($instituicao),
             'message' => 'Instituição criada com sucesso'
-            ]);
+            ], 200);
         }catch(\Exception $e) {
             return response()->json(
                 ["message" => "Erro ao cadastrar instituicao",
@@ -49,7 +50,7 @@ class InstituicaoController extends Controller
                 return response()->json(["message" => "Instituição não encontrada"], 404);
             }
             return response()->json([
-                "instituicao" => new InstituicaoResource($instituicao),
+                "data" => new InstituicaoResource($instituicao),
                 "message" => "Instituicao encontrada com sucesso"
             ],200);
         }catch(\Exception $e) {
@@ -94,7 +95,7 @@ class InstituicaoController extends Controller
             $instituicao->delete();
             return response()->json([
                 'data' => new InstituicaoResource( $instituicao_exibir),
-                'message' => 'Instituicao deletado com sucesso'
+                'message' => 'Instituicao deletada com sucesso'
             ]);
         }catch(\Exception $e) {
             return response()->json(

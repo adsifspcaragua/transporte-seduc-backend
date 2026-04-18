@@ -23,10 +23,11 @@ class UpdateInscricaoDocumentoRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'name' => "required|string",
             'type' => "required|string",
             'file_path' => "required|string|max:100",
             'status' => "sometimes|max:255",
-            'inscricao_id' => "required|exists:inscricoes,id|unique:inscricao_documentos,inscricao_id" . $this->route('documento')?->id
+            'inscricao_id' => "required|exists:inscricoes,id"
         ];
     }
 }

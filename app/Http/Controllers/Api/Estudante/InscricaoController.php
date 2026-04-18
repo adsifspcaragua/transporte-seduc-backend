@@ -87,11 +87,11 @@ class InscricaoController extends Controller
 
             $data = $request->validated();
 
-            if($inscricao->status === "completo"){
-                return response()->json([
-                'message' => 'A inscrição já está completa'
-            ], 403);
-            }
+            // if($inscricao->status === "completo"){
+            //     return response()->json([
+            //     'message' => 'A inscrição já está completa'
+            // ], 403);
+            // }
             $inscricao->update($data);
 
             if($this->camposPreenchidos($inscricao)){
@@ -137,6 +137,9 @@ class InscricaoController extends Controller
 
 
     private function camposPreenchidos(Inscricao $inscricao){
+        $inscricaoCompleta = Inscricao::with(['inscricao_instituicao','inscricao_documentos'])
+        ->find($inscricao->id);
+
         $camposObrigatorios = [
             'name',
             'cpf',
@@ -158,8 +161,7 @@ class InscricaoController extends Controller
         foreach ($camposObrigatorios as $campo) {
 
             
-            if (empty($inscricao[$campo])) {
-                
+            if (empty($inscricao[$campo])) {  
                 return false;
             }
         }
