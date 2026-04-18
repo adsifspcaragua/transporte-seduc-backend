@@ -3,7 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Estudante\{EstudanteController, InscricaoController, InscricaoInstituicaoController};
 use App\Http\Controllers\Api\Estudante\Documento\DocumentoController;
-use App\Http\Controllers\Api\Estudante\InscricaoDocumentoController;
+use App\Http\Controllers\Api\Inscricao\Documento\InscricaoDocumentoController;
 use App\Http\Controllers\Api\InstituicaoController;
 use App\Http\Controllers\Api\Role\RoleController;
 use App\Http\Controllers\Api\User\UserController;
@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
         Route::apiResource('estudantes', EstudanteController::class);
+        Route::get('contar-estudantes', [EstudanteController::class, 'countEstudantes']);
         Route::apiResource('users', UserController::class);
         Route::apiResource('roles', RoleController::class);
 
@@ -36,8 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('roles', RoleController::class);
 
-    Route::apiResource('estudantes', EstudanteController::class);
-    Route::apiResource('estudantes/{estudante_id}/documentos', DocumentoController::class);
+
     
     
     });
@@ -47,4 +47,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('instituicao', InstituicaoController::class);
     
     
-    Route::apiResource('inscricao/{inscricao_id}/documentos', InscricaoDocumentoController::class);
+    Route::apiResource('inscricoes.documentos', InscricaoDocumentoController::class);

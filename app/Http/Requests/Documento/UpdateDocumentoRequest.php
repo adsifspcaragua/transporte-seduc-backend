@@ -23,9 +23,10 @@ class UpdateDocumentoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "estudante_id" => "required",
-            "tipo" => "required|string|max:100",
-            "arquivo_path" => "required|string"
+            "inscricao_id" => "required|exists:inscricoes,id",
+            "type" => "required|string|max:100",
+            'file_path' => 'required|file|mimes:pdf,doc,docx,png,jpg|max:2048',
+            "status" => "required|string|max:255",
         ];
     }
 }

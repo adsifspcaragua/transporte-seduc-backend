@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Estudante extends Model
 {
     protected $table = "estudantes";
-    protected $casts = [
+   protected $casts = [
     'days_of_week' => 'array',
     ];
+
     protected $fillable = [
-        "id", 
         "name", 
         "email",
         "cpf",
@@ -25,8 +25,8 @@ class Estudante extends Model
         "status", 
         "linha_id", 
         "user_id",
-        "instituicao_id", 
-        "inscricao_id"
+        "inscricao_id",
+        "instituicao_id",
     ];
 
 

@@ -15,7 +15,7 @@ class EstudanteController extends Controller
     
     public function index()
     {
-        $estudantes = Estudante::all();
+        $estudantes = Estudante::paginate(10);
 
         if($estudantes->isEmpty()) {
             return response()->json(["message" => "Nenhum estudante cadastrado"], 200);
@@ -28,7 +28,9 @@ class EstudanteController extends Controller
     {
         DB::beginTransaction();
         try{
-            $estudante = Estudante::create($request->validated());
+            $data = $request->validated();
+            $data['status'] = "Em espera";
+            $estudante = Estudante::create($data);
             DB::commit();
            return response()->json([
             'data' => new EstudanteResource($estudante),
@@ -97,6 +99,35 @@ class EstudanteController extends Controller
         }catch(\Exception $e) {
             return response()->json(
                 ["message" => "Erro ao excluir estudante",
+                       "error" => $e->getMessage()], 500);
+        }
+    }
+
+
+    public function countEstudantes() {
+        try{
+            $count = Estudante::count();
+            return response()->json([
+                'data' => $count,
+                'message' => 'Contagem de estudantes realizada com sucesso'
+            ]);
+        }catch(\Exception $e) {
+            return response()->json(
+                ["message" => "Erro ao contar estudantes",
+                       "error" => $e->getMessage()], 500);
+        }
+    }
+
+     public function estudantesAtivos() {
+        try{
+            $estudantes = Estudante::where('status', 'ATIVO')->paginate(10);
+            return response()->json([
+                'data' => EstudanteResource::collection($estudantes),
+                'message' => 'Estudantes ativos retornados com sucesso'
+            ]);
+        }catch(\Exception $e) {
+            return response()->json(
+                ["message" => "Erro ao retornar estudantes ativos",
                        "error" => $e->getMessage()], 500);
         }
     }

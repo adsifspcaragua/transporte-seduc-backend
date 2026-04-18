@@ -23,9 +23,9 @@ class StoreDocumentoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "estudante_id" => "required",
-            "tipo" => "required|string|max:100",
-            "arquivo_path" => "required|string"
+            "type" => "required|string|max:100",
+            'file_path' => 'required|file|mimes:pdf,doc,docx,png,jpg|max:2048',
+            "status" => "prohibited",
         ];
     }
 }
