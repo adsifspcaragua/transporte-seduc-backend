@@ -18,18 +18,18 @@ return new class extends Migration
             $table->string('rg')->nullable();
             $table->date('birth_date')->nullable();
             $table->string('phone')->nullable();
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();;
             $table->string('cep')->nullable();
             $table->string('address')->nullable();
             $table->string('neighborhood')->nullable();
             $table->string('city')->nullable();
             $table->string('number')->nullable();
-            $table->string('father_name');
-            $table->string('mother_name');
+            $table->string('father_name')->nullable();
+            $table->string('mother_name')->nullable();
             $table->text('observation')->nullable();
             $table->string('status')->default('incompleto');
-            $table->boolean('accepted_terms')->default(false);
-            $table->boolean('accepted_terms_2')->default(false);
+            $table->boolean('accepted_terms')->default(false)->nullable();
+            $table->boolean('accepted_terms_2')->default(false)->nullable();
             $table->timestamps();
         });
     }

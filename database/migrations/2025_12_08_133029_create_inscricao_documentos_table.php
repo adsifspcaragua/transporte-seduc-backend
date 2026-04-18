@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('inscricao_documentos', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->string('type');
             $table->string('file_path');
             $table->string('status')->default("Em analise");
