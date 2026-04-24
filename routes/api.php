@@ -37,12 +37,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('estudantes', EstudanteController::class);
     Route::apiResource('estudantes/{estudante_id}/documentos', DocumentoController::class);
-    
-    
-    });
     Route::apiResource('inscricoes', InscricaoController::class);
     Route::apiResource('inscricoes/{inscricao_id}/instituicoes', InscricaoInstituicaoController::class);
     Route::apiResource('inscricoes/{inscricao_id}/documentos', InscricaoDocumentoController::class);
     Route::apiResource('instituicao', InstituicaoController::class);
     Route::apiResource('linha', LinhaController::class);
+    
+    });
+    
     

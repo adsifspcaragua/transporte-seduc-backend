@@ -52,6 +52,7 @@ public function rules(): array
             'cep' => "sometimes|string|size:8",
             'address' => "sometimes|string|min:3|max:255",
             'neighborhood' => "sometimes|string|min:3|max:255",
+            'complement' => "sometimes|string|min:3|max:255",
             'city' => "sometimes|string|min:3|max:255",
             'number' => "sometimes|integer|min:1",
             'accepted_terms' => "sometimes|boolean",

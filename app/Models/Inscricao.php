@@ -18,6 +18,7 @@ class Inscricao extends Model
         "address",
         "neighborhood",
         "city",
+        "complement",
         "number",
         "father_name",
         "mother_name",

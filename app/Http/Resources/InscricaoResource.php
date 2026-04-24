@@ -24,6 +24,7 @@ class InscricaoResource extends JsonResource
             'cep' => $this->cep,
             'address' => $this->address,
             'neighborhood' => $this->neighborhood,
+            'complement' => $this->complement,
             'city' => $this->city,
             'number' => $this->number,
             'status' => $this->status,

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('cep')->nullable();
             $table->string('address')->nullable();
             $table->string('neighborhood')->nullable();
+            $table->string('complement')->nullable();
             $table->string('city')->nullable();
             $table->string('number')->nullable();
             $table->string('father_name')->nullable();
