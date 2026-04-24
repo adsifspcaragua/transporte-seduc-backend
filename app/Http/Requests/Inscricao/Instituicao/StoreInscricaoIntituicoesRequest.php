@@ -31,18 +31,18 @@ class StoreInscricaoIntituicoesRequest extends FormRequest
     {
         
         return [
-            'course' => 'required|string|min:3|max:255',
-            'semester'  => 'required|string|min:1|max:50',
-            'expected_completion' => 'required|date|after_or_equal:today',
-            'instituicao_id' => "required|integer|exists:instituicoes,id",
-            'shift' => 'required|integer|in:1,2',
-            'city_destination' => 'required|string|min:3|max:255',
-            'used_transport' => 'required|boolean',
-            'days_of_week'   => 'required|array|min:1',
+            'course' => 'sometimes|string|min:3|max:255',
+            'semester'  => 'sometimes|string|min:1|max:50',
+            'expected_completion' => 'sometimes|date|after_or_equal:today',
+            'instituicao_id' => "sometimes|integer|exists:instituicoes,id",
+            'shift' => 'sometimes|integer|in:1,2',
+            'city_destination' => 'sometimes|string|min:3|max:255',
+            'used_transport' => 'sometimes|boolean',
+            'days_of_week'   => 'sometimes|array|min:1',
             'days_of_week.*' => 'integer|between:0,6',
-            'has_scholarship' => 'required|boolean',
-            'scholarship_type' => 'nullable|string|min:3|max:255|required_if:has_scholarship,true',
-            "inscricao_id" => 'required|integer|exists:inscricoes,id|unique:inscricao_instituicoes,inscricao_id',
+            'has_scholarship' => 'sometimes|boolean',
+            'scholarship_type' => 'sometimes|string|min:3|max:255|required_if:has_scholarship,true',
+            "inscricao_id" => 'sometimes|integer|exists:inscricoes,id|unique:inscricao_instituicoes,inscricao_id',
             
         ];
     }

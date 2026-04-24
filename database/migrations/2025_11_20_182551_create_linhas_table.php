@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->time('departure_time')->nullable();
             $table->time('return_time')->nullable();
+            $table->integer('max_capacity');
             $table->timestamps();
         });
     }

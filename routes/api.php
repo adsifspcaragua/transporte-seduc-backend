@@ -5,25 +5,23 @@ use App\Http\Controllers\Api\Estudante\{EstudanteController, InscricaoController
 use App\Http\Controllers\Api\Estudante\Documento\DocumentoController;
 use App\Http\Controllers\Api\Inscricao\Documento\InscricaoDocumentoController;
 use App\Http\Controllers\Api\InstituicaoController;
+use App\Http\Controllers\Api\LinhaController;
 use App\Http\Controllers\Api\Role\RoleController;
 use App\Http\Controllers\Api\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-
-
-
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+Route::post('/auth/token', [AuthController::class, 'tokenLogin'])->middleware('throttle:5,1');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', function (Request $request) {
-        try{
+        try {
 
             return $request->user();
-        }
-        catch(Exception $e) {
-            return response()->json("Falha ao retornar usuário", 401);
+        } catch (Exception $e) {
+            return response()->json('Falha ao retornar usuário', 401);
         }
     });
 
@@ -33,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('roles', RoleController::class);
 
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/token/revoke', [AuthController::class, 'tokenLogout']);
 
     Route::apiResource('users', UserController::class);
     Route::apiResource('roles', RoleController::class);
@@ -43,8 +42,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::apiResource('inscricoes', InscricaoController::class);
     Route::apiResource('inscricoes/{inscricao_id}/instituicoes', InscricaoInstituicaoController::class);
-
+    Route::apiResource('inscricoes/{inscricao_id}/documentos', InscricaoDocumentoController::class);
     Route::apiResource('instituicao', InstituicaoController::class);
+    Route::apiResource('linha', LinhaController::class);
     
     
     Route::apiResource('inscricoes.documentos', InscricaoDocumentoController::class);

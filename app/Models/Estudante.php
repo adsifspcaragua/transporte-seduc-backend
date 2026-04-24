@@ -43,6 +43,6 @@ class Estudante extends Model
     }
 
      public function linha(){
-        //return $this->belongsTo(Linha::class, "linha_id");
+        return $this->belongsTo(Linha::class, "linha_id");
     }
 }

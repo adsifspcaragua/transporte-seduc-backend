@@ -28,11 +28,11 @@ class Inscricao extends Model
     ];
 
     public function inscricao_instituicao(){
-        return $this->hasOne(InscricaoInstituicoes::class);
+        return $this->hasOne(InscricaoInstituicoes::class, 'inscricao_id');
     }
 
     public function inscricao_documentos(){
-        return $this->hasMany(InscricaoDocumento::class);
+        return $this->hasMany(InscricaoDocumento::class, 'inscricao_id');
     }
 
     public function estudante(){

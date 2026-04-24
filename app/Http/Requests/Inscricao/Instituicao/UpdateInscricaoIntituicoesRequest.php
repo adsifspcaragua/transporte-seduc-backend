@@ -40,7 +40,7 @@ class UpdateInscricaoIntituicoesRequest extends FormRequest
             'days_of_week'   => 'sometimes|array|min:1',
             'days_of_week.*' => 'integer|between:0,6',
             'has_scholarship' => 'sometimes|boolean',
-            'scholarship_type' => 'nullable|string|min:3|max:255|required_if:has_scholarship,true',
+            'scholarship_type' => 'sometimes|string|min:3|max:255|required_if:has_scholarship,true',
             
         ];
     }

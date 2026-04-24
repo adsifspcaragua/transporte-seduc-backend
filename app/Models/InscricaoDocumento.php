@@ -9,6 +9,7 @@ class InscricaoDocumento extends Model
 {
     protected $fillable = [
         'inscricao_id',
+        'name',
         'type',
         'file_path',
         'status'
