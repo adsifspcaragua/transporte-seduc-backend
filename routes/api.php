@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Estudante\{EstudanteController, InscricaoController, InscricaoInstituicaoController};
 use App\Http\Controllers\Api\Estudante\Documento\DocumentoController;
 use App\Http\Controllers\Api\Inscricao\Documento\InscricaoDocumentoController;
-use App\Http\Controllers\Api\InstituicaoController;
+use App\Http\Controllers\Api\Instituicao\InstituicaoController;
 use App\Http\Controllers\Api\LinhaController;
 use App\Http\Controllers\Api\Role\RoleController;
 use App\Http\Controllers\Api\User\UserController;

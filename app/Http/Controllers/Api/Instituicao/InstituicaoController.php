@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Instituicao;
 
 
 use App\Http\Controllers\Controller;
@@ -13,7 +13,7 @@ class InstituicaoController extends Controller
     
     public function index()
     {
-        $instituicoes = Instituicao::all();
+        $instituicoes = Instituicao::paginate(15);
         
         if($instituicoes->isEmpty()) {
             return response()->json(["message" => "Nenhuma instituicao cadastrada"], 200);
