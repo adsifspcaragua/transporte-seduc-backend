@@ -9,28 +9,25 @@ use App\Http\Controllers\Api\{InstituicaoController, LinhaController};
 use App\Http\Controllers\Api\Role\RoleController;
 use App\Http\Controllers\Api\User\UserController;
 
-
-
-
-
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+Route::post('/auth/token', [AuthController::class, 'tokenLogin'])->middleware('throttle:5,1');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', function (Request $request) {
-        try{
+        try {
 
             return $request->user();
-        }
-        catch(Exception $e) {
-            return response()->json("Falha ao retornar usuário", 401);
+        } catch (Exception $e) {
+            return response()->json('Falha ao retornar usuário', 401);
         }
     });
 
-        Route::apiResource('estudantes', EstudanteController::class);
-        Route::apiResource('users', UserController::class);
-        Route::apiResource('roles', RoleController::class);
+    Route::apiResource('estudantes', EstudanteController::class);
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('roles', RoleController::class);
 
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/token/revoke', [AuthController::class, 'tokenLogout']);
 
     Route::apiResource('users', UserController::class);
     Route::apiResource('roles', RoleController::class);
