@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Estudante\{EstudanteController, InscricaoController, InscricaoInstituicaoController};
-use App\Http\Controllers\Api\Inscricao\Documento\InscricaoDocumentoController;
+use App\Http\Controllers\Api\Estudante\Documento\InscricaoDocumentoController;
 use App\Http\Controllers\Api\Instituicao\InstituicaoController;
 use App\Http\Controllers\Api\LinhaController;
 use App\Http\Controllers\Api\Role\RoleController;
@@ -34,13 +34,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('users', UserController::class);
     Route::apiResource('roles', RoleController::class);
-
     Route::apiResource('estudantes', EstudanteController::class);
     Route::apiResource('inscricoes', InscricaoController::class);
     Route::apiResource('inscricoes/{inscricao_id}/instituicoes', InscricaoInstituicaoController::class);
-    Route::apiResource('inscricoes/{inscricao_id}/documentos', InscricaoDocumentoController::class);
+
     Route::apiResource('instituicao', InstituicaoController::class);
     Route::apiResource('linha', LinhaController::class);
     Route::apiResource('inscricoes.documentos', InscricaoDocumentoController::class);
     });
+    
     

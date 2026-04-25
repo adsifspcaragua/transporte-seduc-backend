@@ -3,14 +3,22 @@
 namespace App\Http\Controllers\Api\Estudante;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Inscricao;
-use App\Http\Requests\Inscricao\{StoreInscricaoRequest, UpdateInscricaoRequest};
+use App\Http\Requests\Inscricao\StoreInscricaoRequest;
+use App\Http\Requests\Inscricao\UpdateInscricaoRequest;
 use App\Http\Resources\Inscricao\InscricaoResource;
+use App\Models\Inscricao;
+use App\Services\InscricaoService;
+
+
 
 class InscricaoController extends Controller
 {
-    
+    private $inscricaoService;
+
+    public function __construct(InscricaoService $inscricaoService){
+
+        $this->inscricaoService = $inscricaoService;
+    }
     public function index()
     {
         try {
@@ -37,10 +45,10 @@ class InscricaoController extends Controller
             $inscricao->fill($data);
             $inscricao->save();
 
-            if($this->camposPreenchidos($inscricao)){
-                $inscricao->update(["status" => "completo"]);
+            if($this->inscricaoService->isComplete($inscricao)){
+                $inscricao->update(["status" => "Em analise"]);
             }else{
-                 $inscricao->update(["status" => "incompleto"]);
+                 $inscricao->update(["status" => "Incompleto"]);
             }
 
             return response()->json(new InscricaoResource($inscricao),201);
@@ -87,15 +95,17 @@ class InscricaoController extends Controller
 
             $data = $request->validated();
 
-            // if($inscricao->status === "completo"){
-            //     return response()->json([
-            //     'message' => 'A inscrição já está completa'
-            // ], 403);
-            // }
+            if($inscricao->status === "Em analise"){
+                return response()->json([
+                'message' => 'A inscrição já está em analise'
+            ], 403);
+            }
             $inscricao->update($data);
 
-            if($this->camposPreenchidos($inscricao)){
-                $inscricao->update(["status" => "completo"]);
+            if($this->inscricaoService->isComplete($inscricao)){
+                $inscricao->update(["status" => "Em analise"]);
+            }else{
+                 $inscricao->update(["status" => "Incompleto"]);
             }
 
             return response()->json([
@@ -136,37 +146,5 @@ class InscricaoController extends Controller
     }
 
 
-    private function camposPreenchidos(Inscricao $inscricao){
-        $inscricaoCompleta = Inscricao::with(['inscricao_instituicao','inscricao_documentos'])
-        ->find($inscricao->id);
-
-        $camposObrigatorios = [
-            'name',
-            'cpf',
-            'rg',
-            'birth_date',
-            'phone',
-            'email',
-            'cep',
-            'address',
-            'neighborhood',
-            'city',
-            'number',
-            'mother_name',
-            'father_name',
-            'accepted_terms',
-            'accepted_terms_2'
-        ];
-
-        foreach ($camposObrigatorios as $campo) {
-
-            
-            if (empty($inscricao[$campo])) {  
-                return false;
-            }
-        }
-
-        
-        return true;
-}
+    
 }

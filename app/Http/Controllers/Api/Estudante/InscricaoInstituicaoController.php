@@ -4,10 +4,20 @@ namespace App\Http\Controllers\Api\Estudante;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Inscricao\Instituicao\{StoreInscricaoIntituicoesRequest, UpdateInscricaoIntituicoesRequest};
-use App\Models\InscricaoInstituicoes;
 use App\Http\Resources\Inscricao\InscricaoInstituicaoResource;
+use App\Models\Inscricao;
+use App\Models\InscricaoInstituicoes;
+use App\Services\InscricaoService;
+
 class InscricaoInstituicaoController extends Controller
 {
+
+    private $inscricaoService;
+
+    public function __construct(InscricaoService $inscricaoService){
+
+        $this->inscricaoService = $inscricaoService;
+    }
     
     public function index()
     {
@@ -29,6 +39,12 @@ class InscricaoInstituicaoController extends Controller
             $data = $request->validated();
             $inscricao = InscricaoInstituicoes::create([...$data, 'line_id'=> 0]);
 
+            $inscricaoC = Inscricao::find($inscricao->inscricao_id);
+            if($this->inscricaoService->isComplete($inscricaoC)){
+                $inscricaoC->update(["status" => "Em analise"]);
+            }else{
+                $inscricaoC->update(["status" => "Incompleto"]);
+            }
             return response()->json([
                 "data" => new InscricaoInstituicaoResource($inscricao),
                 "message" => "Inscrição criada com sucesso"
@@ -76,6 +92,13 @@ class InscricaoInstituicaoController extends Controller
             
             $inscricao_instituicao->update($data);
 
+            
+            $inscricaoC = Inscricao::find($inscricao);
+            if($this->inscricaoService->isComplete($inscricaoC)){
+                $inscricaoC->update(["status" => "Em analise"]);
+            }else{
+                $inscricaoC->update(["status" => "Incompleto"]);
+            }
             return response()->json([
                 "data" => new InscricaoInstituicaoResource($inscricao_instituicao),
                 'message' => 'Inscricao atualizada com sucesso'],200);

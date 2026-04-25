@@ -1,17 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\Api\Inscricao\Documento;
+namespace App\Http\Controllers\Api\Estudante\Documento;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Documento\StoreDocumentoRequest;
-use App\Http\Requests\Documento\UpdateDocumentoRequest;
+use App\Http\Requests\Documento\{StoreDocumentoRequest, UpdateDocumentoRequest};
 use App\Http\Resources\Documento\DocumentoResource;
-use App\Models\Inscricao;
-use App\Models\InscricaoDocumento;
+use App\Models\{Inscricao, InscricaoDocumento};
+use App\Services\InscricaoService;
 use Illuminate\Support\Facades\Storage;
 
 class InscricaoDocumentoController extends Controller
 {
+
+    private $inscricaoService;
+
+    public function __construct(InscricaoService $inscricaoService){
+
+        $this->inscricaoService = $inscricaoService;
+    }
     public function index(Inscricao $inscricao)
     {
         try {
@@ -48,7 +54,17 @@ class InscricaoDocumentoController extends Controller
             // vínculo com inscrição
             $data['inscricao_id'] = $inscricao->id;
 
+            
+
             $documento = InscricaoDocumento::create($data);
+
+
+            $inscricaoC = Inscricao::find($inscricao->id);
+            if($this->inscricaoService->isComplete($inscricaoC)){
+                $inscricaoC->update(["status" => "Em analise"]);
+            }else{
+                $inscricaoC->update(["status" => "Incompleto"]);
+            }
 
             return response()->json([
                 "documento" => new DocumentoResource($documento),
@@ -107,6 +123,13 @@ class InscricaoDocumentoController extends Controller
 
             $documento->update($data);
 
+
+            $inscricaoC = Inscricao::find($inscricao->id);
+            if($this->inscricaoService->isComplete($inscricaoC)){
+                $inscricaoC->update(["status" => "Em analise"]);
+            }else{
+                $inscricaoC->update(["status" => "Incompleto"]);
+            }
             return response()->json([
                 "documento" => new DocumentoResource($documento),
                 "message"   => "Documento atualizado com sucesso."

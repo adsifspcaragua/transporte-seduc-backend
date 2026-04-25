@@ -44,6 +44,7 @@ class InscricaoInstituicaoResource extends JsonResource
             //'line'                => new LineResource($this->whenLoaded('line')), MODIFICAR
             'has_scholarship'     => $this->has_scholarship,
             'scholarship_type'    => $this->scholarship_type,
+            'inscricao_id' => $this->inscricao_id,
             'created_at'          => $this->created_at?->format('Y-m-d H:i:s'),
             'updated_at'          => $this->updated_at?->format('Y-m-d H:i:s'),
         ];
