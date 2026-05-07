@@ -26,7 +26,7 @@
             </style>
 
     <script>
-        var tryItOutBaseUrl = "http://localhost";
+        var tryItOutBaseUrl = "http://127.0.0.1:8000";
         var useCsrf = Boolean();
         var csrfUrl = "/sanctum/csrf-cookie";
     </script>
@@ -326,7 +326,7 @@
         <h1 id="introducao">Introducao</h1>
 <p>Documentacao da API do sistema de transporte escolar da SEDUC.</p>
 <aside>
-    <strong>URL base</strong>: <code>http://localhost</code>
+    <strong>URL base</strong>: <code>http://127.0.0.1:8000</code>
 </aside>
 <p>Esta documentacao reune as rotas disponiveis para autenticacao, inscricoes, estudantes, instituicoes, linhas, usuarios, cargos e recadastro.</p>
 <aside>Para usar as rotas protegidas, autentique-se em <code>POST /api/auth/token</code> e envie o token recebido no cabecalho <code>Authorization: Bearer TOKEN</code>.</aside>
@@ -353,7 +353,7 @@
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/login" \
+    "http://127.0.0.1:8000/api/login" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -365,7 +365,7 @@
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/login"
+    "http://127.0.0.1:8000/api/login"
 );
 
 const headers = {
@@ -499,7 +499,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/auth/token" \
+    "http://127.0.0.1:8000/api/auth/token" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -512,7 +512,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/auth/token"
+    "http://127.0.0.1:8000/api/auth/token"
 );
 
 const headers = {
@@ -660,7 +660,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/me" \
+    --get "http://127.0.0.1:8000/api/me" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -668,7 +668,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/me"
+    "http://127.0.0.1:8000/api/me"
 );
 
 const headers = {
@@ -786,7 +786,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/logout" \
+    "http://127.0.0.1:8000/api/logout" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -794,7 +794,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/logout"
+    "http://127.0.0.1:8000/api/logout"
 );
 
 const headers = {
@@ -912,7 +912,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/auth/token/revoke" \
+    "http://127.0.0.1:8000/api/auth/token/revoke" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -920,7 +920,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/auth/token/revoke"
+    "http://127.0.0.1:8000/api/auth/token/revoke"
 );
 
 const headers = {
@@ -1042,7 +1042,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/users" \
+    --get "http://127.0.0.1:8000/api/users" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1050,7 +1050,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/users"
+    "http://127.0.0.1:8000/api/users"
 );
 
 const headers = {
@@ -1168,7 +1168,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/users" \
+    "http://127.0.0.1:8000/api/users" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -1185,7 +1185,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/users"
+    "http://127.0.0.1:8000/api/users"
 );
 
 const headers = {
@@ -1385,7 +1385,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/users/architecto" \
+    --get "http://127.0.0.1:8000/api/users/architecto" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1393,7 +1393,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/users/architecto"
+    "http://127.0.0.1:8000/api/users/architecto"
 );
 
 const headers = {
@@ -1536,7 +1536,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/users/16" \
+    "http://127.0.0.1:8000/api/users/16" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -1553,7 +1553,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/users/16"
+    "http://127.0.0.1:8000/api/users/16"
 );
 
 const headers = {
@@ -1782,7 +1782,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/users/16" \
+    "http://127.0.0.1:8000/api/users/16" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1790,7 +1790,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/users/16"
+    "http://127.0.0.1:8000/api/users/16"
 );
 
 const headers = {
@@ -1937,7 +1937,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/roles" \
+    --get "http://127.0.0.1:8000/api/roles" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1945,7 +1945,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/roles"
+    "http://127.0.0.1:8000/api/roles"
 );
 
 const headers = {
@@ -2063,7 +2063,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/roles" \
+    "http://127.0.0.1:8000/api/roles" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2075,7 +2075,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/roles"
+    "http://127.0.0.1:8000/api/roles"
 );
 
 const headers = {
@@ -2210,7 +2210,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/roles/architecto" \
+    --get "http://127.0.0.1:8000/api/roles/architecto" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2218,7 +2218,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/roles/architecto"
+    "http://127.0.0.1:8000/api/roles/architecto"
 );
 
 const headers = {
@@ -2361,7 +2361,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/roles/architecto" \
+    "http://127.0.0.1:8000/api/roles/architecto" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2373,7 +2373,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/roles/architecto"
+    "http://127.0.0.1:8000/api/roles/architecto"
 );
 
 const headers = {
@@ -2537,7 +2537,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/roles/architecto" \
+    "http://127.0.0.1:8000/api/roles/architecto" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2545,7 +2545,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/roles/architecto"
+    "http://127.0.0.1:8000/api/roles/architecto"
 );
 
 const headers = {
@@ -2692,7 +2692,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/estudantes" \
+    --get "http://127.0.0.1:8000/api/estudantes" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2700,7 +2700,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/estudantes"
+    "http://127.0.0.1:8000/api/estudantes"
 );
 
 const headers = {
@@ -2818,7 +2818,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/estudantes" \
+    "http://127.0.0.1:8000/api/estudantes" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2845,7 +2845,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/estudantes"
+    "http://127.0.0.1:8000/api/estudantes"
 );
 
 const headers = {
@@ -3165,7 +3165,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/estudantes/architecto" \
+    --get "http://127.0.0.1:8000/api/estudantes/architecto" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3173,7 +3173,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/estudantes/architecto"
+    "http://127.0.0.1:8000/api/estudantes/architecto"
 );
 
 const headers = {
@@ -3316,7 +3316,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/estudantes/architecto" \
+    "http://127.0.0.1:8000/api/estudantes/architecto" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3344,7 +3344,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/estudantes/architecto"
+    "http://127.0.0.1:8000/api/estudantes/architecto"
 );
 
 const headers = {
@@ -3694,7 +3694,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/estudantes/architecto" \
+    "http://127.0.0.1:8000/api/estudantes/architecto" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3702,7 +3702,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/estudantes/architecto"
+    "http://127.0.0.1:8000/api/estudantes/architecto"
 );
 
 const headers = {
@@ -3845,7 +3845,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/contar-estudantes" \
+    --get "http://127.0.0.1:8000/api/contar-estudantes" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3853,7 +3853,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/contar-estudantes"
+    "http://127.0.0.1:8000/api/contar-estudantes"
 );
 
 const headers = {
@@ -3975,7 +3975,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/inscricoes/recadastro" \
+    "http://127.0.0.1:8000/api/inscricoes/recadastro" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3983,7 +3983,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes/recadastro"
+    "http://127.0.0.1:8000/api/inscricoes/recadastro"
 );
 
 const headers = {
@@ -4101,7 +4101,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/inscricoes" \
+    --get "http://127.0.0.1:8000/api/inscricoes" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4109,7 +4109,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes"
+    "http://127.0.0.1:8000/api/inscricoes"
 );
 
 const headers = {
@@ -4227,7 +4227,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/inscricoes" \
+    "http://127.0.0.1:8000/api/inscricoes" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4254,7 +4254,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes"
+    "http://127.0.0.1:8000/api/inscricoes"
 );
 
 const headers = {
@@ -4628,7 +4628,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/inscricoes/1" \
+    --get "http://127.0.0.1:8000/api/inscricoes/1" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4636,7 +4636,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes/1"
+    "http://127.0.0.1:8000/api/inscricoes/1"
 );
 
 const headers = {
@@ -4767,7 +4767,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/inscricoes/1" \
+    "http://127.0.0.1:8000/api/inscricoes/1" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4795,7 +4795,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes/1"
+    "http://127.0.0.1:8000/api/inscricoes/1"
 );
 
 const headers = {
@@ -5187,7 +5187,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/inscricoes/1" \
+    "http://127.0.0.1:8000/api/inscricoes/1" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -5195,7 +5195,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes/1"
+    "http://127.0.0.1:8000/api/inscricoes/1"
 );
 
 const headers = {
@@ -5330,7 +5330,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/inscricoes/16/documentos" \
+    --get "http://127.0.0.1:8000/api/inscricoes/16/documentos" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -5338,7 +5338,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes/16/documentos"
+    "http://127.0.0.1:8000/api/inscricoes/16/documentos"
 );
 
 const headers = {
@@ -5481,18 +5481,18 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/inscricoes/16/documentos" \
+    "http://127.0.0.1:8000/api/inscricoes/16/documentos" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "name=foto"\
     --form "type=imagem"\
-    --form "file_path=@/tmp/phpf8p2a45cjocm5qYzTqw" </code></pre></div>
+    --form "file_path=@/tmp/phpbtaohq1jd32cezkDftI" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes/16/documentos"
+    "http://127.0.0.1:8000/api/inscricoes/16/documentos"
 );
 
 const headers = {
@@ -5659,7 +5659,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
                value=""
                data-component="body">
     <br>
-<p>Arquivo do documento. Must be a file. Must not be greater than 2048 kilobytes. Example: <code>/tmp/phpf8p2a45cjocm5qYzTqw</code></p>
+<p>Arquivo do documento. Must be a file. Must not be greater than 2048 kilobytes. Example: <code>/tmp/phpbtaohq1jd32cezkDftI</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
@@ -5689,7 +5689,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/inscricoes/16/documentos/16" \
+    --get "http://127.0.0.1:8000/api/inscricoes/16/documentos/16" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -5697,7 +5697,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes/16/documentos/16"
+    "http://127.0.0.1:8000/api/inscricoes/16/documentos/16"
 );
 
 const headers = {
@@ -5864,19 +5864,19 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/inscricoes/16/documentos/16" \
+    "http://127.0.0.1:8000/api/inscricoes/16/documentos/16" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "name=foto"\
     --form "type=imagem"\
     --form "status=Em analise"\
-    --form "file_path=@/tmp/phps6ta3k6a7k4c3rQYBqE" </code></pre></div>
+    --form "file_path=@/tmp/phphipo6shsu7vgf448TaR" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes/16/documentos/16"
+    "http://127.0.0.1:8000/api/inscricoes/16/documentos/16"
 );
 
 const headers = {
@@ -6072,7 +6072,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
                value=""
                data-component="body">
     <br>
-<p>Novo arquivo do documento. Must be a file. Must not be greater than 2048 kilobytes. Example: <code>/tmp/phps6ta3k6a7k4c3rQYBqE</code></p>
+<p>Novo arquivo do documento. Must be a file. Must not be greater than 2048 kilobytes. Example: <code>/tmp/phphipo6shsu7vgf448TaR</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
@@ -6102,7 +6102,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/inscricoes/16/documentos/16" \
+    "http://127.0.0.1:8000/api/inscricoes/16/documentos/16" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6110,7 +6110,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes/16/documentos/16"
+    "http://127.0.0.1:8000/api/inscricoes/16/documentos/16"
 );
 
 const headers = {
@@ -6281,7 +6281,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/inscricoes/1/instituicoes" \
+    --get "http://127.0.0.1:8000/api/inscricoes/1/instituicoes" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6289,7 +6289,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes/1/instituicoes"
+    "http://127.0.0.1:8000/api/inscricoes/1/instituicoes"
 );
 
 const headers = {
@@ -6420,7 +6420,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/inscricoes/1/instituicoes" \
+    "http://127.0.0.1:8000/api/inscricoes/1/instituicoes" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -6444,7 +6444,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes/1/instituicoes"
+    "http://127.0.0.1:8000/api/inscricoes/1/instituicoes"
 );
 
 const headers = {
@@ -6748,7 +6748,7 @@ Must be one of:
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/inscricoes/1/instituicoes/1" \
+    --get "http://127.0.0.1:8000/api/inscricoes/1/instituicoes/1" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6756,7 +6756,7 @@ Must be one of:
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes/1/instituicoes/1"
+    "http://127.0.0.1:8000/api/inscricoes/1/instituicoes/1"
 );
 
 const headers = {
@@ -6899,7 +6899,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/inscricoes/1/instituicoes/1" \
+    "http://127.0.0.1:8000/api/inscricoes/1/instituicoes/1" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -6922,7 +6922,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes/1/instituicoes/1"
+    "http://127.0.0.1:8000/api/inscricoes/1/instituicoes/1"
 );
 
 const headers = {
@@ -7229,7 +7229,7 @@ Must be one of:
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/inscricoes/1/instituicoes/1" \
+    "http://127.0.0.1:8000/api/inscricoes/1/instituicoes/1" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7237,7 +7237,7 @@ Must be one of:
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/inscricoes/1/instituicoes/1"
+    "http://127.0.0.1:8000/api/inscricoes/1/instituicoes/1"
 );
 
 const headers = {
@@ -7384,7 +7384,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/instituicao" \
+    --get "http://127.0.0.1:8000/api/instituicao" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7392,7 +7392,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/instituicao"
+    "http://127.0.0.1:8000/api/instituicao"
 );
 
 const headers = {
@@ -7510,7 +7510,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/instituicao" \
+    "http://127.0.0.1:8000/api/instituicao" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -7525,7 +7525,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/instituicao"
+    "http://127.0.0.1:8000/api/instituicao"
 );
 
 const headers = {
@@ -7677,7 +7677,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/instituicao/architecto" \
+    --get "http://127.0.0.1:8000/api/instituicao/architecto" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7685,7 +7685,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/instituicao/architecto"
+    "http://127.0.0.1:8000/api/instituicao/architecto"
 );
 
 const headers = {
@@ -7828,7 +7828,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/instituicao/architecto" \
+    "http://127.0.0.1:8000/api/instituicao/architecto" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -7843,7 +7843,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/instituicao/architecto"
+    "http://127.0.0.1:8000/api/instituicao/architecto"
 );
 
 const headers = {
@@ -8024,7 +8024,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/instituicao/architecto" \
+    "http://127.0.0.1:8000/api/instituicao/architecto" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -8032,7 +8032,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/instituicao/architecto"
+    "http://127.0.0.1:8000/api/instituicao/architecto"
 );
 
 const headers = {
@@ -8179,7 +8179,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/linha" \
+    --get "http://127.0.0.1:8000/api/linha" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -8187,7 +8187,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/linha"
+    "http://127.0.0.1:8000/api/linha"
 );
 
 const headers = {
@@ -8305,7 +8305,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/linha" \
+    "http://127.0.0.1:8000/api/linha" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8321,7 +8321,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/linha"
+    "http://127.0.0.1:8000/api/linha"
 );
 
 const headers = {
@@ -8508,7 +8508,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/linha/architecto" \
+    --get "http://127.0.0.1:8000/api/linha/architecto" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -8516,7 +8516,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/linha/architecto"
+    "http://127.0.0.1:8000/api/linha/architecto"
 );
 
 const headers = {
@@ -8659,7 +8659,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/linha/architecto" \
+    "http://127.0.0.1:8000/api/linha/architecto" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8675,7 +8675,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/linha/architecto"
+    "http://127.0.0.1:8000/api/linha/architecto"
 );
 
 const headers = {
@@ -8891,7 +8891,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/linha/architecto" \
+    "http://127.0.0.1:8000/api/linha/architecto" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -8899,7 +8899,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/linha/architecto"
+    "http://127.0.0.1:8000/api/linha/architecto"
 );
 
 const headers = {
@@ -9046,7 +9046,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/estudantes/reecadastrar" \
+    --get "http://127.0.0.1:8000/api/estudantes/reecadastrar" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -9054,7 +9054,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/estudantes/reecadastrar"
+    "http://127.0.0.1:8000/api/estudantes/reecadastrar"
 );
 
 const headers = {
@@ -9172,7 +9172,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/estudantes/reecadastrar" \
+    "http://127.0.0.1:8000/api/estudantes/reecadastrar" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -9186,7 +9186,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/estudantes/reecadastrar"
+    "http://127.0.0.1:8000/api/estudantes/reecadastrar"
 );
 
 const headers = {
@@ -9347,7 +9347,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/estudantes/reecadastrar/1" \
+    --get "http://127.0.0.1:8000/api/estudantes/reecadastrar/1" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -9355,7 +9355,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/estudantes/reecadastrar/1"
+    "http://127.0.0.1:8000/api/estudantes/reecadastrar/1"
 );
 
 const headers = {
@@ -9486,7 +9486,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/estudantes/reecadastrar/1" \
+    "http://127.0.0.1:8000/api/estudantes/reecadastrar/1" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -9500,7 +9500,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/estudantes/reecadastrar/1"
+    "http://127.0.0.1:8000/api/estudantes/reecadastrar/1"
 );
 
 const headers = {
@@ -9678,7 +9678,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/estudantes/reecadastrar/1" \
+    "http://127.0.0.1:8000/api/estudantes/reecadastrar/1" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -9686,7 +9686,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/estudantes/reecadastrar/1"
+    "http://127.0.0.1:8000/api/estudantes/reecadastrar/1"
 );
 
 const headers = {
@@ -9817,7 +9817,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/reecadastro/solicitacoes" \
+    --get "http://127.0.0.1:8000/api/reecadastro/solicitacoes" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -9825,7 +9825,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/reecadastro/solicitacoes"
+    "http://127.0.0.1:8000/api/reecadastro/solicitacoes"
 );
 
 const headers = {
@@ -9943,7 +9943,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/reecadastro/solicitacoes" \
+    "http://127.0.0.1:8000/api/reecadastro/solicitacoes" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -9957,7 +9957,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/reecadastro/solicitacoes"
+    "http://127.0.0.1:8000/api/reecadastro/solicitacoes"
 );
 
 const headers = {
@@ -10118,7 +10118,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/reecadastro/solicitacoes/1" \
+    --get "http://127.0.0.1:8000/api/reecadastro/solicitacoes/1" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -10126,7 +10126,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/reecadastro/solicitacoes/1"
+    "http://127.0.0.1:8000/api/reecadastro/solicitacoes/1"
 );
 
 const headers = {
@@ -10257,7 +10257,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/reecadastro/solicitacoes/1" \
+    "http://127.0.0.1:8000/api/reecadastro/solicitacoes/1" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -10271,7 +10271,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/reecadastro/solicitacoes/1"
+    "http://127.0.0.1:8000/api/reecadastro/solicitacoes/1"
 );
 
 const headers = {
@@ -10449,7 +10449,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/reecadastro/solicitacoes/1" \
+    "http://127.0.0.1:8000/api/reecadastro/solicitacoes/1" \
     --header "Authorization: Bearer TOKEN_DE_ACESSO" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -10457,7 +10457,7 @@ O console das ferramentas de desenvolvimento pode trazer mais detalhes.</code></
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/reecadastro/solicitacoes/1"
+    "http://127.0.0.1:8000/api/reecadastro/solicitacoes/1"
 );
 
 const headers = {

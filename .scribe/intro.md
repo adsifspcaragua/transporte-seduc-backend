@@ -3,7 +3,7 @@
 Documentacao da API do sistema de transporte escolar da SEDUC.
 
 <aside>
-    <strong>URL base</strong>: <code>http://localhost</code>
+    <strong>URL base</strong>: <code>http://127.0.0.1:8000</code>
 </aside>
 
 Esta documentacao reune as rotas disponiveis para autenticacao, inscricoes, estudantes, instituicoes, linhas, usuarios, cargos e recadastro.
