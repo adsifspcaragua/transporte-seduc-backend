@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\Estudante\{EstudanteController, InscricaoController
 use App\Http\Controllers\Api\Estudante\Documento\InscricaoDocumentoController;
 use App\Http\Controllers\Api\Instituicao\InstituicaoController;
 use App\Http\Controllers\Api\LinhaController;
+use App\Http\Controllers\Api\Reecadastro\DocumentoReecadastroController;
+use App\Http\Controllers\Api\Reecadastro\ReecadastroController;
 use App\Http\Controllers\Api\Role\RoleController;
 use App\Http\Controllers\Api\User\UserController;
 use Illuminate\Http\Request;
@@ -41,6 +43,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('instituicao', InstituicaoController::class);
     Route::apiResource('linha', LinhaController::class);
     Route::apiResource('inscricoes.documentos', InscricaoDocumentoController::class);
+
+    Route::apiResource('estudantes/reecadastrar', DocumentoReecadastroController::class);
     });
-    
-    
+
+
