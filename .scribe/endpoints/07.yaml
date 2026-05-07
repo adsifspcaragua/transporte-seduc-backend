@@ -1,0 +1,315 @@
+name: Instituicoes
+description: |-
+
+  Rotas para gerenciamento das instituicoes de ensino.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/instituicao
+    metadata:
+      custom: []
+      groupName: Instituicoes
+      groupDescription: |-
+
+        Rotas para gerenciamento das instituicoes de ensino.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Listar instituicoes.'
+      description: 'Retorna a lista paginada de instituicoes cadastradas.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/instituicao
+    metadata:
+      custom: []
+      groupName: Instituicoes
+      groupDescription: |-
+
+        Rotas para gerenciamento das instituicoes de ensino.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Cadastrar instituicao.'
+      description: 'Cria uma nova instituicao de ensino.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'Nome da instituicao. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: true
+        example: 'Universidade Estadual'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      linhas_ids:
+        custom: []
+        name: linhas_ids
+        description: 'ID de uma linha vinculada.'
+        required: false
+        example:
+          - 1
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      name: 'Universidade Estadual'
+      linhas_ids:
+        - 1
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/instituicao/{id}'
+    metadata:
+      custom: []
+      groupName: Instituicoes
+      groupDescription: |-
+
+        Rotas para gerenciamento das instituicoes de ensino.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Exibir instituicao.'
+      description: 'Retorna os dados de uma instituicao especifica.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the instituicao.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      instituicao:
+        custom: []
+        name: instituicao
+        description: 'ID da instituicao.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+      instituicao: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/instituicao/{id}'
+    metadata:
+      custom: []
+      groupName: Instituicoes
+      groupDescription: |-
+
+        Rotas para gerenciamento das instituicoes de ensino.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Atualizar instituicao.'
+      description: 'Atualiza os dados de uma instituicao existente.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the instituicao.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      instituicao:
+        custom: []
+        name: instituicao
+        description: 'ID da instituicao.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+      instituicao: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'Nome da instituicao. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: false
+        example: 'Universidade Estadual'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      linhas_ids:
+        custom: []
+        name: linhas_ids
+        description: 'ID de uma linha vinculada.'
+        required: false
+        example:
+          - 1
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      name: 'Universidade Estadual'
+      linhas_ids:
+        - 1
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/instituicao/{id}'
+    metadata:
+      custom: []
+      groupName: Instituicoes
+      groupDescription: |-
+
+        Rotas para gerenciamento das instituicoes de ensino.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remover instituicao.'
+      description: 'Remove uma instituicao cadastrada.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the instituicao.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      instituicao:
+        custom: []
+        name: instituicao
+        description: 'ID da instituicao.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+      instituicao: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

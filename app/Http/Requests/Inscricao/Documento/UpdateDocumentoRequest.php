@@ -29,4 +29,14 @@ class UpdateDocumentoRequest extends FormRequest
             'status' => 'sometimes|string|max:255',
         ];
     }
+
+    public function bodyParameters(): array
+    {
+        return [
+            'name' => ['description' => 'Nome do documento exigido na inscricao.', 'example' => 'foto'],
+            'type' => ['description' => 'Tipo ou categoria do documento.', 'example' => 'imagem'],
+            'file_path' => ['description' => 'Novo arquivo do documento.', 'type' => 'file'],
+            'status' => ['description' => 'Status de analise do documento.', 'example' => 'Em analise'],
+        ];
+    }
 }

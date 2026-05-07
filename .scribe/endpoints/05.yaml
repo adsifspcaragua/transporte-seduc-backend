@@ -1,0 +1,693 @@
+name: Inscricoes
+description: |-
+
+  Rotas para criar, acompanhar e atualizar inscricoes de estudantes.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/inscricoes/recadastro
+    metadata:
+      custom: []
+      groupName: Inscricoes
+      groupDescription: |-
+
+        Rotas para criar, acompanhar e atualizar inscricoes de estudantes.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Ativar recadastro.'
+      description: 'Redefine o status das inscricoes para incompleto.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/inscricoes
+    metadata:
+      custom: []
+      groupName: Inscricoes
+      groupDescription: |-
+
+        Rotas para criar, acompanhar e atualizar inscricoes de estudantes.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Listar inscricoes.'
+      description: 'Retorna todas as inscricoes cadastradas.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/inscricoes
+    metadata:
+      custom: []
+      groupName: Inscricoes
+      groupDescription: |-
+
+        Rotas para criar, acompanhar e atualizar inscricoes de estudantes.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Criar inscricao.'
+      description: 'Cria uma nova inscricao e recalcula o status conforme os dados enviados.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'Nome completo do estudante. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: true
+        example: 'Joao da Silva'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      cpf:
+        custom: []
+        name: cpf
+        description: 'CPF do estudante com 11 digitos. Must be 11 characters.'
+        required: true
+        example: '12345678901'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      rg:
+        custom: []
+        name: rg
+        description: 'RG do estudante. Must be at least 8 characters. Must not be greater than 11 characters.'
+        required: false
+        example: '12345678'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      father_name:
+        custom: []
+        name: father_name
+        description: 'Nome do pai. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: false
+        example: 'Jose da Silva'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      mother_name:
+        custom: []
+        name: mother_name
+        description: 'Nome da mae. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: false
+        example: 'Maria da Silva'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      birth_date:
+        custom: []
+        name: birth_date
+        description: 'Data de nascimento no formato AAAA-MM-DD. Must be a valid date. Must be a valid date in the format <code>Y-m-d</code>. Must be a date before <code>today</code>.'
+        required: false
+        example: '2005-08-15'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      phone:
+        custom: []
+        name: phone
+        description: 'Telefone para contato. Must not be greater than 15 characters.'
+        required: false
+        example: '77999999999'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      email:
+        custom: []
+        name: email
+        description: 'E-mail do estudante. Must be a valid email address.'
+        required: false
+        example: joao@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      cep:
+        custom: []
+        name: cep
+        description: 'CEP com 8 digitos. Must be 8 characters.'
+        required: false
+        example: '45000000'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      address:
+        custom: []
+        name: address
+        description: 'Endereco residencial. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: false
+        example: 'Rua Principal'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      neighborhood:
+        custom: []
+        name: neighborhood
+        description: 'Bairro residencial. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: false
+        example: Centro
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      complement:
+        custom: []
+        name: complement
+        description: 'Complemento do endereco. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: false
+        example: Casa
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      city:
+        custom: []
+        name: city
+        description: 'Cidade residencial. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: false
+        example: 'Vitoria da Conquista'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      number:
+        custom: []
+        name: number
+        description: 'Numero do endereco. Must be at least 1.'
+        required: false
+        example: 100
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      accepted_terms:
+        custom: []
+        name: accepted_terms
+        description: 'Aceite do primeiro termo.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      accepted_terms_2:
+        custom: []
+        name: accepted_terms_2
+        description: 'Aceite do segundo termo.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      status:
+        custom: []
+        name: status
+        description: 'Campo controlado pelo sistema. Nao envie este campo.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      observation:
+        custom: []
+        name: observation
+        description: 'Campo controlado pelo sistema na criacao. Nao envie este campo.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      name: 'Joao da Silva'
+      cpf: '12345678901'
+      rg: '12345678'
+      father_name: 'Jose da Silva'
+      mother_name: 'Maria da Silva'
+      birth_date: '2005-08-15'
+      phone: '77999999999'
+      email: joao@example.com
+      cep: '45000000'
+      address: 'Rua Principal'
+      neighborhood: Centro
+      complement: Casa
+      city: 'Vitoria da Conquista'
+      number: 100
+      accepted_terms: true
+      accepted_terms_2: true
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/inscricoes/{inscricao}'
+    metadata:
+      custom: []
+      groupName: Inscricoes
+      groupDescription: |-
+
+        Rotas para criar, acompanhar e atualizar inscricoes de estudantes.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Exibir inscricao.'
+      description: 'Retorna os dados de uma inscricao especifica.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      inscricao:
+        custom: []
+        name: inscricao
+        description: 'ID da inscricao.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      inscricao: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/inscricoes/{inscricao}'
+    metadata:
+      custom: []
+      groupName: Inscricoes
+      groupDescription: |-
+
+        Rotas para criar, acompanhar e atualizar inscricoes de estudantes.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Atualizar inscricao.'
+      description: 'Atualiza uma inscricao existente quando ela ainda nao esta em analise.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      inscricao:
+        custom: []
+        name: inscricao
+        description: 'ID da inscricao.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      inscricao: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'Nome completo do estudante. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: false
+        example: 'Joao da Silva'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      cpf:
+        custom: []
+        name: cpf
+        description: 'CPF do estudante com 11 digitos. Must be 11 characters.'
+        required: false
+        example: '12345678901'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      rg:
+        custom: []
+        name: rg
+        description: 'RG do estudante. Must be at least 8 characters. Must not be greater than 11 characters.'
+        required: false
+        example: '12345678'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      father_name:
+        custom: []
+        name: father_name
+        description: 'Nome do pai. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: false
+        example: 'Jose da Silva'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      mother_name:
+        custom: []
+        name: mother_name
+        description: 'Nome da mae. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: false
+        example: 'Maria da Silva'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      birth_date:
+        custom: []
+        name: birth_date
+        description: 'Data de nascimento no formato AAAA-MM-DD. Must be a valid date. Must be a valid date in the format <code>Y-m-d</code>. Must be a date before <code>today</code>.'
+        required: false
+        example: '2005-08-15'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      phone:
+        custom: []
+        name: phone
+        description: 'Telefone para contato. Must not be greater than 15 characters.'
+        required: false
+        example: '77999999999'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      email:
+        custom: []
+        name: email
+        description: 'E-mail do estudante. Must be a valid email address.'
+        required: false
+        example: joao@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      cep:
+        custom: []
+        name: cep
+        description: 'CEP com 8 digitos. Must be 8 characters.'
+        required: false
+        example: '45000000'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      address:
+        custom: []
+        name: address
+        description: 'Endereco residencial. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: false
+        example: 'Rua Principal'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      neighborhood:
+        custom: []
+        name: neighborhood
+        description: 'Bairro residencial. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: false
+        example: Centro
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      complement:
+        custom: []
+        name: complement
+        description: 'Complemento do endereco. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: false
+        example: Casa
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      city:
+        custom: []
+        name: city
+        description: 'Cidade residencial. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: false
+        example: 'Vitoria da Conquista'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      number:
+        custom: []
+        name: number
+        description: 'Numero do endereco. Must be at least 1.'
+        required: false
+        example: 100
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      accepted_terms:
+        custom: []
+        name: accepted_terms
+        description: 'Aceite do primeiro termo.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      accepted_terms_2:
+        custom: []
+        name: accepted_terms_2
+        description: 'Aceite do segundo termo.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      status:
+        custom: []
+        name: status
+        description: 'Campo controlado pelo sistema. Nao envie este campo.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      observation:
+        custom: []
+        name: observation
+        description: 'Observacao da analise ou ajuste cadastral. Must be at least 3 characters. Must not be greater than 255 characters.'
+        required: false
+        example: 'Dados conferidos pela equipe.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      name: 'Joao da Silva'
+      cpf: '12345678901'
+      rg: '12345678'
+      father_name: 'Jose da Silva'
+      mother_name: 'Maria da Silva'
+      birth_date: '2005-08-15'
+      phone: '77999999999'
+      email: joao@example.com
+      cep: '45000000'
+      address: 'Rua Principal'
+      neighborhood: Centro
+      complement: Casa
+      city: 'Vitoria da Conquista'
+      number: 100
+      accepted_terms: true
+      accepted_terms_2: true
+      observation: 'Dados conferidos pela equipe.'
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/inscricoes/{inscricao}'
+    metadata:
+      custom: []
+      groupName: Inscricoes
+      groupDescription: |-
+
+        Rotas para criar, acompanhar e atualizar inscricoes de estudantes.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remover inscricao.'
+      description: 'Remove uma inscricao cadastrada.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      inscricao:
+        custom: []
+        name: inscricao
+        description: 'ID da inscricao.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      inscricao: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

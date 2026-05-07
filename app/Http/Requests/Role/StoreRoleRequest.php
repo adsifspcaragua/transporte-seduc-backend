@@ -26,4 +26,11 @@ class StoreRoleRequest extends FormRequest
             'title' => 'required|min:1|max:100|string',
         ];
     }
+
+    public function bodyParameters(): array
+    {
+        return [
+            'title' => ['description' => 'Nome do cargo.', 'example' => 'Administrador'],
+        ];
+    }
 }

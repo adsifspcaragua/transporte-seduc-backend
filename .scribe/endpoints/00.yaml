@@ -1,0 +1,240 @@
+name: Autenticacao
+description: |-
+
+  Rotas para login por sessao, emissao de token Bearer e encerramento de acesso.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/login
+    metadata:
+      custom: []
+      groupName: Autenticacao
+      groupDescription: |-
+
+        Rotas para login por sessao, emissao de token Bearer e encerramento de acesso.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Login com sessao.'
+      description: 'Autentica um usuario usando e-mail ou CPF e cria uma sessao web.'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      login:
+        custom: []
+        name: login
+        description: 'E-mail ou CPF do usuario.'
+        required: true
+        example: usuario@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      password:
+        custom: []
+        name: password
+        description: 'Senha do usuario.'
+        required: true
+        example: password
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      login: usuario@example.com
+      password: password
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/auth/token
+    metadata:
+      custom: []
+      groupName: Autenticacao
+      groupDescription: |-
+
+        Rotas para login por sessao, emissao de token Bearer e encerramento de acesso.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Gerar token de acesso.'
+      description: 'Autentica um usuario usando e-mail ou CPF e retorna um token Bearer para uso nas rotas protegidas.'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      login:
+        custom: []
+        name: login
+        description: 'E-mail ou CPF do usuario.'
+        required: true
+        example: usuario@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      password:
+        custom: []
+        name: password
+        description: 'Senha do usuario.'
+        required: true
+        example: password
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      device_name:
+        custom: []
+        name: device_name
+        description: 'Nome do dispositivo usado para identificar o token.'
+        required: false
+        example: insomnia
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      login: usuario@example.com
+      password: password
+      device_name: insomnia
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/me
+    metadata:
+      custom: []
+      groupName: Autenticacao
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Exibir usuario autenticado.'
+      description: 'Retorna os dados do usuario autenticado na requisicao atual.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/logout
+    metadata:
+      custom: []
+      groupName: Autenticacao
+      groupDescription: |-
+
+        Rotas para login por sessao, emissao de token Bearer e encerramento de acesso.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Encerrar sessao.'
+      description: 'Encerra a sessao web autenticada.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/auth/token/revoke
+    metadata:
+      custom: []
+      groupName: Autenticacao
+      groupDescription: |-
+
+        Rotas para login por sessao, emissao de token Bearer e encerramento de acesso.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Revogar token atual.'
+      description: 'Revoga o token Bearer enviado na requisicao atual.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

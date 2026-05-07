@@ -42,4 +42,16 @@ class UpdateUserRequest extends FormRequest
 
         ];
     }
+
+    public function bodyParameters(): array
+    {
+        return [
+            'name' => ['description' => 'Nome completo do usuario.', 'example' => 'Maria Silva'],
+            'email' => ['description' => 'E-mail unico do usuario.', 'example' => 'maria@example.com'],
+            'password' => ['description' => 'Senha com no minimo 8 caracteres.', 'example' => 'password123'],
+            'cpf' => ['description' => 'CPF do usuario com 11 digitos.', 'example' => '12345678901'],
+            'matricula' => ['description' => 'Numero de matricula do usuario.', 'example' => 12345],
+            'data_nascimento' => ['description' => 'Data de nascimento no formato AAAA-MM-DD.', 'example' => '1990-05-10'],
+        ];
+    }
 }

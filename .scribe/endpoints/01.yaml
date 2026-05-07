@@ -1,0 +1,407 @@
+name: Usuarios
+description: |-
+
+  Rotas para gerenciamento de usuarios do sistema.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/users
+    metadata:
+      custom: []
+      groupName: Usuarios
+      groupDescription: |-
+
+        Rotas para gerenciamento de usuarios do sistema.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Listar usuarios.'
+      description: 'Retorna todos os usuarios cadastrados.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/users
+    metadata:
+      custom: []
+      groupName: Usuarios
+      groupDescription: |-
+
+        Rotas para gerenciamento de usuarios do sistema.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Cadastrar usuario.'
+      description: 'Cria um novo usuario do sistema.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'Nome completo do usuario. Must not be greater than 255 characters.'
+        required: true
+        example: 'Maria Silva'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      email:
+        custom: []
+        name: email
+        description: 'E-mail unico do usuario. Must be a valid email address.'
+        required: true
+        example: maria@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      password:
+        custom: []
+        name: password
+        description: 'Senha com no minimo 8 caracteres. Must be at least 8 characters.'
+        required: true
+        example: password123
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      cpf:
+        custom: []
+        name: cpf
+        description: 'CPF do usuario com 11 digitos. Must be at least 11 characters. Must not be greater than 11 characters.'
+        required: false
+        example: '12345678901'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      matricula:
+        custom: []
+        name: matricula
+        description: 'Numero de matricula do usuario.'
+        required: false
+        example: 12345
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data_nascimento:
+        custom: []
+        name: data_nascimento
+        description: 'Data de nascimento no formato AAAA-MM-DD. Must be a valid date. Must be a valid date in the format <code>Y-m-d</code>. Must be a date before <code>today</code>.'
+        required: false
+        example: '1990-05-10'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      name: 'Maria Silva'
+      email: maria@example.com
+      password: password123
+      cpf: '12345678901'
+      matricula: 12345
+      data_nascimento: '1990-05-10'
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/users/{id}'
+    metadata:
+      custom: []
+      groupName: Usuarios
+      groupDescription: |-
+
+        Rotas para gerenciamento de usuarios do sistema.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Exibir usuario.'
+      description: 'Retorna os dados de um usuario especifico.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the user.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      user:
+        custom: []
+        name: user
+        description: 'ID do usuario.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+      user: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/users/{id}'
+    metadata:
+      custom: []
+      groupName: Usuarios
+      groupDescription: |-
+
+        Rotas para gerenciamento de usuarios do sistema.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Atualizar usuario.'
+      description: 'Atualiza os dados de um usuario existente.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the user.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      user:
+        custom: []
+        name: user
+        description: 'ID do usuario.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 16
+      user: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      email:
+        custom: []
+        name: email
+        description: 'E-mail unico do usuario. Must be a valid email address.'
+        required: true
+        example: maria@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      name:
+        custom: []
+        name: name
+        description: 'Nome completo do usuario. Must not be greater than 255 characters.'
+        required: true
+        example: 'Maria Silva'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      password:
+        custom: []
+        name: password
+        description: 'Senha com no minimo 8 caracteres. Must be at least 8 characters.'
+        required: true
+        example: password123
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      cpf:
+        custom: []
+        name: cpf
+        description: 'CPF do usuario com 11 digitos. Must be at least 11 characters. Must not be greater than 11 characters.'
+        required: false
+        example: '12345678901'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      matricula:
+        custom: []
+        name: matricula
+        description: 'Numero de matricula do usuario.'
+        required: false
+        example: 12345
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      data_nascimento:
+        custom: []
+        name: data_nascimento
+        description: 'Data de nascimento no formato AAAA-MM-DD. Must be a valid date. Must be a valid date in the format <code>Y-m-d</code>. Must be a date before <code>today</code>.'
+        required: false
+        example: '1990-05-10'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      email: maria@example.com
+      name: 'Maria Silva'
+      password: password123
+      cpf: '12345678901'
+      matricula: 12345
+      data_nascimento: '1990-05-10'
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/users/{id}'
+    metadata:
+      custom: []
+      groupName: Usuarios
+      groupDescription: |-
+
+        Rotas para gerenciamento de usuarios do sistema.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remover usuario.'
+      description: 'Remove um usuario cadastrado.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the user.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      user:
+        custom: []
+        name: user
+        description: 'ID do usuario.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 16
+      user: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

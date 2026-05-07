@@ -1,0 +1,383 @@
+name: Linhas
+description: |-
+
+  Rotas para gerenciamento das linhas de transporte.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/linha
+    metadata:
+      custom: []
+      groupName: Linhas
+      groupDescription: |-
+
+        Rotas para gerenciamento das linhas de transporte.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Listar linhas.'
+      description: 'Retorna todas as linhas cadastradas.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/linha
+    metadata:
+      custom: []
+      groupName: Linhas
+      groupDescription: |-
+
+        Rotas para gerenciamento das linhas de transporte.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Cadastrar linha.'
+      description: 'Cria uma nova linha de transporte.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'Nome da linha. Must not be greater than 255 characters. Must be at least 3 characters.'
+        required: true
+        example: 'Linha Centro'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: 'Descricao da rota da linha. Must not be greater than 255 characters. Must be at least 3 characters.'
+        required: false
+        example: 'Rota principal ate o centro'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      departure_time:
+        custom: []
+        name: departure_time
+        description: 'Horario de saida no formato HH:MM. Must be a valid date in the format <code>H:i</code>.'
+        required: false
+        example: '07:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      return_time:
+        custom: []
+        name: return_time
+        description: 'Horario de retorno no formato HH:MM. Must be a valid date in the format <code>H:i</code>. Must be a date after <code>departure_time</code>.'
+        required: false
+        example: '18:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      max_capacity:
+        custom: []
+        name: max_capacity
+        description: 'Capacidade maxima de estudantes.'
+        required: true
+        example: 40
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      name: 'Linha Centro'
+      description: 'Rota principal ate o centro'
+      departure_time: '07:00'
+      return_time: '18:00'
+      max_capacity: 40
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/linha/{id}'
+    metadata:
+      custom: []
+      groupName: Linhas
+      groupDescription: |-
+
+        Rotas para gerenciamento das linhas de transporte.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Exibir linha.'
+      description: 'Retorna os dados de uma linha especifica.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the linha.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      linha:
+        custom: []
+        name: linha
+        description: 'ID da linha.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+      linha: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/linha/{id}'
+    metadata:
+      custom: []
+      groupName: Linhas
+      groupDescription: |-
+
+        Rotas para gerenciamento das linhas de transporte.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Atualizar linha.'
+      description: 'Atualiza os dados de uma linha existente.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the linha.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      linha:
+        custom: []
+        name: linha
+        description: 'ID da linha.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+      linha: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'Nome da linha. Must not be greater than 255 characters. Must be at least 3 characters.'
+        required: false
+        example: 'Linha Centro'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: 'Descricao da rota da linha. Must not be greater than 255 characters. Must be at least 3 characters.'
+        required: false
+        example: 'Rota principal ate o centro'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      departure_time:
+        custom: []
+        name: departure_time
+        description: 'Horario de saida no formato HH:MM. Must be a valid date in the format <code>H:i</code>.'
+        required: false
+        example: '07:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      return_time:
+        custom: []
+        name: return_time
+        description: 'Horario de retorno no formato HH:MM. Must be a valid date in the format <code>H:i</code>. Must be a date after <code>departure_time</code>.'
+        required: false
+        example: '18:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      max_capacity:
+        custom: []
+        name: max_capacity
+        description: 'Capacidade maxima de estudantes.'
+        required: true
+        example: 40
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      name: 'Linha Centro'
+      description: 'Rota principal ate o centro'
+      departure_time: '07:00'
+      return_time: '18:00'
+      max_capacity: 40
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/linha/{id}'
+    metadata:
+      custom: []
+      groupName: Linhas
+      groupDescription: |-
+
+        Rotas para gerenciamento das linhas de transporte.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remover linha.'
+      description: 'Remove uma linha cadastrada.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the linha.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      linha:
+        custom: []
+        name: linha
+        description: 'ID da linha.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+      linha: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

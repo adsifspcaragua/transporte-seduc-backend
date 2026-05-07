@@ -1,0 +1,478 @@
+name: 'Documentos da inscricao'
+description: |-
+
+  Rotas para envio, consulta, atualizacao e remocao dos documentos da inscricao.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/inscricoes/{inscricao_id}/documentos'
+    metadata:
+      custom: []
+      groupName: 'Documentos da inscricao'
+      groupDescription: |-
+
+        Rotas para envio, consulta, atualizacao e remocao dos documentos da inscricao.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Listar documentos da inscricao.'
+      description: 'Retorna os documentos enviados para uma inscricao.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      inscricao_id:
+        custom: []
+        name: inscricao_id
+        description: 'The ID of the inscricao.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      inscricao:
+        custom: []
+        name: inscricao
+        description: 'ID da inscricao.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      inscricao_id: 16
+      inscricao: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/inscricoes/{inscricao_id}/documentos'
+    metadata:
+      custom: []
+      groupName: 'Documentos da inscricao'
+      groupDescription: |-
+
+        Rotas para envio, consulta, atualizacao e remocao dos documentos da inscricao.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Enviar documento da inscricao.'
+      description: 'Envia um documento para a inscricao e recalcula o status.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      inscricao_id:
+        custom: []
+        name: inscricao_id
+        description: 'The ID of the inscricao.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      inscricao:
+        custom: []
+        name: inscricao
+        description: 'ID da inscricao.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      inscricao_id: 16
+      inscricao: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'Nome do documento exigido na inscricao. Must not be greater than 255 characters.'
+        required: true
+        example: foto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      type:
+        custom: []
+        name: type
+        description: 'Tipo ou categoria do documento. Must not be greater than 100 characters.'
+        required: true
+        example: imagem
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      file_path:
+        custom: []
+        name: file_path
+        description: 'Arquivo do documento. Must be a file. Must not be greater than 2048 kilobytes.'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      status:
+        custom: []
+        name: status
+        description: 'Campo controlado pelo sistema. Nao envie este campo.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      name: foto
+      type: imagem
+    fileParameters:
+      file_path: null
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/inscricoes/{inscricao_id}/documentos/{id}'
+    metadata:
+      custom: []
+      groupName: 'Documentos da inscricao'
+      groupDescription: |-
+
+        Rotas para envio, consulta, atualizacao e remocao dos documentos da inscricao.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Exibir documento da inscricao.'
+      description: 'Retorna um documento especifico da inscricao.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      inscricao_id:
+        custom: []
+        name: inscricao_id
+        description: 'The ID of the inscricao.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the documento.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      inscricao:
+        custom: []
+        name: inscricao
+        description: 'ID da inscricao.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      documento:
+        custom: []
+        name: documento
+        description: 'ID do documento.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      inscricao_id: 16
+      id: 16
+      inscricao: 1
+      documento: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/inscricoes/{inscricao_id}/documentos/{id}'
+    metadata:
+      custom: []
+      groupName: 'Documentos da inscricao'
+      groupDescription: |-
+
+        Rotas para envio, consulta, atualizacao e remocao dos documentos da inscricao.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Atualizar documento da inscricao.'
+      description: 'Atualiza os dados ou arquivo de um documento da inscricao.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      inscricao_id:
+        custom: []
+        name: inscricao_id
+        description: 'The ID of the inscricao.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the documento.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      inscricao:
+        custom: []
+        name: inscricao
+        description: 'ID da inscricao.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      documento:
+        custom: []
+        name: documento
+        description: 'ID do documento.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      inscricao_id: 16
+      id: 16
+      inscricao: 1
+      documento: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'Nome do documento exigido na inscricao. Must not be greater than 255 characters.'
+        required: false
+        example: foto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      type:
+        custom: []
+        name: type
+        description: 'Tipo ou categoria do documento. Must not be greater than 100 characters.'
+        required: false
+        example: imagem
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      file_path:
+        custom: []
+        name: file_path
+        description: 'Novo arquivo do documento. Must be a file. Must not be greater than 2048 kilobytes.'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      status:
+        custom: []
+        name: status
+        description: 'Status de analise do documento. Must not be greater than 255 characters.'
+        required: false
+        example: 'Em analise'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      name: foto
+      type: imagem
+      status: 'Em analise'
+    fileParameters:
+      file_path: null
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/inscricoes/{inscricao_id}/documentos/{id}'
+    metadata:
+      custom: []
+      groupName: 'Documentos da inscricao'
+      groupDescription: |-
+
+        Rotas para envio, consulta, atualizacao e remocao dos documentos da inscricao.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remover documento da inscricao.'
+      description: 'Remove um documento e o arquivo associado.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer TOKEN_DE_ACESSO'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      inscricao_id:
+        custom: []
+        name: inscricao_id
+        description: 'The ID of the inscricao.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the documento.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      inscricao:
+        custom: []
+        name: inscricao
+        description: 'ID da inscricao.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      documento:
+        custom: []
+        name: documento
+        description: 'ID do documento.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      inscricao_id: 16
+      id: 16
+      inscricao: 1
+      documento: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

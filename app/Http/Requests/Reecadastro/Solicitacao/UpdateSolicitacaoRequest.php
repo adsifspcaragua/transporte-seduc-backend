@@ -23,9 +23,18 @@ class UpdateSolicitacaoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "estudante_id" => "sometimes|exists:estudantes,id",
-            "status" => "sometimes|string",
-            "observacoes" => "sometimes|string",
+            'estudante_id' => 'sometimes|exists:estudantes,id',
+            'status' => 'sometimes|string',
+            'observacoes' => 'sometimes|string',
+        ];
+    }
+
+    public function bodyParameters(): array
+    {
+        return [
+            'estudante_id' => ['description' => 'ID do estudante que solicitou o recadastro.', 'example' => 1],
+            'status' => ['description' => 'Status atual da solicitacao.', 'example' => 'aprovado'],
+            'observacoes' => ['description' => 'Observacoes da solicitacao.', 'example' => 'Solicitacao aprovada pela equipe.'],
         ];
     }
 }

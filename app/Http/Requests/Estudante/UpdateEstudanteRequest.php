@@ -57,4 +57,26 @@ class UpdateEstudanteRequest extends FormRequest
             'inscricao_id' => 'required|integer|exists:inscricoes,id',
         ];
     }
+
+    public function bodyParameters(): array
+    {
+        return [
+            'name' => ['description' => 'Nome completo do estudante.', 'example' => 'Joao da Silva'],
+            'email' => ['description' => 'E-mail unico do estudante.', 'example' => 'joao@example.com'],
+            'cpf' => ['description' => 'CPF do estudante com 11 digitos.', 'example' => '12345678901'],
+            'birth_date' => ['description' => 'Data de nascimento do estudante.', 'example' => '2005-08-15'],
+            'phone' => ['description' => 'Telefone para contato.', 'example' => '77999999999'],
+            'address' => ['description' => 'Endereco do estudante.', 'example' => 'Rua Principal, 100'],
+            'start_time' => ['description' => 'Horario de inicio das aulas no formato HH:MM.', 'example' => '07:30'],
+            'end_time' => ['description' => 'Horario de termino das aulas no formato HH:MM.', 'example' => '12:00'],
+            'days_of_week' => ['description' => 'Dias da semana em que o estudante usa o transporte.', 'example' => ['segunda', 'terca']],
+            'days_of_week.*' => ['description' => 'Dia da semana.', 'example' => 'segunda'],
+            'observation' => ['description' => 'Observacao opcional sobre o estudante.', 'example' => 'Necessita embarque no ponto central.'],
+            'status' => ['description' => 'Status atual do estudante.', 'example' => 'ATIVO'],
+            'linha_id' => ['description' => 'ID da linha vinculada ao estudante.', 'example' => 1],
+            'user_id' => ['description' => 'ID do usuario associado ao estudante.', 'example' => 1],
+            'inscricao_id' => ['description' => 'ID da inscricao que originou o estudante.', 'example' => 1],
+            'instituicao_id' => ['description' => 'ID da instituicao do estudante.', 'example' => 1],
+        ];
+    }
 }

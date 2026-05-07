@@ -18,6 +18,15 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,
 Route::post('/auth/token', [AuthController::class, 'tokenLogin'])->middleware('throttle:5,1');
 
 Route::middleware('auth:sanctum')->group(function () {
+    /**
+     * Exibir usuario autenticado.
+     *
+     * Retorna os dados do usuario autenticado na requisicao atual.
+     *
+     * @group Autenticacao
+     *
+     * @authenticated
+     */
     Route::get('/me', function (Request $request) {
         try {
             return $request->user();
@@ -32,7 +41,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('roles', RoleController::class);
 
-    Route::apiResource('estudantes/reecadastrar', DocumentoReecadastroController::class);
+    Route::apiResource('estudantes/reecadastrar', DocumentoReecadastroController::class)
+        ->parameters(['reecadastrar' => 'documento']);
     Route::apiResource('estudantes', EstudanteController::class);
     Route::get('contar-estudantes', [EstudanteController::class, 'countEstudantes']);
 

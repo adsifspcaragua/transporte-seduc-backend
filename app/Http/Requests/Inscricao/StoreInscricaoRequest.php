@@ -44,4 +44,36 @@ class StoreInscricaoRequest extends FormRequest
             'observation' => 'prohibited',
         ];
     }
+
+    public function bodyParameters(): array
+    {
+        return $this->parameterDescriptions();
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    private function parameterDescriptions(): array
+    {
+        return [
+            'name' => ['description' => 'Nome completo do estudante.', 'example' => 'Joao da Silva'],
+            'cpf' => ['description' => 'CPF do estudante com 11 digitos.', 'example' => '12345678901'],
+            'rg' => ['description' => 'RG do estudante.', 'example' => '12345678'],
+            'father_name' => ['description' => 'Nome do pai.', 'example' => 'Jose da Silva'],
+            'mother_name' => ['description' => 'Nome da mae.', 'example' => 'Maria da Silva'],
+            'birth_date' => ['description' => 'Data de nascimento no formato AAAA-MM-DD.', 'example' => '2005-08-15'],
+            'phone' => ['description' => 'Telefone para contato.', 'example' => '77999999999'],
+            'email' => ['description' => 'E-mail do estudante.', 'example' => 'joao@example.com'],
+            'cep' => ['description' => 'CEP com 8 digitos.', 'example' => '45000000'],
+            'address' => ['description' => 'Endereco residencial.', 'example' => 'Rua Principal'],
+            'neighborhood' => ['description' => 'Bairro residencial.', 'example' => 'Centro'],
+            'complement' => ['description' => 'Complemento do endereco.', 'example' => 'Casa'],
+            'city' => ['description' => 'Cidade residencial.', 'example' => 'Vitoria da Conquista'],
+            'number' => ['description' => 'Numero do endereco.', 'example' => 100],
+            'accepted_terms' => ['description' => 'Aceite do primeiro termo.', 'example' => true],
+            'accepted_terms_2' => ['description' => 'Aceite do segundo termo.', 'example' => true],
+            'status' => ['description' => 'Campo controlado pelo sistema. Nao envie este campo.', 'example' => 'No-example'],
+            'observation' => ['description' => 'Campo controlado pelo sistema na criacao. Nao envie este campo.', 'example' => 'No-example'],
+        ];
+    }
 }

@@ -30,4 +30,13 @@ class UpdateInstituicaoRequest extends FormRequest
             'linhas_ids.*' => 'sometimes|integer',
         ];
     }
+
+    public function bodyParameters(): array
+    {
+        return [
+            'name' => ['description' => 'Nome da instituicao.', 'example' => 'Universidade Estadual'],
+            'linhas_ids' => ['description' => 'IDs das linhas vinculadas a instituicao.', 'example' => [1, 2]],
+            'linhas_ids.*' => ['description' => 'ID de uma linha vinculada.', 'example' => 1],
+        ];
+    }
 }

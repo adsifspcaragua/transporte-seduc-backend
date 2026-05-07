@@ -46,4 +46,22 @@ class StoreInscricaoInstituicaoRequest extends FormRequest
 
         ];
     }
+
+    public function bodyParameters(): array
+    {
+        return [
+            'course' => ['description' => 'Curso do estudante.', 'example' => 'Engenharia Civil'],
+            'semester' => ['description' => 'Semestre atual.', 'example' => '4'],
+            'expected_completion' => ['description' => 'Data prevista de conclusao.', 'example' => '2027-12-20'],
+            'instituicao_id' => ['description' => 'ID da instituicao de ensino.', 'example' => 1],
+            'shift' => ['description' => 'Turno do curso: 1 para matutino, 2 para noturno.', 'example' => 1],
+            'city_destination' => ['description' => 'Cidade de destino do transporte.', 'example' => 'Vitoria da Conquista'],
+            'used_transport' => ['description' => 'Informa se o estudante usa transporte.', 'example' => true],
+            'days_of_week' => ['description' => 'Dias da semana de uso do transporte, de 0 a 6.', 'example' => [1, 3, 5]],
+            'days_of_week.*' => ['description' => 'Dia da semana, de 0 a 6.', 'example' => 1],
+            'has_scholarship' => ['description' => 'Informa se o estudante possui bolsa.', 'example' => false],
+            'scholarship_type' => ['description' => 'Tipo de bolsa, quando houver.', 'example' => 'Bolsa integral'],
+            'inscricao_id' => ['description' => 'ID da inscricao vinculada.', 'example' => 1],
+        ];
+    }
 }

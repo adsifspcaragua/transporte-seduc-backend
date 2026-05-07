@@ -28,4 +28,13 @@ class StoreDocumentoRequest extends FormRequest
             'file_path' => 'required|string',
         ];
     }
+
+    public function bodyParameters(): array
+    {
+        return [
+            'estudante_id' => ['description' => 'ID do estudante vinculado ao recadastro.', 'example' => 1],
+            'type' => ['description' => 'Tipo do documento de recadastro.', 'example' => 'comprovante_residencia'],
+            'file_path' => ['description' => 'Caminho ou identificador do arquivo enviado.', 'example' => 'documentos/arquivo.pdf'],
+        ];
+    }
 }

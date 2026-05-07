@@ -23,9 +23,18 @@ class StoreSolicitacaoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "estudante_id" => "required|exists:estudantes,id",
-            "status" => "required|string",
-            "observacoes" => "required|string",
+            'estudante_id' => 'required|exists:estudantes,id',
+            'status' => 'required|string',
+            'observacoes' => 'required|string',
+        ];
+    }
+
+    public function bodyParameters(): array
+    {
+        return [
+            'estudante_id' => ['description' => 'ID do estudante que solicitou o recadastro.', 'example' => 1],
+            'status' => ['description' => 'Status inicial da solicitacao.', 'example' => 'pendente'],
+            'observacoes' => ['description' => 'Observacoes da solicitacao.', 'example' => 'Solicitacao enviada pelo estudante.'],
         ];
     }
 }

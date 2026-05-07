@@ -30,4 +30,15 @@ class StoreLinhaRequest extends FormRequest
             'max_capacity' => 'required|integer',
         ];
     }
+
+    public function bodyParameters(): array
+    {
+        return [
+            'name' => ['description' => 'Nome da linha.', 'example' => 'Linha Centro'],
+            'description' => ['description' => 'Descricao da rota da linha.', 'example' => 'Rota principal ate o centro'],
+            'departure_time' => ['description' => 'Horario de saida no formato HH:MM.', 'example' => '07:00'],
+            'return_time' => ['description' => 'Horario de retorno no formato HH:MM.', 'example' => '18:00'],
+            'max_capacity' => ['description' => 'Capacidade maxima de estudantes.', 'example' => 40],
+        ];
+    }
 }

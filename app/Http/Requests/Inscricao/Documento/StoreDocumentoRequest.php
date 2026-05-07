@@ -29,4 +29,14 @@ class StoreDocumentoRequest extends FormRequest
             'status' => 'prohibited',
         ];
     }
+
+    public function bodyParameters(): array
+    {
+        return [
+            'name' => ['description' => 'Nome do documento exigido na inscricao.', 'example' => 'foto'],
+            'type' => ['description' => 'Tipo ou categoria do documento.', 'example' => 'imagem'],
+            'file_path' => ['description' => 'Arquivo do documento.', 'type' => 'file'],
+            'status' => ['description' => 'Campo controlado pelo sistema. Nao envie este campo.', 'example' => 'No-example'],
+        ];
+    }
 }
