@@ -3,117 +3,36 @@
 namespace App\Http\Controllers\Api\Estudante;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Inscricao\Instituicao\{StoreInscricaoIntituicoesRequest, UpdateInscricaoIntituicoesRequest};
-use App\Http\Resources\Inscricao\InscricaoInstituicaoResource;
-use App\Models\Inscricao;
-use App\Models\InscricaoInstituicoes;
-use App\Services\InscricaoService;
+use App\Http\Requests\Inscricao\Instituicao\StoreInscricaoInstituicaoRequest;
+use App\Http\Requests\Inscricao\Instituicao\UpdateInscricaoInstituicaoRequest;
+use App\Services\Inscricao\Instituicao\InscricaoInstituicaoService;
 
 class InscricaoInstituicaoController extends Controller
 {
+    public function __construct(private readonly InscricaoInstituicaoService $inscricaoInstituicaoService) {}
 
-    private $inscricaoService;
-
-    public function __construct(InscricaoService $inscricaoService){
-
-        $this->inscricaoService = $inscricaoService;
-    }
-    
-    public function index()
+    public function index(string $inscricao_id)
     {
-        $inscricoes_instituicao = InscricaoInstituicoes::all();
-
-        if($inscricoes_instituicao->isEmpty()) {
-            return response()->json(["message" => "Nenhuma inscricao cadastrada"], 200);
-        }
-       return InscricaoInstituicaoResource::collection($inscricoes_instituicao);
+        return $this->inscricaoInstituicaoService->index($inscricao_id);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function store(StoreInscricaoIntituicoesRequest $request)
+    public function store(StoreInscricaoInstituicaoRequest $request, string $inscricao_id)
     {
-        
-        try {
-            $data = $request->validated();
-            $inscricao = InscricaoInstituicoes::create([...$data, 'line_id'=> 0]);
-
-            $inscricaoC = Inscricao::find($inscricao->inscricao_id);
-            if($this->inscricaoService->isComplete($inscricaoC)){
-                $inscricaoC->update(["status" => "Em analise"]);
-            }else{
-                $inscricaoC->update(["status" => "Incompleto"]);
-            }
-            return response()->json([
-                "data" => new InscricaoInstituicaoResource($inscricao),
-                "message" => "Inscrição criada com sucesso"
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Erro ao criar inscrição.', 'error' => $e->getMessage()], 500);
-        }
+        return $this->inscricaoInstituicaoService->store($request->validated());
     }
 
-
-
-    public function show(string $id, string $instituicao)
+    public function show(string $inscricao_id, string $instituicao)
     {
-         try {
-           
-
-            $inscricao_instituicao = InscricaoInstituicoes::find($instituicao);
-
-            if(is_null($inscricao_instituicao)) {
-                return response()->json(["message" => "Inscricao não encontrada"], 404);
-            }
-
-            return response()->json([
-                "data" => new InscricaoInstituicaoResource($inscricao_instituicao),
-                "message" => "Incricao encontrado com sucesso"
-            ],200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Erro ao buscar inscrição.'], 500);
-        }
+        return $this->inscricaoInstituicaoService->show($inscricao_id, $instituicao);
     }
 
-
-   
-    public function update(UpdateInscricaoIntituicoesRequest $request, string $inscricao, string $instituicao)
+    public function update(UpdateInscricaoInstituicaoRequest $request, string $inscricao_id, string $instituicao)
     {
-        try {
-
-            $inscricao_instituicao = InscricaoInstituicoes::find($instituicao);
-            $data = $request->validated();
-
-            if(is_null($inscricao_instituicao)){
-                return response()->json([
-                'message' => 'Inscricao não encontrada'],404);
-            }
-            
-            $inscricao_instituicao->update($data);
-
-            
-            $inscricaoC = Inscricao::find($inscricao);
-            if($this->inscricaoService->isComplete($inscricaoC)){
-                $inscricaoC->update(["status" => "Em analise"]);
-            }else{
-                $inscricaoC->update(["status" => "Incompleto"]);
-            }
-            return response()->json([
-                "data" => new InscricaoInstituicaoResource($inscricao_instituicao),
-                'message' => 'Inscricao atualizada com sucesso'],200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Erro ao atualizar inscrição.'], 500);
-        }
-
+        return $this->inscricaoInstituicaoService->update($request->validated(), $inscricao_id, $instituicao);
     }
 
-
-    public function destroy(string $id)
+    public function destroy(string $inscricao_id, string $instituicao)
     {
-        //
+        return $this->inscricaoInstituicaoService->destroy($inscricao_id, $instituicao);
     }
-
-
-
 }

@@ -2,115 +2,38 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\{StoreUserRequest, UpdateUserRequest};
+use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
 use App\Models\User;
-use App\Http\Resources\UserResource;
+use App\Services\User\UserService;
 
 class UserController extends Controller
 {
-    
+    public function __construct(private readonly UserService $userService) {}
+
     public function index()
     {
-        try {
-            $users = User::all();
-
-            if(is_null($users)) {
-                return response()->json(["message" => "Nenhum usuário encontrado"], 404);
-            }
-
-            return response()->json(
-                [
-                    "data" => UserResource::collection($users),
-                    "message"=> "Usuários inscritos"
-                ], 200);
-
-        } catch (\Exception $ex) {
-            return response()->json([
-                'message' => 'Nenhum usuário encontrado'
-            ], 404);
-        }
+        return $this->userService->index();
     }
 
-    
     public function store(StoreUserRequest $request)
     {
-        $data = $request->validated();
-
-        try{
-            $user = new User();
-            $user->fill($data);
-            $user->password = Hash::make($data['password']);
-            $user->save();
-
-            return response()->json(new UserResource($user),201);
-        }catch(\Exception $ex){
-            return response()->json([
-                'message' => 'Falha ao cadastrar usuário'
-            ], 500);
-        }
+        return $this->userService->store($request->validated());
     }
-
 
     public function show(string $id)
     {
-        try {
-            $user = User::find($id);
-            if(is_null($user)) {
-                return response()->json(["message" => "Usuário não encontrada"], 404);
-            }
-            return response()->json(
-                [
-                    "data" => new UserResource($user),
-                    "message"=> "Usuário encontrado"
-                ], 200);
-
-        } catch (\Exception $ex) {
-            return response()->json([
-                'message' => 'Usuário não encontrado',
-                
-            ], 404);
-        }
+        return $this->userService->show($id);
     }
 
-   
     public function update(UpdateUserRequest $request, User $user)
     {
-        try {
-            $user->update($request->validated());
-            return response()->json([
-                "data" => new UserResource($user),
-                'message' => 'Usuário atualizada com sucesso'],200);
-
-        } catch (\Exception $ex) {
-            return response()->json([
-                'message' => 'Falha ao atualizar usuário',
-                'error' => $ex->getMessage()
-            ], 500);
-        }
+        return $this->userService->update($request->validated(), $user);
     }
-
 
     public function destroy(string $id)
     {
-        try {
-            $user = User::find($id);
-            if(!$user){
-                return response()->json([
-                    'message' => 'Usuário não encontrado'
-                ], 404);
-            }
-            $user->delete();
-
-            return response()->json([
-                'message' => 'Usuário removido com sucesso'
-            ], 200);
-
-        } catch (\Exception $ex) {
-            return response()->json([
-                'message' => 'Falha ao remover usuário'
-            ], 500);
-        }
+        return $this->userService->destroy($id);
     }
 }

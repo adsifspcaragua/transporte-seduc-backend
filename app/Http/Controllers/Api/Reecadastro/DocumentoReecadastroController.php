@@ -3,49 +3,36 @@
 namespace App\Http\Controllers\Api\Reecadastro;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Reecadastro\Documento\UpdateDocumentoRequest;
 use App\Http\Requests\Reecadastro\Documento\StoreDocumentoRequest;
-use Illuminate\Http\Request;
+use App\Http\Requests\Reecadastro\Documento\UpdateDocumentoRequest;
+use App\Services\Reecadastro\DocumentoReecadastroService;
 
 class DocumentoReecadastroController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct(private readonly DocumentoReecadastroService $documentoReecadastroService) {}
+
     public function index()
     {
-
+        return $this->documentoReecadastroService->index();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreDocumentoRequest $request)
     {
-
+        return $this->documentoReecadastroService->store($request->validated());
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        return $this->documentoReecadastroService->show($id);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateDocumentoRequest $request, string $id)
     {
-        //
+        return $this->documentoReecadastroService->update($request->validated(), $id);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        return $this->documentoReecadastroService->destroy($id);
     }
 }
