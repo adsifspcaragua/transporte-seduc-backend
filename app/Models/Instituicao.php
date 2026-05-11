@@ -14,4 +14,14 @@ class Instituicao extends Model
         'name',
         'linhas_ids'
     ];
+
+    public function inscricoesInstituicoes()
+    {
+        return $this->hasMany(InscricaoInstituicoes::class, 'instituicao_id');
+    }
+    public function estudantesInstituicoes()
+    {
+        return $this->hasMany(Estudante::class, 'instituicao_id');
+    }
+
 }

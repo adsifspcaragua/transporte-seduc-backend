@@ -31,6 +31,9 @@ class InscricaoInstituicoes extends Model
         return $this->belongsTo(Inscricao::class, "inscricao_id");
     }
 
-
+    public function instituicao()
+    {
+        return $this->belongsTo(Instituicao::class, 'instituicao_id');
+    }
     
 }
