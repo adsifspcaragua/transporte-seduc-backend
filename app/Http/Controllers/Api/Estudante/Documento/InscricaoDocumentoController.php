@@ -52,7 +52,7 @@ class InscricaoDocumentoController extends Controller
      * @urlParam inscricao integer required ID da inscricao. Example: 1
      * @urlParam documento integer required ID do documento. Example: 1
      */
-    public function show(Inscricao $inscricao, InscricaoDocumento $documento)
+    public function show(string $inscricao, string $documento)
     {
         return $this->inscricaoDocumentoService->show($inscricao, $documento);
     }

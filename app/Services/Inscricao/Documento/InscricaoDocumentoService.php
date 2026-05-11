@@ -62,10 +62,18 @@ class InscricaoDocumentoService
         }
     }
 
-    public function show(Inscricao $inscricao, InscricaoDocumento $documento): JsonResponse
+    public function show(string $inscricao_id, string $documento_id): JsonResponse
     {
         try {
-            if ($documento->inscricao_id !== $inscricao->id) {
+       
+            $inscricao = Inscricao::find($inscricao_id);
+            $documento = InscricaoDocumento::find($documento_id);
+
+            if(is_null($inscricao)){
+                return response()->json(['message' => 'Inscricao não encontrada'], 404);
+            }
+
+            if (is_null($documento)) {
                 return response()->json(['message' => 'Documento não encontrado'], 404);
             }
 
