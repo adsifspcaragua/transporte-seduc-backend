@@ -22,7 +22,6 @@ class InscricaoStatusService
         $camposInscricao = [
             'name',
             'cpf',
-            'rg',
             'birth_date',
             'phone',
             'email',
