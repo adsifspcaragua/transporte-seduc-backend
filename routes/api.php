@@ -17,6 +17,18 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/auth/token', [AuthController::class, 'tokenLogin'])->middleware('throttle:5,1');
 
+Route::get('instituicao', [InstituicaoController::class, 'index']);
+Route::post('inscricoes', [InscricaoController::class, 'store']);
+Route::get('inscricoes/{inscricao}', [InscricaoController::class, 'show']);
+Route::put('inscricoes/{inscricao}', [InscricaoController::class, 'update']);
+Route::patch('inscricoes/{inscricao}', [InscricaoController::class, 'update']);
+Route::post('inscricoes/{inscricao_id}/instituicoes', [InscricaoInstituicaoController::class, 'store']);
+Route::put('inscricoes/{inscricao_id}/instituicoes/{instituicao}', [InscricaoInstituicaoController::class, 'update']);
+Route::patch('inscricoes/{inscricao_id}/instituicoes/{instituicao}', [InscricaoInstituicaoController::class, 'update']);
+Route::post('inscricoes/{inscricao}/documentos', [InscricaoDocumentoController::class, 'store']);
+Route::put('inscricoes/{inscricao}/documentos/{documento}', [InscricaoDocumentoController::class, 'update']);
+Route::patch('inscricoes/{inscricao}/documentos/{documento}', [InscricaoDocumentoController::class, 'update']);
+
 Route::middleware('auth:sanctum')->group(function () {
     /**
      * Exibir usuario autenticado.
@@ -48,13 +60,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('inscricoes/recadastro', [InscricaoController::class, 'recadastro']);
     Route::apiResource('inscricoes', InscricaoController::class)
+        ->except(['store', 'show', 'update'])
         ->parameters(['inscricoes' => 'inscricao']);
     Route::apiResource('inscricoes/{inscricao_id}/instituicoes', InscricaoInstituicaoController::class)
+        ->except(['store', 'update'])
         ->parameters(['instituicoes' => 'instituicao']);
 
-    Route::apiResource('instituicao', InstituicaoController::class);
+    Route::apiResource('instituicao', InstituicaoController::class)->except(['index']);
     Route::apiResource('linha', LinhaController::class);
     Route::apiResource('inscricoes.documentos', InscricaoDocumentoController::class)
+        ->except(['store', 'update'])
         ->parameters([
             'inscricoes' => 'inscricao',
             'documentos' => 'documento',
