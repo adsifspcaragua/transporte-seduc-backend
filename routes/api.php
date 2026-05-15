@@ -53,6 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->parameters(['instituicoes' => 'instituicao']);
 
     Route::apiResource('instituicao', InstituicaoController::class);
+    
     Route::apiResource('linha', LinhaController::class);
     
     Route::apiResource('inscricoes/{inscricao}/documentos', InscricaoDocumentoController::class)

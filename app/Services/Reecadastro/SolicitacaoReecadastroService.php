@@ -44,7 +44,7 @@ class SolicitacaoReecadastroService
     public function show(string $id): JsonResponse
     {
         try {
-            $solicitacao = SolicitacaoReecadastro::find($id);
+            $solicitacao = SolicitacaoReecadastro::find('id',$id);
 
             if (! $solicitacao) {
                 return response()->json(['message' => 'Solicitação de recadastro não encontrada'], 404);
@@ -68,7 +68,7 @@ class SolicitacaoReecadastroService
     public function update(array $data, string $id): JsonResponse
     {
         try {
-            $solicitacao = SolicitacaoReecadastro::find($id);
+            $solicitacao = SolicitacaoReecadastro::find('id',$id);
 
             if (! $solicitacao) {
                 return response()->json(['message' => 'Solicitação de recadastro não encontrada'], 404);
@@ -91,7 +91,7 @@ class SolicitacaoReecadastroService
     public function destroy(string $id): JsonResponse
     {
         try {
-            $solicitacao = SolicitacaoReecadastro::find($id);
+            $solicitacao = SolicitacaoReecadastro::find('id',$id);
 
             if (! $solicitacao) {
                 return response()->json(['message' => 'Solicitação de recadastro não encontrada'], 404);

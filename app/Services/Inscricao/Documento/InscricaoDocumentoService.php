@@ -49,7 +49,6 @@ class InscricaoDocumentoService
             $data['inscricao_id'] = $inscricao->id;
             $documento = InscricaoDocumento::create($data);
             $this->statusService->refreshStatus($inscricao);
-
             return response()->json([
                 'documento' => new DocumentoResource($documento),
                 'message' => 'Documento cadastrado com sucesso.',
@@ -106,7 +105,7 @@ class InscricaoDocumentoService
                 $data['file_path'] = $request->file('file_path')->store('documentos');
             }
 
-            $documento->update($data);
+            $documento->update([...$data, 'status' => 'Em analise']);
             $this->statusService->refreshStatus($inscricao);
 
             return response()->json([

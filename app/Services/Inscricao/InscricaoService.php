@@ -4,6 +4,7 @@ namespace App\Services\Inscricao;
 
 use App\Http\Resources\Inscricao\InscricaoResource;
 use App\Models\Inscricao;
+use App\Models\InscricaoDocumento;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Throwable;
@@ -50,7 +51,7 @@ class InscricaoService
     public function show(string $id): JsonResponse
     {
         try {
-            $inscricao = Inscricao::find($id);
+            $inscricao = Inscricao::find('id',$id);
 
             if (! $inscricao) {
                 return response()->json(['message' => 'Inscricao não encontrada'], 404);
@@ -71,7 +72,7 @@ class InscricaoService
     public function update(array $data, string $id): JsonResponse
     {
         try {
-            $inscricao = Inscricao::find($id);
+            $inscricao = Inscricao::find('id',$id);
 
             if (! $inscricao) {
                 return response()->json([
@@ -86,6 +87,7 @@ class InscricaoService
             }
 
             $inscricao->update($data);
+
             $inscricao = $this->statusService->refreshStatus($inscricao);
 
             return response()->json([
@@ -102,7 +104,7 @@ class InscricaoService
     public function destroy(string $id): JsonResponse
     {
         try {
-            $inscricao = Inscricao::find($id);
+            $inscricao = Inscricao::find('id',$id);
 
             if (! $inscricao) {
                 return response()->json(['message' => 'Inscricao não encontrada'], 404);
@@ -124,8 +126,12 @@ class InscricaoService
     {
         try {
             Inscricao::query()->update([
-                'status' => 'incompleto',
+                'status' => 'Incompleto',
+                'accepted_terms' => false,
+                'accepted_terms_2' => false,
             ]);
+
+            //$docs = InscricaoDocumento::query()->delete();
 
             return response()->json([
                 'message' => 'Status de inscrições redefinido',
@@ -133,6 +139,47 @@ class InscricaoService
         } catch (Throwable) {
             return response()->json([
                 'message' => 'Falha ao ativar recadastro',
+            ], 500);
+        }
+    }
+
+
+    public function analiseInscricao(string $id, array $data): JsonResponse
+    {
+        try{
+            $inscricao = Inscricao::find($id);
+            $docs = $inscricao->inscricao_documentos;
+            if ($data['decisao'] == "Aprovado"){
+                $inscricao->update(['status' => "Aprovado"]);
+                foreach($docs as $doc){
+                    $doc->update([
+                        'status' => 'Aprovado'
+                    ]);
+                }
+                        
+            }else{
+                $inscricao->update([
+                    'status' => "Reprovado",
+                    'observation' => $data['motivo']
+                ]);
+                
+                if (!is_null($data["documentos"])){
+                    foreach($data["documentos"] as $d){
+                        $alterado = $docs->firstWhere('name', $d);
+                        if($alterado){
+                            $alterado->update(['status' => 'Reprovado']);
+                        }
+                    }
+                }
+
+            }
+            return response()->json([
+                    'message' => 'Status de inscrição alterado',
+                ], 200);
+
+        }catch(Throwable){
+            return response()->json([
+                'message' => 'Falha ao registrar decisão',
             ], 500);
         }
     }
