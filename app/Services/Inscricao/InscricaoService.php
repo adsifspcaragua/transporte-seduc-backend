@@ -6,6 +6,7 @@ use App\Http\Resources\Inscricao\InscricaoResource;
 use App\Models\Inscricao;
 use App\Models\InscricaoDocumento;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Throwable;
 
@@ -51,7 +52,7 @@ class InscricaoService
     public function show(string $id): JsonResponse
     {
         try {
-            $inscricao = Inscricao::find('id',$id);
+            $inscricao = Inscricao::find($id);
 
             if (! $inscricao) {
                 return response()->json(['message' => 'Inscricao não encontrada'], 404);
@@ -61,8 +62,9 @@ class InscricaoService
                 'data' => new InscricaoResource($inscricao),
                 'message' => 'Incricao encontrado com sucesso',
             ], 200);
-        } catch (Throwable) {
-            return response()->json(['message' => 'Erro ao buscar inscrição.'], 500);
+        } catch (Throwable $ex) {
+            return response()->json(['message' => 'Erro ao buscar inscrição.',
+            ], 500);
         }
     }
 
@@ -72,7 +74,7 @@ class InscricaoService
     public function update(array $data, string $id): JsonResponse
     {
         try {
-            $inscricao = Inscricao::find('id',$id);
+            $inscricao = Inscricao::find($id);
 
             if (! $inscricao) {
                 return response()->json([
@@ -83,6 +85,12 @@ class InscricaoService
             if ($inscricao->status === 'Em analise') {
                 return response()->json([
                     'message' => 'A inscrição já está em analise',
+                ], 403);
+            }
+
+            if ($inscricao->status === 'Em lista de espera') {
+                return response()->json([
+                    'message' => 'A inscrição já está aprovada',
                 ], 403);
             }
 
@@ -104,7 +112,7 @@ class InscricaoService
     public function destroy(string $id): JsonResponse
     {
         try {
-            $inscricao = Inscricao::find('id',$id);
+            $inscricao = Inscricao::find($id);
 
             if (! $inscricao) {
                 return response()->json(['message' => 'Inscricao não encontrada'], 404);
@@ -147,10 +155,11 @@ class InscricaoService
     public function analiseInscricao(string $id, array $data): JsonResponse
     {
         try{
+            
             $inscricao = Inscricao::find($id);
             $docs = $inscricao->inscricao_documentos;
             if ($data['decisao'] == "Aprovado"){
-                $inscricao->update(['status' => "Aprovado"]);
+                $inscricao->update(['status' => "Em lista de espera", 'observation' => ""]);
                 foreach($docs as $doc){
                     $doc->update([
                         'status' => 'Aprovado'
@@ -162,6 +171,9 @@ class InscricaoService
                     'status' => "Reprovado",
                     'observation' => $data['motivo']
                 ]);
+                $docs->each(function($doc){
+                    $doc->update(['status' => 'Aprovado']);
+                });
                 
                 if (!is_null($data["documentos"])){
                     foreach($data["documentos"] as $d){
@@ -177,9 +189,10 @@ class InscricaoService
                     'message' => 'Status de inscrição alterado',
                 ], 200);
 
-        }catch(Throwable){
+        }catch(Throwable $ex){
             return response()->json([
                 'message' => 'Falha ao registrar decisão',
+                'ex'=> $ex
             ], 500);
         }
     }
