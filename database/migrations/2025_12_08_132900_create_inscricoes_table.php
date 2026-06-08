@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('father_name')->nullable();
             $table->string('mother_name')->nullable();
             $table->text('observation')->nullable();
-            $table->string('status')->default('incompleto');
+            $table->string('status')->default('Incompleto');
             $table->boolean('accepted_terms')->default(false)->nullable();
             $table->boolean('accepted_terms_2')->default(false)->nullable();
             $table->timestamps();

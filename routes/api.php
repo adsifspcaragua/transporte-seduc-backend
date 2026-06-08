@@ -76,5 +76,10 @@ Route::middleware('auth:sanctum')->group(function () {
         ]);
 
     Route::apiResource('reecadastro/solicitacoes', SolicitacaoReecadastroController::class)
-        ->parameters(['solicitacoes' => 'solicitacao']);
-});
+            ->parameters(['solicitacoes' => 'solicitacao']);
+
+    Route::put('inscricoes/analise/{id}', [InscricaoController::class, 'analise']);
+        });
+        
+
+    

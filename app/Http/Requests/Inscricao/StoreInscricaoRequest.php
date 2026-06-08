@@ -26,7 +26,7 @@ class StoreInscricaoRequest extends FormRequest
         return [
             'name' => 'required|string|min:3|max:255',
             'cpf' => 'required|string|size:11|unique:inscricoes,cpf',
-            'rg' => 'nullable|string|min:8|max:11',
+            'rg' => 'sometimes|string|min:8|max:11',
             'father_name' => 'sometimes|string|min:3|max:255',
             'mother_name' => 'sometimes|string|min:3|max:255',
             'birth_date' => 'sometimes|date|before:today|date_format:Y-m-d',

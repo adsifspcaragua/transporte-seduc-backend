@@ -33,7 +33,7 @@ class RoleService
             return response()->json([
                 'data' => new RoleResource($role),
                 'message' => 'Cargo criado com sucesso',
-            ]);
+            ], 201);
         } catch (Throwable $e) {
             return response()->json([
                 'message' => 'Falha ao criar cargo',

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Inscricao\StoreInscricaoRequest;
 use App\Http\Requests\Inscricao\UpdateInscricaoRequest;
 use App\Services\Inscricao\InscricaoService;
+use Illuminate\Http\Request;
 
 /**
  * @group Inscricoes
@@ -72,6 +73,16 @@ class InscricaoController extends Controller
     public function destroy(string $id)
     {
         return $this->inscricaoService->destroy($id);
+    }
+
+    /**
+     * Analisar inscrição.
+     *
+     * Aprova ou não a inscrição do estudante.
+     */
+    public function analise(string $id, Request $data)
+    {
+        return $this->inscricaoService->analiseInscricao($id, $data->all());
     }
 
     /**

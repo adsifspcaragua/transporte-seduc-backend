@@ -73,18 +73,45 @@ class InscricaoStatusService
             'cronograma',
             'declaracao',
         ];
+        
+        $todosValidos = true;
 
-        $documentosEnviados = $inscricaoCompleta->inscricao_documentos
-            ->pluck('name')
-            ->toArray();
+        foreach($documentosObrigatorios as $obrigatorio){
 
-        return empty(array_diff($documentosObrigatorios, $documentosEnviados));
+            $doc = $inscricaoCompleta->inscricao_documentos->firstWhere('name', $obrigatorio);
+
+            if(!$doc || $doc->status !== 'Em analise'){
+                $todosValidos = false;
+                break;
+            }
+        }
+
+        return $todosValidos;
     }
 
     public function refreshStatus(Inscricao $inscricao): Inscricao
     {
         $inscricao->update([
             'status' => $this->isComplete($inscricao) ? 'Em analise' : 'Incompleto',
+        ]);
+
+        return $inscricao->refresh();
+    }
+
+    public function acceptInscricao(Inscricao $inscricao): Inscricao
+    {
+        $inscricao->update([
+            'status' => "Aprovada"
+        ]);
+
+        return $inscricao->refresh();
+    }
+
+    public function refuseInscricao(Inscricao $inscricao): Inscricao
+    {
+        //TODO FAZER O REGISTRO DO MOTIVO
+        $inscricao->update([
+            'status' => "Rejeitada"
         ]);
 
         return $inscricao->refresh();
