@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Curso\CursoController;
 use App\Http\Controllers\Api\Estudante\Documento\InscricaoDocumentoController;
 use App\Http\Controllers\Api\Estudante\EstudanteController;
 use App\Http\Controllers\Api\Estudante\InscricaoController;
@@ -18,6 +19,7 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,
 Route::post('/auth/token', [AuthController::class, 'tokenLogin'])->middleware('throttle:5,1');
 
 Route::get('instituicao', [InstituicaoController::class, 'index']);
+Route::get('curso', [CursoController::class, 'index']);
 Route::post('inscricoes', [InscricaoController::class, 'store']);
 Route::get('inscricoes/{inscricao}', [InscricaoController::class, 'show']);
 Route::put('inscricoes/{inscricao}', [InscricaoController::class, 'update']);
