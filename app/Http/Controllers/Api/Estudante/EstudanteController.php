@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Estudante\StoreEstudanteRequest;
 use App\Http\Requests\Estudante\UpdateEstudanteRequest;
 use App\Services\Estudante\EstudanteService;
+use Illuminate\Http\Request;
 
 /**
  * @group Estudantes
@@ -23,9 +24,11 @@ class EstudanteController extends Controller
      *
      * Retorna a lista paginada de estudantes cadastrados.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->estudanteService->index();
+        return $this->estudanteService->index(
+            (int) $request->query('per_page', 10)
+        );
     }
 
     /**

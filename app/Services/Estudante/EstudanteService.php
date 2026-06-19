@@ -11,9 +11,12 @@ use Throwable;
 
 class EstudanteService
 {
-    public function index(): JsonResponse|AnonymousResourceCollection
+    public function index(int $perPage = 10): JsonResponse|AnonymousResourceCollection
     {
-        $estudantes = Estudante::paginate(10);
+        $allowedPerPage = [10, 15, 20, 30];
+        $perPage = in_array($perPage, $allowedPerPage, true) ? $perPage : 10;
+
+        $estudantes = Estudante::paginate($perPage);
 
         if ($estudantes->isEmpty()) {
             return response()->json(['message' => 'Nenhum estudante cadastrado'], 200);
