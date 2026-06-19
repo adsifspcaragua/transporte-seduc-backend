@@ -140,6 +140,12 @@ class AuthService
             ], 401);
         }
 
+        if (! $user->ativo) {
+            return response()->json([
+                'message' => 'Usuário inativo.',
+            ], 403);
+        }
+
         return $user;
     }
 
