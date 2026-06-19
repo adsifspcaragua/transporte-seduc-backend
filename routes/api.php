@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Auth\PasswordResetController;
 use App\Http\Controllers\Api\Curso\CursoController;
 use App\Http\Controllers\Api\Estudante\Documento\InscricaoDocumentoController;
 use App\Http\Controllers\Api\Estudante\EstudanteController;
@@ -17,6 +18,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/auth/token', [AuthController::class, 'tokenLogin'])->middleware('throttle:5,1');
+
+Route::post('/password/email', [PasswordResetController::class, 'forgot'])->middleware('throttle:5,1');
+Route::post('/password/reset', [PasswordResetController::class, 'reset'])->middleware('throttle:5,1');
 
 Route::get('instituicao', [InstituicaoController::class, 'index']);
 Route::get('curso', [CursoController::class, 'index']);
@@ -52,36 +56,62 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/auth/token/revoke', [AuthController::class, 'tokenLogout']);
 
-    Route::apiResource('users', UserController::class);
-    Route::apiResource('roles', RoleController::class);
+    // Usuários (apenas admin)
+    Route::apiResource('users', UserController::class)->only(['index', 'show'])->middleware('permission:users.view');
+    Route::apiResource('users', UserController::class)->only(['store', 'update'])->middleware('permission:users.write');
+    Route::apiResource('users', UserController::class)->only(['destroy'])->middleware('permission:users.delete');
+    Route::patch('users/{user}/inativar', [UserController::class, 'inativar'])->middleware('permission:users.write');
+    Route::patch('users/{user}/ativar', [UserController::class, 'ativar'])->middleware('permission:users.write');
 
+    // Cargos (apenas admin)
+    Route::apiResource('roles', RoleController::class)->only(['index', 'show'])->middleware('permission:roles.view');
+    Route::apiResource('roles', RoleController::class)->only(['store', 'update'])->middleware('permission:roles.write');
+    Route::apiResource('roles', RoleController::class)->only(['destroy'])->middleware('permission:roles.delete');
+
+    // Documentos de reecadastro
     Route::apiResource('estudantes/reecadastrar', DocumentoReecadastroController::class)
-        ->parameters(['reecadastrar' => 'documento']);
-    Route::apiResource('estudantes', EstudanteController::class);
-    Route::get('contar-estudantes', [EstudanteController::class, 'countEstudantes']);
+        ->only(['index', 'show'])->parameters(['reecadastrar' => 'documento'])->middleware('permission:documentos.view');
+    Route::apiResource('estudantes/reecadastrar', DocumentoReecadastroController::class)
+        ->only(['store', 'update'])->parameters(['reecadastrar' => 'documento'])->middleware('permission:documentos.write');
+    Route::apiResource('estudantes/reecadastrar', DocumentoReecadastroController::class)
+        ->only(['destroy'])->parameters(['reecadastrar' => 'documento'])->middleware('permission:documentos.delete');
 
-    Route::post('inscricoes/recadastro', [InscricaoController::class, 'recadastro']);
+    // Estudantes
+    Route::apiResource('estudantes', EstudanteController::class)->only(['index', 'show'])->middleware('permission:estudantes.view');
+    Route::apiResource('estudantes', EstudanteController::class)->only(['store', 'update'])->middleware('permission:estudantes.write');
+    Route::apiResource('estudantes', EstudanteController::class)->only(['destroy'])->middleware('permission:estudantes.delete');
+    Route::get('contar-estudantes', [EstudanteController::class, 'countEstudantes'])->middleware('permission:estudantes.view');
+
+    // Inscrições (área administrativa)
+    Route::post('inscricoes/recadastro', [InscricaoController::class, 'recadastro'])->middleware('permission:inscricoes.recadastro');
+    Route::put('inscricoes/analise/{id}', [InscricaoController::class, 'analise'])->middleware('permission:inscricoes.analise');
     Route::apiResource('inscricoes', InscricaoController::class)
-        ->except(['store', 'show', 'update'])
-        ->parameters(['inscricoes' => 'inscricao']);
+        ->only(['index'])->parameters(['inscricoes' => 'inscricao'])->middleware('permission:inscricoes.view');
+    Route::apiResource('inscricoes', InscricaoController::class)
+        ->only(['destroy'])->parameters(['inscricoes' => 'inscricao'])->middleware('permission:inscricoes.delete');
     Route::apiResource('inscricoes/{inscricao_id}/instituicoes', InscricaoInstituicaoController::class)
-        ->except(['store', 'update'])
-        ->parameters(['instituicoes' => 'instituicao']);
-
-    Route::apiResource('instituicao', InstituicaoController::class)->except(['index']);
-    Route::apiResource('linha', LinhaController::class);
+        ->only(['index', 'show'])->parameters(['instituicoes' => 'instituicao'])->middleware('permission:inscricoes.view');
+    Route::apiResource('inscricoes/{inscricao_id}/instituicoes', InscricaoInstituicaoController::class)
+        ->only(['destroy'])->parameters(['instituicoes' => 'instituicao'])->middleware('permission:inscricoes.delete');
     Route::apiResource('inscricoes.documentos', InscricaoDocumentoController::class)
-        ->except(['store', 'update'])
-        ->parameters([
-            'inscricoes' => 'inscricao',
-            'documentos' => 'documento',
-        ]);
+        ->only(['index', 'show'])->parameters(['inscricoes' => 'inscricao', 'documentos' => 'documento'])->middleware('permission:documentos.view');
+    Route::apiResource('inscricoes.documentos', InscricaoDocumentoController::class)
+        ->only(['destroy'])->parameters(['inscricoes' => 'inscricao', 'documentos' => 'documento'])->middleware('permission:documentos.delete');
 
+    // Instituições (index é público; aqui apenas leitura individual/escrita/remoção)
+    Route::apiResource('instituicao', InstituicaoController::class)->only(['show', 'store', 'update'])->middleware('permission:instituicoes.write');
+    Route::apiResource('instituicao', InstituicaoController::class)->only(['destroy'])->middleware('permission:instituicoes.delete');
+
+    // Linhas
+    Route::apiResource('linha', LinhaController::class)->only(['index', 'show'])->middleware('permission:linhas.view');
+    Route::apiResource('linha', LinhaController::class)->only(['store', 'update'])->middleware('permission:linhas.write');
+    Route::apiResource('linha', LinhaController::class)->only(['destroy'])->middleware('permission:linhas.delete');
+
+    // Solicitações de reecadastro (estudante acessa apenas as próprias)
     Route::apiResource('reecadastro/solicitacoes', SolicitacaoReecadastroController::class)
-            ->parameters(['solicitacoes' => 'solicitacao']);
-
-    Route::put('inscricoes/analise/{id}', [InscricaoController::class, 'analise']);
-        });
-        
-
-    
+        ->only(['index', 'show'])->parameters(['solicitacoes' => 'solicitacao'])->middleware('permission:solicitacoes.view');
+    Route::apiResource('reecadastro/solicitacoes', SolicitacaoReecadastroController::class)
+        ->only(['store', 'update'])->parameters(['solicitacoes' => 'solicitacao'])->middleware('permission:solicitacoes.write');
+    Route::apiResource('reecadastro/solicitacoes', SolicitacaoReecadastroController::class)
+        ->only(['destroy'])->parameters(['solicitacoes' => 'solicitacao'])->middleware('permission:solicitacoes.delete');
+});
