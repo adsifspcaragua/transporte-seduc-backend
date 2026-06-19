@@ -34,9 +34,10 @@ class SolicitacaoReecadastroService
                 'message' => 'Solicitação de recadastro criada com sucesso',
             ], 201);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao cadastrar solicitação de recadastro',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -55,9 +56,10 @@ class SolicitacaoReecadastroService
                 'message' => 'Solicitação de recadastro encontrada com sucesso',
             ], 200);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao encontrar solicitação de recadastro',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -81,9 +83,10 @@ class SolicitacaoReecadastroService
                 'message' => 'Solicitação de recadastro atualizada com sucesso',
             ], 200);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao atualizar solicitação de recadastro',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -103,9 +106,10 @@ class SolicitacaoReecadastroService
                 'message' => 'Solicitação de recadastro deletada com sucesso',
             ], 200);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao deletar solicitação de recadastro',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }

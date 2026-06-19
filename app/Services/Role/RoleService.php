@@ -35,9 +35,10 @@ class RoleService
                 'message' => 'Cargo criado com sucesso',
             ], 201);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Falha ao criar cargo',
-                'erro' => $e->getMessage(),
             ], 401);
         }
     }
@@ -53,9 +54,10 @@ class RoleService
 
             return new RoleResource($role);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Falha ao buscar cargo',
-                'erro' => $e->getMessage(),
             ], 401);
         }
     }
@@ -87,9 +89,10 @@ class RoleService
                 'message' => 'Cargo atualizado com sucesso',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Falha ao atualizar cargo',
-                'erro' => $e->getMessage(),
             ], 401);
         }
     }
@@ -111,9 +114,10 @@ class RoleService
                 'message' => 'Cargo deletado com sucesso',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Falha ao deletar cargo',
-                'erro' => $e->getMessage(),
             ], 401);
         }
     }

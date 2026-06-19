@@ -35,9 +35,10 @@ class DocumentoReecadastroService
                 'message' => 'Documento de recadastro criado com sucesso',
             ], 201);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao cadastrar documento de recadastro',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -56,9 +57,10 @@ class DocumentoReecadastroService
                 'message' => 'Documento de recadastro encontrado com sucesso',
             ], 200);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao encontrar documento de recadastro',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -82,9 +84,10 @@ class DocumentoReecadastroService
                 'message' => 'Documento de recadastro atualizado com sucesso',
             ], 200);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao atualizar documento de recadastro',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -108,9 +111,10 @@ class DocumentoReecadastroService
                 'message' => 'Documento de recadastro deletado com sucesso',
             ], 200);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao deletar documento de recadastro',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }

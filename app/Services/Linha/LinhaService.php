@@ -23,9 +23,10 @@ class LinhaService
                 'message' => 'Instituição criada com sucesso',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao encontrar linhas',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -43,9 +44,10 @@ class LinhaService
                 'message' => 'Linha criada com sucesso',
             ], 200);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao cadastrar linha',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -64,9 +66,10 @@ class LinhaService
                 'message' => 'Linha encontrada com sucesso',
             ], 200);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao encontrar linha',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -90,9 +93,10 @@ class LinhaService
                 'message' => 'Linha atualizada com sucesso',
             ], 200);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao atualizar linha',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -116,9 +120,10 @@ class LinhaService
                 'message' => 'Linha deletada com sucesso',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao excluir linha',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }

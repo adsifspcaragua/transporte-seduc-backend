@@ -43,9 +43,10 @@ class InscricaoInstituicaoService
                 'message' => 'Inscrição criada com sucesso',
             ], 201);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao criar inscrição.',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }

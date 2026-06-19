@@ -82,9 +82,10 @@ class UserService
                 'message' => 'Usuário atualizada com sucesso',
             ], 200);
         } catch (Throwable $ex) {
+            report($ex);
+
             return response()->json([
                 'message' => 'Falha ao atualizar usuário',
-                'error' => $ex->getMessage(),
             ], 500);
         }
     }

@@ -38,9 +38,10 @@ class InstituicaoService
                 'message' => 'Instituição criada com sucesso',
             ], 200);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao cadastrar instituicao',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -59,9 +60,10 @@ class InstituicaoService
                 'message' => 'Instituicao encontrada com sucesso',
             ], 200);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao encontrar instituicao',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -85,9 +87,10 @@ class InstituicaoService
                 'message' => 'Instituicao atualizada com sucesso',
             ], 200);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao atualizar instituicao',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -118,9 +121,10 @@ class InstituicaoService
                 'message' => 'Instituicao deletada com sucesso',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao excluir instituicao',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }

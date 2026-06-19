@@ -30,9 +30,10 @@ class InscricaoDocumentoService
                 'message' => 'Documentos exibidos com sucesso.',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao exibir documentos',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -54,9 +55,10 @@ class InscricaoDocumentoService
                 'message' => 'Documento cadastrado com sucesso.',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao cadastrar documento',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -81,9 +83,10 @@ class InscricaoDocumentoService
                 'message' => 'Documento exibido com sucesso.',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao exibir documento',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -113,9 +116,10 @@ class InscricaoDocumentoService
                 'message' => 'Documento atualizado com sucesso.',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao atualizar documento',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -138,9 +142,10 @@ class InscricaoDocumentoService
                 'message' => 'Documento deletado com sucesso.',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao deletar documento',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }

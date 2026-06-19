@@ -42,9 +42,10 @@ class InscricaoService
 
             return response()->json(new InscricaoResource($inscricao), 201);
         } catch (Throwable $ex) {
+            report($ex);
+
             return response()->json([
                 'message' => 'Falha ao criar inscrição',
-                'error' => $ex->getMessage(),
             ], 500);
         }
     }
@@ -63,6 +64,8 @@ class InscricaoService
                 'message' => 'Incricao encontrado com sucesso',
             ], 200);
         } catch (Throwable $ex) {
+            report($ex);
+
             return response()->json(['message' => 'Erro ao buscar inscrição.',
             ], 500);
         }
@@ -189,10 +192,11 @@ class InscricaoService
                     'message' => 'Status de inscrição alterado',
                 ], 200);
 
-        }catch(Throwable $ex){
+        } catch (Throwable $ex) {
+            report($ex);
+
             return response()->json([
                 'message' => 'Falha ao registrar decisão',
-                'ex'=> $ex
             ], 500);
         }
     }

@@ -39,9 +39,10 @@ class EstudanteService
                 'message' => 'Estudante criado com sucesso',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao cadastrar estudante',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -60,9 +61,10 @@ class EstudanteService
                 'message' => 'Estudante encontrado com sucesso',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao encontrar estudante',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -94,9 +96,10 @@ class EstudanteService
                 'message' => 'Estudante atualizado com sucesso',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao atualizar estudante',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -118,9 +121,10 @@ class EstudanteService
                 'message' => 'Estudante deletado com sucesso',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao excluir estudante',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -133,9 +137,10 @@ class EstudanteService
                 'message' => 'Contagem de estudantes realizada com sucesso',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao contar estudantes',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -150,9 +155,10 @@ class EstudanteService
                 'message' => 'Estudantes ativos retornados com sucesso',
             ]);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'message' => 'Erro ao retornar estudantes ativos',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
