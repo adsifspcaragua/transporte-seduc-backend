@@ -28,6 +28,8 @@ class StoreUserRequest extends FormRequest
             'cpf' => 'string|min:11|max:11|unique:users,cpf',
             'matricula' => 'integer|unique:users,matricula',
             'data_nascimento' => 'date|before:today|date_format:Y-m-d',
+            'role' => 'required|string|in:admin,gestor,operador,estudante',
+            'ativo' => 'boolean',
         ];
     }
 
@@ -40,6 +42,8 @@ class StoreUserRequest extends FormRequest
             'cpf' => ['description' => 'CPF do usuario com 11 digitos.', 'example' => '12345678901'],
             'matricula' => ['description' => 'Numero de matricula do usuario.', 'example' => 12345],
             'data_nascimento' => ['description' => 'Data de nascimento no formato AAAA-MM-DD.', 'example' => '1990-05-10'],
+            'role' => ['description' => 'Perfil do usuario: admin, gestor, operador ou estudante.', 'example' => 'operador'],
+            'ativo' => ['description' => 'Indica se o usuario esta ativo. Padrao true.', 'example' => true],
         ];
     }
 }

@@ -28,7 +28,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'email' => "required|email|unique:users,email,{$userId}",
             'name' => 'required|string|max:255',
-            'password' => 'required|min:8',
+            'password' => 'sometimes|min:8',
             'cpf' => [
                 'string',
                 'min:11',
@@ -39,7 +39,8 @@ class UpdateUserRequest extends FormRequest
                 'integer',
                 Rule::unique('users', 'matricula')->ignore($userId), ],
             'data_nascimento' => 'date|before:today|date_format:Y-m-d',
-
+            'role' => 'sometimes|string|in:admin,gestor,operador,estudante',
+            'ativo' => 'sometimes|boolean',
         ];
     }
 
@@ -52,6 +53,8 @@ class UpdateUserRequest extends FormRequest
             'cpf' => ['description' => 'CPF do usuario com 11 digitos.', 'example' => '12345678901'],
             'matricula' => ['description' => 'Numero de matricula do usuario.', 'example' => 12345],
             'data_nascimento' => ['description' => 'Data de nascimento no formato AAAA-MM-DD.', 'example' => '1990-05-10'],
+            'role' => ['description' => 'Perfil do usuario: admin, gestor, operador ou estudante.', 'example' => 'operador'],
+            'ativo' => ['description' => 'Indica se o usuario esta ativo.', 'example' => true],
         ];
     }
 }

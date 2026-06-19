@@ -21,6 +21,8 @@ class UserResource extends JsonResource
             'cpf' => $this->cpf,
             'matricula' => $this->matricula,
             'data_nascimento' => $this->data_nascimento,
+            'ativo' => (bool) $this->ativo,
+            'roles' => $this->whenLoaded('roles', fn () => $this->roles->pluck('title')),
         ];
     }
 }

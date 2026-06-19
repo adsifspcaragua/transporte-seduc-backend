@@ -74,4 +74,28 @@ class UserController extends Controller
     {
         return $this->userService->destroy($id);
     }
+
+    /**
+     * Inativar usuario.
+     *
+     * Marca o usuario como inativo, bloqueando o login sem remover o registro.
+     *
+     * @urlParam user integer required ID do usuario. Example: 1
+     */
+    public function inativar(User $user)
+    {
+        return $this->userService->inativar($user);
+    }
+
+    /**
+     * Ativar usuario.
+     *
+     * Reativa um usuario previamente inativado.
+     *
+     * @urlParam user integer required ID do usuario. Example: 1
+     */
+    public function ativar(User $user)
+    {
+        return $this->userService->ativar($user);
+    }
 }
