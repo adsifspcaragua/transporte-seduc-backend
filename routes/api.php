@@ -24,6 +24,7 @@ Route::post('/password/reset', [PasswordResetController::class, 'reset'])->middl
 
 Route::get('instituicao', [InstituicaoController::class, 'index']);
 Route::get('curso', [CursoController::class, 'index']);
+Route::post('inscricoes/validar-step', [InscricaoController::class, 'validateStep']);
 Route::post('inscricoes', [InscricaoController::class, 'store']);
 Route::get('inscricoes/{inscricao}', [InscricaoController::class, 'show']);
 Route::put('inscricoes/{inscricao}', [InscricaoController::class, 'update']);

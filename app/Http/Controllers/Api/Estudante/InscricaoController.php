@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api\Estudante;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Inscricao\Instituicao\StoreInscricaoInstituicaoRequest;
 use App\Http\Requests\Inscricao\StoreInscricaoRequest;
 use App\Http\Requests\Inscricao\UpdateInscricaoRequest;
 use App\Services\Inscricao\InscricaoService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * @group Inscricoes
@@ -37,6 +39,37 @@ class InscricaoController extends Controller
     public function store(StoreInscricaoRequest $request)
     {
         return $this->inscricaoService->store($request->validated());
+    }
+
+    /**
+     * Validar etapa da inscricao.
+     *
+     * Valida os dados enviados sem criar ou atualizar uma inscricao.
+     */
+    public function validateStep(Request $request)
+    {
+        $step = (int) $request->input('step');
+        $data = $request->input('data', []);
+
+        if (! is_array($data)) {
+            $data = [];
+        }
+
+        $rules = match ($step) {
+            0, 1 => (new StoreInscricaoRequest)->rules(),
+            2 => (new StoreInscricaoInstituicaoRequest)->rules(),
+            default => [],
+        };
+
+        if (array_key_exists('inscricao_id', $rules)) {
+            unset($rules['inscricao_id']);
+        }
+
+        Validator::make($data, $rules)->validate();
+
+        return response()->json([
+            'message' => 'Dados válidos.',
+        ]);
     }
 
     /**
