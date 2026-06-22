@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Estudante;
 use App\Models\Inscricao;
+use Illuminate\Database\Seeder;
 
 class EstudanteSeeder extends Seeder
 {
@@ -20,9 +20,7 @@ class EstudanteSeeder extends Seeder
             'birth_date' => $inscricao1->birth_date,
             'phone' => $inscricao1->phone,
             'address' => $inscricao1->address,
-            'start_time' => '08:00',
-            'end_time' => '12:00',
-            'days_of_week' => ['segunda', 'terca'],
+            'days_of_week' => [1, 2],
             'observation' => $inscricao1->observation,
             'status' => 'Em espera',
             'instituicao_id' => 1,
@@ -38,9 +36,7 @@ class EstudanteSeeder extends Seeder
             'birth_date' => $inscricao2->birth_date,
             'phone' => $inscricao2->phone,
             'address' => $inscricao2->address,
-            'start_time' => '13:00',
-            'end_time' => '17:00',
-            'days_of_week' => ['quarta', 'quinta'],
+            'days_of_week' => [3, 4],
             'observation' => $inscricao2->observation,
             'status' => 'Em espera',
             'instituicao_id' => 2,

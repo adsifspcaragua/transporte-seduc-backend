@@ -16,7 +16,7 @@ class EstudanteService
         $allowedPerPage = [10, 15, 20, 30];
         $perPage = in_array($perPage, $allowedPerPage, true) ? $perPage : 10;
 
-        $estudantes = Estudante::paginate($perPage);
+        $estudantes = Estudante::with('inscricao.inscricao_instituicao')->paginate($perPage);
 
         if ($estudantes->isEmpty()) {
             return response()->json(['message' => 'Nenhum estudante cadastrado'], 200);
@@ -53,7 +53,7 @@ class EstudanteService
     public function show(string $id): JsonResponse
     {
         try {
-            $estudante = Estudante::find($id);
+            $estudante = Estudante::with('inscricao.inscricao_instituicao')->find($id);
 
             if (! $estudante) {
                 return response()->json(['message' => 'Estudante não encontrado'], 404);
@@ -79,15 +79,74 @@ class EstudanteService
     {
         try {
             $estudante = DB::transaction(function () use ($data, $id) {
-                $estudante = Estudante::find($id);
+                $estudante = Estudante::with('inscricao.inscricao_instituicao')->find($id);
 
                 if (! $estudante) {
                     return null;
                 }
 
-                $estudante->update($data);
+                $estudanteData = array_intersect_key($data, array_flip([
+                    'name',
+                    'email',
+                    'cpf',
+                    'birth_date',
+                    'phone',
+                    'address',
+                    'observation',
+                    'status',
+                    'linha_id',
+                    'user_id',
+                    'instituicao_id',
+                    'inscricao_id',
+                ]));
 
-                return $estudante;
+                $inscricaoData = array_intersect_key($data, array_flip([
+                    'name',
+                    'cpf',
+                    'rg',
+                    'birth_date',
+                    'phone',
+                    'email',
+                    'cep',
+                    'address',
+                    'neighborhood',
+                    'city',
+                    'complement',
+                    'number',
+                    'father_name',
+                    'mother_name',
+                    'observation',
+                ]));
+
+                $instituicaoData = array_intersect_key($data, array_flip([
+                    'course',
+                    'semester',
+                    'expected_completion',
+                    'shift',
+                    'city_destination',
+                    'used_transport',
+                    'days_of_week',
+                    'has_scholarship',
+                    'scholarship_type',
+                    'instituicao_id',
+                ]));
+
+                if ($estudanteData !== []) {
+                    $estudante->update($estudanteData);
+                }
+
+                if ($inscricaoData !== [] && $estudante->inscricao) {
+                    $estudante->inscricao->update($inscricaoData);
+                }
+
+                if ($instituicaoData !== [] && $estudante->inscricao) {
+                    $estudante->inscricao->inscricao_instituicao()->updateOrCreate(
+                        ['inscricao_id' => $estudante->inscricao->id],
+                        $instituicaoData,
+                    );
+                }
+
+                return $estudante->refresh()->load('inscricao.inscricao_instituicao');
             });
 
             if (! $estudante) {

@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Estudante;
 
+use App\Models\Estudante;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateEstudanteRequest extends FormRequest
 {
@@ -24,25 +26,44 @@ class UpdateEstudanteRequest extends FormRequest
     {
         $estudante = $this->route('estudante');
         $estudanteId = is_object($estudante) ? $estudante->id : $estudante;
+        $inscricaoId = Estudante::find($estudanteId)?->inscricao_id;
 
         return [
             'name' => 'sometimes|string|max:255',
 
-            'email' => 'sometimes|email|unique:estudantes,email,'.$estudanteId,
+            'email' => [
+                'sometimes',
+                'nullable',
+                'email',
+                Rule::unique('estudantes', 'email')->ignore($estudanteId),
+                Rule::unique('inscricoes', 'email')->ignore($inscricaoId),
+            ],
 
-            'cpf' => 'sometimes|string|size:11|unique:estudantes,cpf,'.$estudanteId,
+            'cpf' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'size:11',
+                Rule::unique('estudantes', 'cpf')->ignore($estudanteId),
+                Rule::unique('inscricoes', 'cpf')->ignore($inscricaoId),
+            ],
 
             'birth_date' => 'sometimes|date|before:today',
 
             'phone' => 'sometimes|string|max:15|unique:estudantes,phone,'.$estudanteId,
 
             'address' => 'sometimes|string|max:255',
-
-            'start_time' => 'sometimes|date_format:H:i',
-            'end_time' => 'sometimes|date_format:H:i|after:start_time',
+            'rg' => 'sometimes|nullable|string|min:8|max:11',
+            'mother_name' => 'sometimes|nullable|string|max:255',
+            'father_name' => 'sometimes|nullable|string|max:255',
+            'cep' => 'sometimes|nullable|string|max:9',
+            'city' => 'sometimes|nullable|string|max:255',
+            'neighborhood' => 'sometimes|nullable|string|max:255',
+            'number' => 'sometimes|nullable|string|max:50',
+            'complement' => 'sometimes|nullable|string|max:255',
 
             'days_of_week' => 'sometimes|array',
-            'days_of_week.*' => 'string',
+            'days_of_week.*' => 'integer|between:0,6',
 
             'observation' => 'nullable|string|max:1000',
 
@@ -55,6 +76,15 @@ class UpdateEstudanteRequest extends FormRequest
             'instituicao_id' => 'sometimes|exists:instituicoes,id',
 
             'inscricao_id' => 'sometimes|integer|exists:inscricoes,id',
+
+            'course' => 'sometimes|nullable|string|max:255',
+            'semester' => 'sometimes|nullable|string|max:255',
+            'expected_completion' => 'sometimes|nullable|date',
+            'shift' => 'sometimes|nullable|integer|in:1,2',
+            'city_destination' => 'sometimes|nullable|string|max:255',
+            'used_transport' => 'sometimes|nullable|boolean',
+            'has_scholarship' => 'sometimes|nullable|boolean',
+            'scholarship_type' => 'sometimes|nullable|string|max:255',
         ];
     }
 
@@ -67,10 +97,8 @@ class UpdateEstudanteRequest extends FormRequest
             'birth_date' => ['description' => 'Data de nascimento do estudante.', 'example' => '2005-08-15'],
             'phone' => ['description' => 'Telefone para contato.', 'example' => '77999999999'],
             'address' => ['description' => 'Endereco do estudante.', 'example' => 'Rua Principal, 100'],
-            'start_time' => ['description' => 'Horario de inicio das aulas no formato HH:MM.', 'example' => '07:30'],
-            'end_time' => ['description' => 'Horario de termino das aulas no formato HH:MM.', 'example' => '12:00'],
-            'days_of_week' => ['description' => 'Dias da semana em que o estudante usa o transporte.', 'example' => ['segunda', 'terca']],
-            'days_of_week.*' => ['description' => 'Dia da semana.', 'example' => 'segunda'],
+            'days_of_week' => ['description' => 'Dias da semana de uso do transporte, de 0 a 6.', 'example' => [1, 3, 5]],
+            'days_of_week.*' => ['description' => 'Dia da semana, de 0 a 6.', 'example' => 1],
             'observation' => ['description' => 'Observacao opcional sobre o estudante.', 'example' => 'Necessita embarque no ponto central.'],
             'status' => ['description' => 'Status atual do estudante.', 'example' => 'ATIVO'],
             'linha_id' => ['description' => 'ID da linha vinculada ao estudante.', 'example' => 1],

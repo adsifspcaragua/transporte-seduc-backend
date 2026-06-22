@@ -29,11 +29,9 @@ class StoreEstudanteRequest extends FormRequest
             'birth_date' => 'required|date|before:today',
             'phone' => 'required|string|max:15',
             'address' => 'required|string|max:255',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
 
             'days_of_week' => 'required|array',
-            'days_of_week.*' => 'string',
+            'days_of_week.*' => 'integer|between:0,6',
 
             'observation' => 'nullable|string|max:1000',
 
@@ -56,10 +54,8 @@ class StoreEstudanteRequest extends FormRequest
             'birth_date' => ['description' => 'Data de nascimento do estudante.', 'example' => '2005-08-15'],
             'phone' => ['description' => 'Telefone para contato.', 'example' => '77999999999'],
             'address' => ['description' => 'Endereco do estudante.', 'example' => 'Rua Principal, 100'],
-            'start_time' => ['description' => 'Horario de inicio das aulas no formato HH:MM.', 'example' => '07:30'],
-            'end_time' => ['description' => 'Horario de termino das aulas no formato HH:MM.', 'example' => '12:00'],
-            'days_of_week' => ['description' => 'Dias da semana em que o estudante usa o transporte.', 'example' => ['segunda', 'terca']],
-            'days_of_week.*' => ['description' => 'Dia da semana.', 'example' => 'segunda'],
+            'days_of_week' => ['description' => 'Dias da semana de uso do transporte, de 0 a 6.', 'example' => [1, 3, 5]],
+            'days_of_week.*' => ['description' => 'Dia da semana, de 0 a 6.', 'example' => 1],
             'observation' => ['description' => 'Observacao opcional sobre o estudante.', 'example' => 'Necessita embarque no ponto central.'],
             'status' => ['description' => 'Campo controlado pelo sistema. Nao envie este campo.', 'example' => 'No-example'],
             'linha_id' => ['description' => 'ID da linha vinculada ao estudante.', 'example' => 1],

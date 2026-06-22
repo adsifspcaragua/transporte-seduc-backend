@@ -19,11 +19,9 @@ return new class extends Migration
             $table->date('birth_date');
             $table->string('phone');
             $table->string('address');
-            $table->time('start_time');
-            $table->time('end_time');
             $table->json('days_of_week');
             $table->string('observation')->nullable();
-            $table->string('status')->default("Em espera");
+            $table->string('status')->default('Em espera');
             $table->foreignId('instituicao_id')->constrained('instituicoes');
             $table->unsignedInteger('linha_id')->nullable();
             $table->unsignedInteger('user_id')->nullable();
