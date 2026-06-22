@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Instituicao;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Linha;
 use Illuminate\Database\Seeder;
 
 class InstituicaoSeeder extends Seeder
@@ -13,16 +13,42 @@ class InstituicaoSeeder extends Seeder
      */
     public function run(): void
     {
-        
-        Instituicao::create([
-            'name' => 'Escola Municipal A',
-            'linhas_ids' => [1, 2, 3],
-        ]);
+        $linhas = Linha::pluck('id', 'name');
 
-        Instituicao::create([
-            'name' => 'Escola Estadual B',
-            'linhas_ids' => [4, 5],
-        ]);
-    
+        $instituicoes = [
+            [
+                'name' => 'Universidade do Vale do Paraíba',
+                'linhas' => ['Linha Centro', 'Linha Noturna'],
+            ],
+            [
+                'name' => 'Faculdade Módulo',
+                'linhas' => ['Linha Centro', 'Linha Sul'],
+            ],
+            [
+                'name' => 'FATEC Caraguatatuba',
+                'linhas' => ['Linha Norte', 'Linha Noturna'],
+            ],
+            [
+                'name' => 'UNIVESP Polo Caraguatatuba',
+                'linhas' => ['Linha Sul'],
+            ],
+            [
+                'name' => 'Universidade Paulista',
+                'linhas' => ['Linha Centro', 'Linha Norte'],
+            ],
+        ];
+
+        foreach ($instituicoes as $instituicao) {
+            Instituicao::updateOrCreate(
+                ['name' => $instituicao['name']],
+                [
+                    'linhas_ids' => collect($instituicao['linhas'])
+                        ->map(fn (string $linha) => $linhas->get($linha))
+                        ->filter()
+                        ->values()
+                        ->all(),
+                ],
+            );
+        }
     }
 }

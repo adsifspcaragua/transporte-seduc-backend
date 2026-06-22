@@ -12,20 +12,24 @@ class CursoSeeder extends Seeder
      */
     public function run(): void
     {
-        Curso::create([
-            'name' => 'Engenharia Civil',
-        ]);
+        $cursos = [
+            'Administração',
+            'Arquitetura e Urbanismo',
+            'Ciência da Computação',
+            'Direito',
+            'Educação Física',
+            'Enfermagem',
+            'Engenharia Civil',
+            'Engenharia de Software',
+            'Fisioterapia',
+            'Medicina',
+            'Pedagogia',
+            'Psicologia',
+            'Sistemas de Informação',
+        ];
 
-        Curso::create([
-            'name' => 'Administração',
-        ]);
-
-        Curso::create([
-            'name' => 'Direito',
-        ]);
-
-        Curso::create([
-            'name' => 'Pedagogia',
-        ]);
+        foreach ($cursos as $curso) {
+            Curso::updateOrCreate(['name' => $curso]);
+        }
     }
 }
