@@ -3,6 +3,7 @@
 namespace App\Services\Inscricao;
 
 use App\Http\Resources\Inscricao\InscricaoResource;
+use App\Models\Estudante;
 use App\Models\Inscricao;
 use App\Models\InscricaoDocumento;
 use Illuminate\Http\JsonResponse;
@@ -159,10 +160,50 @@ class InscricaoService
     {
         try{
             
-            $inscricao = Inscricao::find($id);
+            $inscricao = Inscricao::with('inscricao_instituicao', 'estudante', 'inscricao_documentos')->find($id);
+
+            if (! $inscricao) {
+                return response()->json([
+                    'message' => 'Inscrição não encontrada',
+                ], 404);
+            }
+
             $docs = $inscricao->inscricao_documentos;
             if ($data['decisao'] == "Aprovado"){
-                $inscricao->update(['status' => "Em lista de espera", 'observation' => ""]);
+                $inscricao->update(['status' => "Aprovado", 'observation' => ""]);
+                $dadosInstitucionais = $inscricao->inscricao_instituicao;
+                $instituicaoId = $dadosInstitucionais?->instituicao_id;
+                $estudanteData = [
+                    'name' => $inscricao->name,
+                    'email' => $inscricao->email,
+                    'cpf' => $inscricao->cpf,
+                    'birth_date' => $inscricao->birth_date,
+                    'phone' => $inscricao->phone,
+                    'address' => $inscricao->address,
+                    'days_of_week' => $dadosInstitucionais?->days_of_week ?? [],
+                    'observation' => $inscricao->observation,
+                    'status' => 'Aprovado',
+                ];
+
+                if ($instituicaoId !== null) {
+                    $estudanteData['instituicao_id'] = $instituicaoId;
+                }
+
+                if ($inscricao->estudante) {
+                    $inscricao->estudante->update($estudanteData);
+                } elseif (
+                    $instituicaoId !== null &&
+                    $inscricao->birth_date &&
+                    $inscricao->phone &&
+                    $inscricao->address
+                ) {
+                    Estudante::create([
+                        ...$estudanteData,
+                        'instituicao_id' => $instituicaoId,
+                        'inscricao_id' => $inscricao->id,
+                    ]);
+                }
+
                 foreach($docs as $doc){
                     $doc->update([
                         'status' => 'Aprovado'
@@ -171,9 +212,10 @@ class InscricaoService
                         
             }else{
                 $inscricao->update([
-                    'status' => "Reprovado",
+                    'status' => "Rejeitado",
                     'observation' => $data['motivo']
                 ]);
+                $inscricao->estudante?->update(['status' => 'Rejeitado']);
                 $docs->each(function($doc){
                     $doc->update(['status' => 'Aprovado']);
                 });
@@ -182,7 +224,7 @@ class InscricaoService
                     foreach($data["documentos"] as $d){
                         $alterado = $docs->firstWhere('name', $d);
                         if($alterado){
-                            $alterado->update(['status' => 'Reprovado']);
+                            $alterado->update(['status' => 'Rejeitado']);
                         }
                     }
                 }
