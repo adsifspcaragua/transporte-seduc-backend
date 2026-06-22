@@ -1,0 +1,32 @@
+{
+    // TESTE DE MUTACAO.
+    //
+    // O Infection "semeia defeitos" no codigo (gera mutantes) e roda a suite
+    // PHPUnit contra cada um. Um mutante "morto" = algum teste falhou ao
+    // detecta-lo; um mutante "sobrevivente" = os testes nao perceberam a
+    // alteracao (lacuna de teste). A metrica e o Mutation Score Indicator (MSI).
+    //
+    // REQUISITO: o Infection precisa de um driver de cobertura (pcov ou xdebug).
+    // Instale, por exemplo: sudo apt install php8.4-pcov  (ou php8.4-xdebug)
+    // e rode:  vendor/bin/infection --threads=max --show-mutations
+    //
+    // Para um run focado e de MSI alto (codigo bem coberto pelos testes):
+    //   vendor/bin/infection --filter=InscricaoStatusService.php
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": [
+            "app/Services",
+            "app/Http/Middleware"
+        ]
+    },
+    "logs": {
+        "text": "storage/logs/infection.log"
+    },
+    "tmpDir": "storage/app/infection",
+    "mutators": {
+        "@default": true
+    },
+    "testFramework": "phpunit",
+    "minMsi": 60,
+    "minCoveredMsi": 70
+}

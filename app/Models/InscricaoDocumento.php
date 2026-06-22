@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use App\Models\Inscricao;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class InscricaoDocumento extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'inscricao_id',
         'name',
