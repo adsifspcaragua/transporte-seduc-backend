@@ -17,11 +17,12 @@ class RolePermissionSeeder extends Seeder
         'users.view', 'users.write', 'users.delete',
         'roles.view', 'roles.write', 'roles.delete',
         'estudantes.view', 'estudantes.write', 'estudantes.delete',
-        'inscricoes.view', 'inscricoes.delete', 'inscricoes.analise', 'inscricoes.recadastro',
+        'inscricoes.view', 'inscricoes.delete', 'inscricoes.analise',
         'instituicoes.write', 'instituicoes.delete',
         'linhas.view', 'linhas.write', 'linhas.delete',
-        'documentos.view', 'documentos.write', 'documentos.delete',
-        'solicitacoes.view', 'solicitacoes.write', 'solicitacoes.delete',
+        'documentos.view', 'documentos.delete',
+        'periodos.view', 'periodos.write', 'periodos.delete',
+        'solicitacoes.view', 'solicitacoes.analise', 'solicitacoes.delete',
     ];
 
     /**
@@ -35,18 +36,17 @@ class RolePermissionSeeder extends Seeder
             'inscricoes.view', 'inscricoes.delete', 'inscricoes.analise',
             'instituicoes.write', 'instituicoes.delete',
             'linhas.view', 'linhas.write', 'linhas.delete',
-            'documentos.view', 'documentos.write', 'documentos.delete',
-            'solicitacoes.view', 'solicitacoes.write', 'solicitacoes.delete',
+            'documentos.view', 'documentos.delete',
+            'periodos.view', 'periodos.write', 'periodos.delete',
+            'solicitacoes.view', 'solicitacoes.analise', 'solicitacoes.delete',
         ],
         'operador' => [
             'estudantes.view', 'estudantes.write',
             'inscricoes.view',
             'linhas.view',
-            'documentos.view', 'documentos.write', 'documentos.delete',
-            'solicitacoes.view', 'solicitacoes.write',
-        ],
-        'estudante' => [
-            'solicitacoes.view', 'solicitacoes.write',
+            'documentos.view',
+            'periodos.view',
+            'solicitacoes.view',
         ],
     ];
 
@@ -66,5 +66,8 @@ class RolePermissionSeeder extends Seeder
             $ids = $permissions->only($granted)->pluck('id');
             $role->permissions()->sync($ids);
         }
+
+        // Permissões que deixaram de existir saem junto com os vínculos (cascata).
+        Permission::whereNotIn('title', $this->permissions)->delete();
     }
 }

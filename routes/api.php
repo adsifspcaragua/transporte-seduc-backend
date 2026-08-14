@@ -3,13 +3,14 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
 use App\Http\Controllers\Api\Curso\CursoController;
-use App\Http\Controllers\Api\Estudante\Documento\InscricaoDocumentoController;
 use App\Http\Controllers\Api\Estudante\EstudanteController;
 use App\Http\Controllers\Api\Estudante\InscricaoController;
 use App\Http\Controllers\Api\Estudante\InscricaoInstituicaoController;
 use App\Http\Controllers\Api\Instituicao\InstituicaoController;
 use App\Http\Controllers\Api\LinhaController;
 use App\Http\Controllers\Api\Reecadastro\DocumentoReecadastroController;
+use App\Http\Controllers\Api\Reecadastro\PeriodoReecadastroController;
+use App\Http\Controllers\Api\Reecadastro\ReecadastroPublicoController;
 use App\Http\Controllers\Api\Reecadastro\SolicitacaoReecadastroController;
 use App\Http\Controllers\Api\Role\RoleController;
 use App\Http\Controllers\Api\User\UserController;
@@ -25,16 +26,23 @@ Route::post('/password/reset', [PasswordResetController::class, 'reset'])->middl
 Route::get('instituicao', [InstituicaoController::class, 'index']);
 Route::get('curso', [CursoController::class, 'index']);
 Route::post('inscricoes/validar-step', [InscricaoController::class, 'validateStep']);
-Route::post('inscricoes', [InscricaoController::class, 'store']);
-Route::get('inscricoes/{inscricao}', [InscricaoController::class, 'show']);
-Route::put('inscricoes/{inscricao}', [InscricaoController::class, 'update']);
-Route::patch('inscricoes/{inscricao}', [InscricaoController::class, 'update']);
-Route::post('inscricoes/{inscricao_id}/instituicoes', [InscricaoInstituicaoController::class, 'store']);
-Route::put('inscricoes/{inscricao_id}/instituicoes/{instituicao}', [InscricaoInstituicaoController::class, 'update']);
-Route::patch('inscricoes/{inscricao_id}/instituicoes/{instituicao}', [InscricaoInstituicaoController::class, 'update']);
-Route::post('inscricoes/{inscricao}/documentos', [InscricaoDocumentoController::class, 'store']);
-Route::put('inscricoes/{inscricao}/documentos/{documento}', [InscricaoDocumentoController::class, 'update']);
-Route::patch('inscricoes/{inscricao}/documentos/{documento}', [InscricaoDocumentoController::class, 'update']);
+Route::post('inscricoes', [InscricaoController::class, 'store'])->middleware('throttle:10,1');
+
+// Lista de espera: o estudante nao faz login, entao cada inscrição só é
+// acessível com o token devolvido na criação.
+Route::middleware('inscricao.token')->group(function () {
+    Route::get('inscricoes/{inscricao}', [InscricaoController::class, 'show']);
+    Route::put('inscricoes/{inscricao}', [InscricaoController::class, 'update']);
+    Route::patch('inscricoes/{inscricao}', [InscricaoController::class, 'update']);
+    Route::post('inscricoes/{inscricao_id}/instituicoes', [InscricaoInstituicaoController::class, 'store']);
+    Route::put('inscricoes/{inscricao_id}/instituicoes/{instituicao}', [InscricaoInstituicaoController::class, 'update']);
+    Route::patch('inscricoes/{inscricao_id}/instituicoes/{instituicao}', [InscricaoInstituicaoController::class, 'update']);
+});
+
+// Recadastro do estudante: acesso pelo CPF, sem login, com token de sessão.
+Route::post('reecadastro/consulta', [ReecadastroPublicoController::class, 'consulta'])->middleware('throttle:10,1');
+Route::post('reecadastro/solicitacoes/{solicitacao}/documentos', [ReecadastroPublicoController::class, 'documento'])->middleware('throttle:30,1');
+Route::post('reecadastro/solicitacoes/{solicitacao}/finalizar', [ReecadastroPublicoController::class, 'finalizar'])->middleware('throttle:10,1');
 
 Route::middleware('auth:sanctum')->group(function () {
     /**
@@ -69,14 +77,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('roles', RoleController::class)->only(['store', 'update'])->middleware('permission:roles.write');
     Route::apiResource('roles', RoleController::class)->only(['destroy'])->middleware('permission:roles.delete');
 
-    // Documentos de reecadastro
-    Route::apiResource('estudantes/reecadastrar', DocumentoReecadastroController::class)
-        ->only(['index', 'show'])->parameters(['reecadastrar' => 'documento'])->middleware('permission:documentos.view');
-    Route::apiResource('estudantes/reecadastrar', DocumentoReecadastroController::class)
-        ->only(['store', 'update'])->parameters(['reecadastrar' => 'documento'])->middleware('permission:documentos.write');
-    Route::apiResource('estudantes/reecadastrar', DocumentoReecadastroController::class)
-        ->only(['destroy'])->parameters(['reecadastrar' => 'documento'])->middleware('permission:documentos.delete');
-
     // Estudantes
     Route::apiResource('estudantes', EstudanteController::class)->only(['index', 'show'])->middleware('permission:estudantes.view');
     Route::apiResource('estudantes', EstudanteController::class)->only(['store', 'update'])->middleware('permission:estudantes.write');
@@ -84,7 +84,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('contar-estudantes', [EstudanteController::class, 'countEstudantes'])->middleware('permission:estudantes.view');
 
     // Inscrições (área administrativa)
-    Route::post('inscricoes/recadastro', [InscricaoController::class, 'recadastro'])->middleware('permission:inscricoes.recadastro');
     Route::put('inscricoes/analise/{id}', [InscricaoController::class, 'analise'])->middleware('permission:inscricoes.analise');
     Route::apiResource('inscricoes', InscricaoController::class)
         ->only(['index'])->parameters(['inscricoes' => 'inscricao'])->middleware('permission:inscricoes.view');
@@ -94,11 +93,6 @@ Route::middleware('auth:sanctum')->group(function () {
         ->only(['index', 'show'])->parameters(['instituicoes' => 'instituicao'])->middleware('permission:inscricoes.view');
     Route::apiResource('inscricoes/{inscricao_id}/instituicoes', InscricaoInstituicaoController::class)
         ->only(['destroy'])->parameters(['instituicoes' => 'instituicao'])->middleware('permission:inscricoes.delete');
-    Route::apiResource('inscricoes.documentos', InscricaoDocumentoController::class)
-        ->only(['index', 'show'])->parameters(['inscricoes' => 'inscricao', 'documentos' => 'documento'])->middleware('permission:documentos.view');
-    Route::apiResource('inscricoes.documentos', InscricaoDocumentoController::class)
-        ->only(['destroy'])->parameters(['inscricoes' => 'inscricao', 'documentos' => 'documento'])->middleware('permission:documentos.delete');
-
     // Instituições (index é público; aqui apenas leitura individual/escrita/remoção)
     Route::apiResource('instituicao', InstituicaoController::class)->only(['show', 'store', 'update'])->middleware('permission:instituicoes.write');
     Route::apiResource('instituicao', InstituicaoController::class)->only(['destroy'])->middleware('permission:instituicoes.delete');
@@ -108,11 +102,27 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('linha', LinhaController::class)->only(['store', 'update'])->middleware('permission:linhas.write');
     Route::apiResource('linha', LinhaController::class)->only(['destroy'])->middleware('permission:linhas.delete');
 
-    // Solicitações de reecadastro (estudante acessa apenas as próprias)
+    // Períodos de recadastro
+    Route::apiResource('reecadastro/periodos', PeriodoReecadastroController::class)
+        ->only(['index', 'show'])->parameters(['periodos' => 'periodo'])->middleware('permission:periodos.view');
+    Route::apiResource('reecadastro/periodos', PeriodoReecadastroController::class)
+        ->only(['store', 'update'])->parameters(['periodos' => 'periodo'])->middleware('permission:periodos.write');
+    Route::apiResource('reecadastro/periodos', PeriodoReecadastroController::class)
+        ->only(['destroy'])->parameters(['periodos' => 'periodo'])->middleware('permission:periodos.delete');
+    Route::patch('reecadastro/periodos/{periodo}/abrir', [PeriodoReecadastroController::class, 'abrir'])->middleware('permission:periodos.write');
+    Route::patch('reecadastro/periodos/{periodo}/fechar', [PeriodoReecadastroController::class, 'fechar'])->middleware('permission:periodos.write');
+
+    // Solicitações de recadastro (homologação)
+    Route::put('reecadastro/solicitacoes/{solicitacao}/analise', [SolicitacaoReecadastroController::class, 'analise'])->middleware('permission:solicitacoes.analise');
     Route::apiResource('reecadastro/solicitacoes', SolicitacaoReecadastroController::class)
         ->only(['index', 'show'])->parameters(['solicitacoes' => 'solicitacao'])->middleware('permission:solicitacoes.view');
     Route::apiResource('reecadastro/solicitacoes', SolicitacaoReecadastroController::class)
-        ->only(['store', 'update'])->parameters(['solicitacoes' => 'solicitacao'])->middleware('permission:solicitacoes.write');
-    Route::apiResource('reecadastro/solicitacoes', SolicitacaoReecadastroController::class)
         ->only(['destroy'])->parameters(['solicitacoes' => 'solicitacao'])->middleware('permission:solicitacoes.delete');
+
+    // Documentos do recadastro
+    Route::get('reecadastro/documentos/{documento}/download', [DocumentoReecadastroController::class, 'download'])->middleware('permission:documentos.view');
+    Route::apiResource('reecadastro/documentos', DocumentoReecadastroController::class)
+        ->only(['index', 'show'])->parameters(['documentos' => 'documento'])->middleware('permission:documentos.view');
+    Route::apiResource('reecadastro/documentos', DocumentoReecadastroController::class)
+        ->only(['destroy'])->parameters(['documentos' => 'documento'])->middleware('permission:documentos.delete');
 });

@@ -21,7 +21,7 @@ class EstudanteSeeder extends Seeder
         $estudantes = [
             [
                 'cpf' => '11111111111',
-                'status' => 'Lista de espera',
+                'status' => 'Em espera',
                 'institution' => 'Universidade do Vale do Paraíba',
                 'line' => 'Linha Centro',
                 'days_of_week' => [1, 2, 3, 4, 5],
@@ -29,7 +29,7 @@ class EstudanteSeeder extends Seeder
             ],
             [
                 'cpf' => '22222222222',
-                'status' => 'Aprovado',
+                'status' => 'Ativo',
                 'institution' => 'Faculdade Módulo',
                 'line' => 'Linha Noturna',
                 'days_of_week' => [1, 3, 5],
@@ -37,7 +37,7 @@ class EstudanteSeeder extends Seeder
             ],
             [
                 'cpf' => '33333333333',
-                'status' => 'Rejeitado',
+                'status' => 'Inativo',
                 'institution' => 'Universidade Paulista',
                 'line' => null,
                 'days_of_week' => [2, 4],

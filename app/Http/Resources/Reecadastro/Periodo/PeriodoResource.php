@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Reecadastro\Documento;
+namespace App\Http\Resources\Reecadastro\Periodo;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DocumentoResource extends JsonResource
+class PeriodoResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +16,11 @@ class DocumentoResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'estudante_id' => $this->estudante_id,
-            'solicitacao_id' => $this->solicitacao_id,
-            'type' => $this->type,
-            'label' => $this->label,
-            'nome_original' => $this->nome_original,
+            'ano' => $this->ano,
+            'semestre' => $this->semestre,
+            'referencia' => $this->referencia,
+            'data_inicio' => $this->data_inicio?->toDateString(),
+            'data_fim' => $this->data_fim?->toDateString(),
             'status' => $this->status,
             'observacoes' => $this->observacoes,
             'created_at' => $this->created_at,

@@ -5,10 +5,10 @@ namespace App\Services\Inscricao;
 use App\Http\Resources\Inscricao\InscricaoResource;
 use App\Models\Estudante;
 use App\Models\Inscricao;
-use App\Models\InscricaoDocumento;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Throwable;
 
 class InscricaoService
@@ -38,7 +38,9 @@ class InscricaoService
     public function store(array $data): JsonResponse
     {
         try {
-            $inscricao = Inscricao::create($data);
+            // Credencial devolvida ao estudante: e o que permite consultar e
+            // corrigir a propria inscricao depois, ja que ele nao faz login.
+            $inscricao = Inscricao::create([...$data, 'access_token' => Str::random(64)]);
             $inscricao = $this->statusService->refreshStatus($inscricao);
 
             return response()->json(new InscricaoResource($inscricao), 201);
@@ -57,7 +59,7 @@ class InscricaoService
             $inscricao = Inscricao::find($id);
 
             if (! $inscricao) {
-                return response()->json(['message' => 'Inscricao não encontrada'], 404);
+                return response()->json(['message' => 'Inscricao não encontrada'], 404);
             }
 
             return response()->json([
@@ -92,9 +94,9 @@ class InscricaoService
                 ], 403);
             }
 
-            if ($inscricao->status === 'Em lista de espera') {
+            if (in_array($inscricao->status, ['Aprovado', 'Rejeitado'], true)) {
                 return response()->json([
-                    'message' => 'A inscrição já está aprovada',
+                    'message' => 'A inscrição já foi analisada',
                 ], 403);
             }
 
@@ -119,7 +121,7 @@ class InscricaoService
             $inscricao = Inscricao::find($id);
 
             if (! $inscricao) {
-                return response()->json(['message' => 'Inscricao não encontrada'], 404);
+                return response()->json(['message' => 'Inscricao não encontrada'], 404);
             }
 
             $inscricao->delete();
@@ -134,33 +136,19 @@ class InscricaoService
         }
     }
 
-    public function recadastro(): JsonResponse
-    {
-        try {
-            Inscricao::query()->update([
-                'status' => 'Incompleto',
-                'accepted_terms' => false,
-                'accepted_terms_2' => false,
-            ]);
-
-            //$docs = InscricaoDocumento::query()->delete();
-
-            return response()->json([
-                'message' => 'Status de inscrições redefinido',
-            ], 200);
-        } catch (Throwable) {
-            return response()->json([
-                'message' => 'Falha ao ativar recadastro',
-            ], 500);
-        }
-    }
-
-
+    /**
+     * Registra a decisão da responsável sobre uma inscrição da lista de espera.
+     *
+     * Aprovar cria (ou atualiza) o estudante correspondente, que passa a estar
+     * apto ao benefício; recusar guarda o motivo e inativa o estudante caso ele
+     * já existisse.
+     *
+     * @param  array<string, mixed>  $data
+     */
     public function analiseInscricao(string $id, array $data): JsonResponse
     {
-        try{
-            
-            $inscricao = Inscricao::with('inscricao_instituicao', 'estudante', 'inscricao_documentos')->find($id);
+        try {
+            $inscricao = Inscricao::with(['inscricao_instituicao', 'estudante'])->find($id);
 
             if (! $inscricao) {
                 return response()->json([
@@ -168,11 +156,43 @@ class InscricaoService
                 ], 404);
             }
 
-            $docs = $inscricao->inscricao_documentos;
-            if ($data['decisao'] == "Aprovado"){
-                $inscricao->update(['status' => "Aprovado", 'observation' => ""]);
-                $dadosInstitucionais = $inscricao->inscricao_instituicao;
-                $instituicaoId = $dadosInstitucionais?->instituicao_id;
+            if ($data['decisao'] !== 'Aprovado') {
+                $inscricao->update([
+                    'status' => 'Rejeitado',
+                    'observation' => $data['motivo'],
+                ]);
+
+                $inscricao->estudante?->update(['status' => 'Inativo']);
+
+                return response()->json([
+                    'message' => 'Inscrição rejeitada',
+                ], 200);
+            }
+
+            $dadosInstitucionais = $inscricao->inscricao_instituicao;
+            $instituicaoId = $dadosInstitucionais?->instituicao_id;
+
+            // Sem esses dados o estudante não pode ser criado (colunas obrigatórias),
+            // e a aprovação seria registrada sem gerar o estudante.
+            $faltando = array_keys(array_filter([
+                'instituicao' => $instituicaoId === null,
+                'data de nascimento' => $inscricao->birth_date === null,
+                'telefone' => $inscricao->phone === null,
+                'endereço' => $inscricao->address === null,
+            ]));
+
+            if ($faltando !== [] && ! $inscricao->estudante) {
+                return response()->json([
+                    'message' => 'Inscrição incompleta para aprovação. Falta: '.implode(', ', $faltando),
+                ], 422);
+            }
+
+            DB::transaction(function () use ($inscricao, $dadosInstitucionais, $instituicaoId) {
+                $inscricao->update([
+                    'status' => 'Aprovado',
+                    'observation' => null,
+                ]);
+
                 $estudanteData = [
                     'name' => $inscricao->name,
                     'email' => $inscricao->email,
@@ -182,7 +202,7 @@ class InscricaoService
                     'address' => $inscricao->address,
                     'days_of_week' => $dadosInstitucionais?->days_of_week ?? [],
                     'observation' => $inscricao->observation,
-                    'status' => 'Aprovado',
+                    'status' => 'Ativo',
                 ];
 
                 if ($instituicaoId !== null) {
@@ -191,49 +211,19 @@ class InscricaoService
 
                 if ($inscricao->estudante) {
                     $inscricao->estudante->update($estudanteData);
-                } elseif (
-                    $instituicaoId !== null &&
-                    $inscricao->birth_date &&
-                    $inscricao->phone &&
-                    $inscricao->address
-                ) {
-                    Estudante::create([
-                        ...$estudanteData,
-                        'instituicao_id' => $instituicaoId,
-                        'inscricao_id' => $inscricao->id,
-                    ]);
+
+                    return;
                 }
 
-                foreach($docs as $doc){
-                    $doc->update([
-                        'status' => 'Aprovado'
-                    ]);
-                }
-                        
-            }else{
-                $inscricao->update([
-                    'status' => "Rejeitado",
-                    'observation' => $data['motivo']
+                Estudante::create([
+                    ...$estudanteData,
+                    'inscricao_id' => $inscricao->id,
                 ]);
-                $inscricao->estudante?->update(['status' => 'Rejeitado']);
-                $docs->each(function($doc){
-                    $doc->update(['status' => 'Aprovado']);
-                });
-                
-                if (!is_null($data["documentos"])){
-                    foreach($data["documentos"] as $d){
-                        $alterado = $docs->firstWhere('name', $d);
-                        if($alterado){
-                            $alterado->update(['status' => 'Rejeitado']);
-                        }
-                    }
-                }
+            });
 
-            }
             return response()->json([
-                    'message' => 'Status de inscrição alterado',
-                ], 200);
-
+                'message' => 'Inscrição aprovada',
+            ], 200);
         } catch (Throwable $ex) {
             report($ex);
 

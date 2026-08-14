@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api\Reecadastro;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Reecadastro\Solicitacao\StoreSolicitacaoRequest;
-use App\Http\Requests\Reecadastro\Solicitacao\UpdateSolicitacaoRequest;
+use App\Http\Requests\Reecadastro\Solicitacao\AnaliseSolicitacaoRequest;
 use App\Services\Reecadastro\SolicitacaoReecadastroService;
+use Illuminate\Http\Request;
 
 /**
  * @group Recadastro
  *
- * Rotas para documentos e solicitacoes de recadastro dos estudantes.
+ * Homologacao das solicitacoes de recadastro enviadas pelos estudantes.
  *
  * @authenticated
  */
@@ -21,27 +21,23 @@ class SolicitacaoReecadastroController extends Controller
     /**
      * Listar solicitacoes de recadastro.
      *
-     * Retorna todas as solicitacoes de recadastro cadastradas.
-     */
-    public function index()
-    {
-        return $this->solicitacaoReecadastroService->index();
-    }
-
-    /**
-     * Cadastrar solicitacao de recadastro.
+     * Retorna as solicitacoes paginadas, com filtros de periodo, situacao e busca.
      *
-     * Cria uma solicitacao de recadastro para um estudante.
+     * @queryParam periodo_id integer Filtra por periodo de recadastro. Example: 1
+     * @queryParam status string Filtra pela situacao (Pendente, Em analise, Pendencia, Aprovado, Rejeitado). Example: Em analise
+     * @queryParam busca string Busca por nome ou CPF do estudante. Example: Maria
      */
-    public function store(StoreSolicitacaoRequest $request)
+    public function index(Request $request)
     {
-        return $this->solicitacaoReecadastroService->store($request->validated());
+        return $this->solicitacaoReecadastroService->index(
+            $request->only(['periodo_id', 'status', 'busca']),
+        );
     }
 
     /**
      * Exibir solicitacao de recadastro.
      *
-     * Retorna uma solicitacao de recadastro especifica.
+     * Retorna a solicitacao com o estudante, o periodo e os documentos enviados.
      *
      * @urlParam solicitacao integer required ID da solicitacao. Example: 1
      */
@@ -51,21 +47,21 @@ class SolicitacaoReecadastroController extends Controller
     }
 
     /**
-     * Atualizar solicitacao de recadastro.
+     * Analisar solicitacao de recadastro.
      *
-     * Atualiza os dados de uma solicitacao de recadastro.
+     * Aprova, rejeita ou devolve documentos para reenvio.
      *
      * @urlParam solicitacao integer required ID da solicitacao. Example: 1
      */
-    public function update(UpdateSolicitacaoRequest $request, string $id)
+    public function analise(AnaliseSolicitacaoRequest $request, string $id)
     {
-        return $this->solicitacaoReecadastroService->update($request->validated(), $id);
+        return $this->solicitacaoReecadastroService->analise($request->validated(), $id);
     }
 
     /**
      * Remover solicitacao de recadastro.
      *
-     * Remove uma solicitacao de recadastro.
+     * Remove a solicitacao e os arquivos enviados nela.
      *
      * @urlParam solicitacao integer required ID da solicitacao. Example: 1
      */

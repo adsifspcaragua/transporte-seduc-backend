@@ -7,40 +7,27 @@ use App\Models\DocumentacaoReecadastro;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 class DocumentoReecadastroService
 {
-    public function index(): JsonResponse|AnonymousResourceCollection
+    /**
+     * @param  array<string, mixed>  $filtros
+     */
+    public function index(array $filtros = []): JsonResponse|AnonymousResourceCollection
     {
-        $documentos = DocumentacaoReecadastro::all();
+        $documentos = DocumentacaoReecadastro::query()
+            ->when($filtros['solicitacao_id'] ?? null, fn ($query, $id) => $query->where('solicitacao_id', $id))
+            ->when($filtros['estudante_id'] ?? null, fn ($query, $id) => $query->where('estudante_id', $id))
+            ->latest('id')
+            ->get();
 
         if ($documentos->isEmpty()) {
             return response()->json(['message' => 'Nenhum documento de recadastro cadastrado'], 200);
         }
 
         return DocumentoResource::collection($documentos);
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     */
-    public function store(array $data): JsonResponse
-    {
-        try {
-            $documento = DocumentacaoReecadastro::create($data);
-
-            return response()->json([
-                'data' => new DocumentoResource($documento),
-                'message' => 'Documento de recadastro criado com sucesso',
-            ], 201);
-        } catch (Throwable $e) {
-            report($e);
-
-            return response()->json([
-                'message' => 'Erro ao cadastrar documento de recadastro',
-            ], 500);
-        }
     }
 
     public function show(string $id): JsonResponse
@@ -66,9 +53,10 @@ class DocumentoReecadastroService
     }
 
     /**
-     * @param  array<string, mixed>  $data
+     * Entrega o arquivo enviado pelo estudante. Os documentos ficam em disco
+     * privado, então esta é a única forma de acessá-los.
      */
-    public function update(array $data, string $id): JsonResponse
+    public function download(string $id): JsonResponse|StreamedResponse
     {
         try {
             $documento = DocumentacaoReecadastro::find($id);
@@ -77,17 +65,16 @@ class DocumentoReecadastroService
                 return response()->json(['message' => 'Documento de recadastro não encontrado'], 404);
             }
 
-            $documento->update($data);
+            if (! $documento->file_path || ! Storage::exists($documento->file_path)) {
+                return response()->json(['message' => 'Arquivo do documento não encontrado'], 404);
+            }
 
-            return response()->json([
-                'data' => new DocumentoResource($documento),
-                'message' => 'Documento de recadastro atualizado com sucesso',
-            ], 200);
+            return Storage::download($documento->file_path, $documento->nome_original ?: basename($documento->file_path));
         } catch (Throwable $e) {
             report($e);
 
             return response()->json([
-                'message' => 'Erro ao atualizar documento de recadastro',
+                'message' => 'Erro ao baixar documento de recadastro',
             ], 500);
         }
     }

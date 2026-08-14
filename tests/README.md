@@ -22,6 +22,9 @@ Particionamento em **classes de equivalência** + **análise do valor-limite**.
 |---|---|
 | `Feature/Auth/CpfLoginValidationTest.php` | Validação do `login` (e-mail OU CPF) em `POST /api/auth/token`. Classes válidas/inválidas + limites do comprimento do CPF (10 / 11 / 12 dígitos). |
 | `Feature/Inscricao/InscricaoStoreValidationTest.php` | Regras do `StoreInscricaoRequest` em `POST /api/inscricoes`: `cpf` (size:11), `name` (min:3/max:255), `number` (min:1), `status` (prohibited). |
+| `Feature/Inscricao/AnaliseInscricaoTest.php` | Decisão da lista de espera em `PUT /api/inscricoes/analise/{id}`: aprovação gera o estudante ativo, rejeição exige motivo, inscrição sem dados institucionais não é aprovada. |
+| `Feature/Reecadastro/ReecadastroPublicoTest.php` | Fluxo público por CPF: período fechado, CPF fora do sistema, estudante inativo, abertura da solicitação, token de sessão, envio/reenvio de documentos, prazo adicional e finalização. |
+| `Feature/Reecadastro/AnaliseReecadastroTest.php` | Homologação do recadastro: aprovar / rejeitar / devolver documentos, efeito no estudante, abertura exclusiva de período e download do arquivo. |
 
 ## Teste Estrutural — caixa-branca
 
@@ -30,7 +33,7 @@ controle.
 
 | Arquivo | Alvo |
 |---|---|
-| `Feature/Inscricao/InscricaoStatusServiceTest.php` | `InscricaoStatusService::isComplete()` — cada ramo (entrada nula, não encontrada, campo de inscrição nulo, sem instituição, campo de instituição nulo, documento ausente, documento com status inválido, tudo completo → true). |
+| `Feature/Inscricao/InscricaoStatusServiceTest.php` | `InscricaoStatusService::isComplete()` — cada ramo (entrada nula, não encontrada, campo de inscrição nulo, termo não aceito, sem instituição, campo de instituição nulo, tudo completo → true). |
 
 ## Teste de Mutação
 

@@ -6,14 +6,20 @@ use App\Models\Inscricao;
 
 class InscricaoStatusService
 {
+    /**
+     * Uma inscrição está completa quando os dados pessoais e os dados
+     * institucionais foram preenchidos e os dois termos foram aceitos.
+     *
+     * A lista de espera não exige documentos: eles só são pedidos no
+     * recadastro, depois que o estudante já está no sistema.
+     */
     public function isComplete(?Inscricao $inscricao): bool
     {
         if (! $inscricao) {
             return false;
         }
 
-        $inscricaoCompleta = Inscricao::with(['inscricao_instituicao', 'inscricao_documentos'])
-            ->find($inscricao->id);
+        $inscricaoCompleta = Inscricao::with('inscricao_instituicao')->find($inscricao->id);
 
         if (! $inscricaoCompleta) {
             return false;
@@ -31,14 +37,17 @@ class InscricaoStatusService
             'city',
             'number',
             'mother_name',
-            'accepted_terms',
-            'accepted_terms_2',
         ];
 
         foreach ($camposInscricao as $campo) {
             if ($inscricaoCompleta->{$campo} === null) {
                 return false;
             }
+        }
+
+        // Os dois termos precisam estar efetivamente aceitos, não apenas preenchidos.
+        if (! $inscricaoCompleta->accepted_terms || ! $inscricaoCompleta->accepted_terms_2) {
+            return false;
         }
 
         $instituicao = $inscricaoCompleta->inscricao_instituicao;
@@ -64,54 +73,13 @@ class InscricaoStatusService
             }
         }
 
-        $documentosObrigatorios = [
-            'foto',
-            'identidade',
-            'residencia',
-            'historico',
-            'matricula',
-            'cronograma',
-            'declaracao',
-        ];
-        
-        $todosValidos = true;
-
-        foreach($documentosObrigatorios as $obrigatorio){
-
-            $doc = $inscricaoCompleta->inscricao_documentos->firstWhere('name', $obrigatorio);
-
-            if(!$doc || $doc->status !== 'Em analise'){
-                $todosValidos = false;
-                break;
-            }
-        }
-
-        return $todosValidos;
+        return true;
     }
 
     public function refreshStatus(Inscricao $inscricao): Inscricao
     {
         $inscricao->update([
             'status' => $this->isComplete($inscricao) ? 'Em analise' : 'Incompleto',
-        ]);
-
-        return $inscricao->refresh();
-    }
-
-    public function acceptInscricao(Inscricao $inscricao): Inscricao
-    {
-        $inscricao->update([
-            'status' => "Aprovada"
-        ]);
-
-        return $inscricao->refresh();
-    }
-
-    public function refuseInscricao(Inscricao $inscricao): Inscricao
-    {
-        //TODO FAZER O REGISTRO DO MOTIVO
-        $inscricao->update([
-            'status' => "Rejeitada"
         ]);
 
         return $inscricao->refresh();

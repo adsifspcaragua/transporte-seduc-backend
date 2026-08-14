@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Estudante;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Inscricao\AnaliseInscricaoRequest;
 use App\Http\Requests\Inscricao\Instituicao\StoreInscricaoInstituicaoRequest;
 use App\Http\Requests\Inscricao\StoreInscricaoRequest;
 use App\Http\Requests\Inscricao\UpdateInscricaoRequest;
@@ -109,22 +110,15 @@ class InscricaoController extends Controller
     }
 
     /**
-     * Analisar inscrição.
+     * Analisar inscricao.
      *
-     * Aprova ou não a inscrição do estudante.
-     */
-    public function analise(string $id, Request $data)
-    {
-        return $this->inscricaoService->analiseInscricao($id, $data->all());
-    }
-
-    /**
-     * Ativar recadastro.
+     * Aprova ou recusa a inscricao do estudante. A aprovacao gera o registro de
+     * estudante, apto ao beneficio; a recusa exige o motivo.
      *
-     * Redefine o status das inscricoes para incompleto.
+     * @urlParam id integer required ID da inscricao. Example: 1
      */
-    public function recadastro()
+    public function analise(AnaliseInscricaoRequest $request, string $id)
     {
-        return $this->inscricaoService->recadastro();
+        return $this->inscricaoService->analiseInscricao($id, $request->validated());
     }
 }

@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api\Reecadastro;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Reecadastro\Documento\StoreDocumentoRequest;
-use App\Http\Requests\Reecadastro\Documento\UpdateDocumentoRequest;
 use App\Services\Reecadastro\DocumentoReecadastroService;
+use Illuminate\Http\Request;
 
 /**
  * @group Recadastro
  *
- * Rotas para documentos e solicitacoes de recadastro dos estudantes.
+ * Documentos enviados pelos estudantes no recadastro. Os arquivos ficam em
+ * disco privado e so podem ser acessados pela rota de download.
  *
  * @authenticated
  */
@@ -21,27 +21,18 @@ class DocumentoReecadastroController extends Controller
     /**
      * Listar documentos de recadastro.
      *
-     * Retorna todos os documentos enviados para recadastro.
+     * @queryParam solicitacao_id integer Filtra pelos documentos de uma solicitacao. Example: 1
+     * @queryParam estudante_id integer Filtra pelos documentos de um estudante. Example: 1
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->documentoReecadastroService->index();
-    }
-
-    /**
-     * Cadastrar documento de recadastro.
-     *
-     * Registra um documento vinculado ao recadastro de um estudante.
-     */
-    public function store(StoreDocumentoRequest $request)
-    {
-        return $this->documentoReecadastroService->store($request->validated());
+        return $this->documentoReecadastroService->index(
+            $request->only(['solicitacao_id', 'estudante_id']),
+        );
     }
 
     /**
      * Exibir documento de recadastro.
-     *
-     * Retorna um documento de recadastro especifico.
      *
      * @urlParam documento integer required ID do documento de recadastro. Example: 1
      */
@@ -51,21 +42,19 @@ class DocumentoReecadastroController extends Controller
     }
 
     /**
-     * Atualizar documento de recadastro.
+     * Baixar documento de recadastro.
      *
-     * Atualiza os dados de um documento de recadastro.
+     * Devolve o arquivo enviado pelo estudante.
      *
      * @urlParam documento integer required ID do documento de recadastro. Example: 1
      */
-    public function update(UpdateDocumentoRequest $request, string $id)
+    public function download(string $id)
     {
-        return $this->documentoReecadastroService->update($request->validated(), $id);
+        return $this->documentoReecadastroService->download($id);
     }
 
     /**
      * Remover documento de recadastro.
-     *
-     * Remove um documento de recadastro.
      *
      * @urlParam documento integer required ID do documento de recadastro. Example: 1
      */

@@ -20,8 +20,8 @@ class InscricaoResource extends JsonResource
             'cpf' => $this->cpf,
             'rg' => $this->rg,
             'birth_date' => $this->birth_date,
-            "father_name" => $this->father_name,
-            "mother_name" => $this->mother_name,
+            'father_name' => $this->father_name,
+            'mother_name' => $this->mother_name,
             'phone' => $this->phone,
             'email' => $this->email,
             'cep' => $this->cep,
@@ -30,14 +30,15 @@ class InscricaoResource extends JsonResource
             'city' => $this->city,
             'number' => $this->number,
             'status' => $this->status,
+            // Credencial da inscricao: devolvida apenas ao proprio estudante,
+            // que acessa a lista de espera sem login.
+            'token' => $this->when($request->user() === null, $this->access_token),
             'accepted_terms' => $this->accepted_terms,
             'accepted_terms_2' => $this->accepted_terms_2,
-            "observation" => $this->observation,
+            'observation' => $this->observation,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'updated_at' => $this->updated_at,
 
-
-        
         ];
     }
 }

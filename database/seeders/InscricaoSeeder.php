@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Inscricao;
-use App\Models\InscricaoDocumento;
 use App\Models\InscricaoInstituicoes;
 use App\Models\Instituicao;
 use Illuminate\Database\Seeder;
@@ -30,7 +29,7 @@ class InscricaoSeeder extends Seeder
                 'father_name' => 'José da Silva',
                 'mother_name' => 'Maria da Silva',
                 'observation' => 'Inscrição pendente para análise.',
-                'status' => 'pendente',
+                'status' => 'Incompleto',
                 'course' => 'Engenharia Civil',
                 'semester' => '3',
                 'institution' => 'Universidade do Vale do Paraíba',
@@ -38,7 +37,6 @@ class InscricaoSeeder extends Seeder
                 'used_transport' => true,
                 'days_of_week' => [1, 2, 3, 4, 5],
                 'has_scholarship' => false,
-                'document_status' => 'Em analise',
             ],
             [
                 'name' => 'Maria Oliveira',
@@ -64,7 +62,6 @@ class InscricaoSeeder extends Seeder
                 'days_of_week' => [1, 3, 5],
                 'has_scholarship' => true,
                 'scholarship_type' => 'Parcial',
-                'document_status' => 'Aprovado',
             ],
             [
                 'name' => 'Ana Clara Souza',
@@ -89,7 +86,6 @@ class InscricaoSeeder extends Seeder
                 'used_transport' => false,
                 'days_of_week' => [2, 4],
                 'has_scholarship' => false,
-                'document_status' => 'Rejeitado',
             ],
             [
                 'name' => 'Lucas Henrique Martins',
@@ -106,7 +102,7 @@ class InscricaoSeeder extends Seeder
                 'father_name' => 'Henrique Martins',
                 'mother_name' => 'Cláudia Martins',
                 'observation' => 'Aguardando análise da secretaria.',
-                'status' => 'pendente',
+                'status' => 'Incompleto',
                 'course' => 'Sistemas de Informação',
                 'semester' => '6',
                 'institution' => 'FATEC Caraguatatuba',
@@ -114,7 +110,6 @@ class InscricaoSeeder extends Seeder
                 'used_transport' => true,
                 'days_of_week' => [1, 2, 3, 4],
                 'has_scholarship' => false,
-                'document_status' => 'Em analise',
             ],
             [
                 'name' => 'Fernanda Gomes Silva',
@@ -140,7 +135,6 @@ class InscricaoSeeder extends Seeder
                 'days_of_week' => [6],
                 'has_scholarship' => true,
                 'scholarship_type' => 'Integral',
-                'document_status' => 'Aprovado',
             ],
         ];
 
@@ -183,15 +177,6 @@ class InscricaoSeeder extends Seeder
                 ],
             );
 
-            InscricaoDocumento::updateOrCreate(
-                ['inscricao_id' => $inscricao->id],
-                [
-                    'name' => 'ComprovanteMatricula.pdf',
-                    'type' => 'Comprovante de matrícula',
-                    'file_path' => 'documentos/seed/comprovante-matricula.pdf',
-                    'status' => $data['document_status'],
-                ],
-            );
         }
     }
 }

@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Estudante extends Model
 {
+    use HasFactory;
+
     protected $table = 'estudantes';
 
     protected $casts = [
@@ -46,5 +49,10 @@ class Estudante extends Model
     public function linha()
     {
         return $this->belongsTo(Linha::class, 'linha_id');
+    }
+
+    public function solicitacoes_reecadastro()
+    {
+        return $this->hasMany(SolicitacaoReecadastro::class, 'estudante_id');
     }
 }
