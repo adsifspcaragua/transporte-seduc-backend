@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
 use App\Http\Controllers\Api\Curso\CursoController;
+use App\Http\Controllers\Api\Estudante\AcessoEstudanteController;
+use App\Http\Controllers\Api\Estudante\Documento\InscricaoDocumentoController;
 use App\Http\Controllers\Api\Estudante\EstudanteController;
 use App\Http\Controllers\Api\Estudante\InscricaoController;
 use App\Http\Controllers\Api\Estudante\InscricaoInstituicaoController;
@@ -27,6 +29,7 @@ Route::get('instituicao', [InstituicaoController::class, 'index']);
 Route::get('curso', [CursoController::class, 'index']);
 Route::post('inscricoes/validar-step', [InscricaoController::class, 'validateStep']);
 Route::post('inscricoes', [InscricaoController::class, 'store'])->middleware('throttle:10,1');
+Route::post('area-estudante/acesso', AcessoEstudanteController::class)->middleware('throttle:10,1');
 
 // Lista de espera: o estudante nao faz login, entao cada inscrição só é
 // acessível com o token devolvido na criação.
@@ -37,11 +40,16 @@ Route::middleware('inscricao.token')->group(function () {
     Route::post('inscricoes/{inscricao_id}/instituicoes', [InscricaoInstituicaoController::class, 'store']);
     Route::put('inscricoes/{inscricao_id}/instituicoes/{instituicao}', [InscricaoInstituicaoController::class, 'update']);
     Route::patch('inscricoes/{inscricao_id}/instituicoes/{instituicao}', [InscricaoInstituicaoController::class, 'update']);
+    Route::get('inscricoes/{inscricao}/documentos', [InscricaoDocumentoController::class, 'index']);
+    Route::post('inscricoes/{inscricao}/documentos', [InscricaoDocumentoController::class, 'store']);
+    Route::delete('inscricoes/{inscricao}/documentos/{documento}', [InscricaoDocumentoController::class, 'destroy']);
+    Route::get('inscricoes/{inscricao}/documentos/{documento}/download', [InscricaoDocumentoController::class, 'download']);
 });
 
 // Recadastro do estudante: acesso pelo CPF, sem login, com token de sessão.
 Route::post('reecadastro/consulta', [ReecadastroPublicoController::class, 'consulta'])->middleware('throttle:10,1');
 Route::post('reecadastro/solicitacoes/{solicitacao}/documentos', [ReecadastroPublicoController::class, 'documento'])->middleware('throttle:30,1');
+Route::put('reecadastro/solicitacoes/{solicitacao}/dados', [ReecadastroPublicoController::class, 'dados'])->middleware('throttle:10,1');
 Route::post('reecadastro/solicitacoes/{solicitacao}/finalizar', [ReecadastroPublicoController::class, 'finalizar'])->middleware('throttle:10,1');
 
 Route::middleware('auth:sanctum')->group(function () {

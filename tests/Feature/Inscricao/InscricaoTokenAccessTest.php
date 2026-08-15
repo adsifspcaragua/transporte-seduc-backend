@@ -9,6 +9,8 @@ use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -161,5 +163,28 @@ class InscricaoTokenAccessTest extends TestCase
         $resposta = $this->getJson('/api/inscricoes')->assertOk();
 
         $this->assertStringNotContainsString('token-secreto', $resposta->getContent());
+    }
+
+    public function test_documentos_da_lista_de_espera_exigem_token_e_permite_varios_tipos(): void
+    {
+        Storage::fake('local');
+        [$id, $token] = $this->criarInscricao();
+
+        $this->postJson("/api/inscricoes/{$id}/documentos", [
+            'name' => 'foto',
+            'type' => 'documento',
+            'file_path' => UploadedFile::fake()->create('foto.pdf', 100, 'application/pdf'),
+        ])->assertUnauthorized();
+
+        foreach (['foto', 'identidade'] as $nome) {
+            $this->withHeader('X-Inscricao-Token', $token)
+                ->postJson("/api/inscricoes/{$id}/documentos", [
+                    'name' => $nome,
+                    'type' => 'documento',
+                    'file_path' => UploadedFile::fake()->create("{$nome}.pdf", 100, 'application/pdf'),
+                ])->assertOk();
+        }
+
+        $this->assertDatabaseCount('inscricao_documentos', 2);
     }
 }

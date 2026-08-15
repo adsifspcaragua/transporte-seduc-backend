@@ -4,6 +4,7 @@ namespace Tests\Feature\Inscricao;
 
 use App\Models\Estudante;
 use App\Models\Inscricao;
+use App\Models\InscricaoDocumento;
 use App\Models\InscricaoInstituicoes;
 use App\Models\Role;
 use App\Models\User;
@@ -16,7 +17,7 @@ use Tests\TestCase;
  * TESTE FUNCIONAL (caixa-preta) da decisao sobre a inscricao da lista de espera.
  *
  * Aprovar precisa gerar o estudante apto ao beneficio; recusar precisa registrar
- * o motivo. A analise nao depende mais de documentos.
+ * o motivo. A aprovação exige os documentos obrigatórios.
  */
 class AnaliseInscricaoTest extends TestCase
 {
@@ -41,6 +42,15 @@ class AnaliseInscricaoTest extends TestCase
     {
         $inscricao = Inscricao::factory()->create(['status' => 'Em analise']);
         InscricaoInstituicoes::factory()->create(['inscricao_id' => $inscricao->id]);
+        foreach (InscricaoDocumento::OBRIGATORIOS as $nome) {
+            InscricaoDocumento::create([
+                'inscricao_id' => $inscricao->id,
+                'name' => $nome,
+                'type' => 'documento',
+                'file_path' => "inscricoes/{$inscricao->id}/{$nome}.pdf",
+                'status' => 'Em analise',
+            ]);
+        }
 
         return $inscricao;
     }

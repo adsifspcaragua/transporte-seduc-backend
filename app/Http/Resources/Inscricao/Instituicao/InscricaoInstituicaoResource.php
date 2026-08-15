@@ -22,6 +22,7 @@ class InscricaoInstituicaoResource extends JsonResource
             'expected_completion' => $this->expected_completion,
             'instituicao_id' => $this->instituicao_id,
             'instituicao' => new InstituicaoResource($this->whenLoaded('instituicao')),
+            'shift' => $this->shift,
             'shift_label' => match ($this->shift) {
                 1 => 'Matutino',
                 2 => 'Noturno',
@@ -39,6 +40,7 @@ class InscricaoInstituicaoResource extends JsonResource
                 6 => 'Sábado',
                 default => 'Desconhecido',
             }),
+            'days_of_week' => $this->days_of_week ?? [],
             'line_id' => $this->line_id,
             // 'line'                => new LineResource($this->whenLoaded('line')), MODIFICAR
             'has_scholarship' => $this->has_scholarship,

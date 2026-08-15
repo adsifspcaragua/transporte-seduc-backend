@@ -3,6 +3,7 @@
 namespace App\Services\Inscricao;
 
 use App\Models\Inscricao;
+use App\Models\InscricaoDocumento;
 
 class InscricaoStatusService
 {
@@ -19,7 +20,8 @@ class InscricaoStatusService
             return false;
         }
 
-        $inscricaoCompleta = Inscricao::with('inscricao_instituicao')->find($inscricao->id);
+        $inscricaoCompleta = Inscricao::with(['inscricao_instituicao', 'inscricao_documentos'])
+            ->find($inscricao->id);
 
         if (! $inscricaoCompleta) {
             return false;
@@ -69,6 +71,14 @@ class InscricaoStatusService
 
         foreach ($camposInstituicao as $campo) {
             if ($instituicao->{$campo} === null) {
+                return false;
+            }
+        }
+
+        foreach (InscricaoDocumento::OBRIGATORIOS as $nome) {
+            $documento = $inscricaoCompleta->inscricao_documentos->firstWhere('name', $nome);
+
+            if (! $documento || $documento->status !== 'Em analise') {
                 return false;
             }
         }

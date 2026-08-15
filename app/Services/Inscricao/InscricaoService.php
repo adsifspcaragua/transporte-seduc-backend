@@ -148,7 +148,11 @@ class InscricaoService
     public function analiseInscricao(string $id, array $data): JsonResponse
     {
         try {
-            $inscricao = Inscricao::with(['inscricao_instituicao', 'estudante'])->find($id);
+            $inscricao = Inscricao::with([
+                'inscricao_instituicao',
+                'inscricao_documentos',
+                'estudante',
+            ])->find($id);
 
             if (! $inscricao) {
                 return response()->json([
@@ -161,12 +165,19 @@ class InscricaoService
                     'status' => 'Rejeitado',
                     'observation' => $data['motivo'],
                 ]);
+                $inscricao->inscricao_documentos()->update(['status' => 'Rejeitado']);
 
                 $inscricao->estudante?->update(['status' => 'Inativo']);
 
                 return response()->json([
                     'message' => 'Inscrição rejeitada',
                 ], 200);
+            }
+
+            if (! $this->statusService->isComplete($inscricao)) {
+                return response()->json([
+                    'message' => 'A inscrição ainda possui dados ou documentos obrigatórios pendentes.',
+                ], 422);
             }
 
             $dadosInstitucionais = $inscricao->inscricao_instituicao;
@@ -192,6 +203,7 @@ class InscricaoService
                     'status' => 'Aprovado',
                     'observation' => null,
                 ]);
+                $inscricao->inscricao_documentos()->update(['status' => 'Aprovado']);
 
                 $estudanteData = [
                     'name' => $inscricao->name,

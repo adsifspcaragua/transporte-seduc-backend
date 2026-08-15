@@ -3,6 +3,7 @@
 namespace Tests\Feature\Inscricao;
 
 use App\Models\Inscricao;
+use App\Models\InscricaoDocumento;
 use App\Models\InscricaoInstituicoes;
 use App\Services\Inscricao\InscricaoStatusService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,13 +21,13 @@ use Tests\TestCase;
  *   N4  if (! accepted_terms || ! accepted_terms_2) -> retorna false
  *   N5  if (! $instituicao)                       -> retorna false
  *   N6  loop campos da instituicao: campo == null -> retorna false
- *   N7  return true                               -> retorna true
+ *   N7  documento obrigatório ausente             -> retorna false
+ *   N8  return true                               -> retorna true
  *
  * Cada teste abaixo foi projetado para exercitar um arco distinto
  * (criterio "todos os arcos").
  *
- * A lista de espera nao exige mais documentos: eles sao pedidos apenas no
- * recadastro, entao nao ha ramo de documentos neste grafo.
+ * A lista de espera exige os documentos definidos no modelo.
  */
 class InscricaoStatusServiceTest extends TestCase
 {
@@ -46,6 +47,15 @@ class InscricaoStatusServiceTest extends TestCase
     {
         $inscricao = Inscricao::factory()->create();
         InscricaoInstituicoes::factory()->create(['inscricao_id' => $inscricao->id]);
+        foreach (InscricaoDocumento::OBRIGATORIOS as $nome) {
+            InscricaoDocumento::create([
+                'inscricao_id' => $inscricao->id,
+                'name' => $nome,
+                'type' => 'documento',
+                'file_path' => "inscricoes/{$inscricao->id}/{$nome}.pdf",
+                'status' => 'Em analise',
+            ]);
+        }
 
         return $inscricao;
     }
@@ -103,7 +113,16 @@ class InscricaoStatusServiceTest extends TestCase
         $this->assertFalse($this->service->isComplete($inscricao));
     }
 
-    /** N7: dados pessoais + institucionais completos e termos aceitos. */
+    /** N7: sem documentos, a inscricao continua incompleta. */
+    public function test_retorna_false_quando_falta_documento_obrigatorio(): void
+    {
+        $inscricao = Inscricao::factory()->create();
+        InscricaoInstituicoes::factory()->create(['inscricao_id' => $inscricao->id]);
+
+        $this->assertFalse($this->service->isComplete($inscricao));
+    }
+
+    /** N8: dados, termos e documentos completos. */
     public function test_retorna_true_quando_tudo_esta_completo(): void
     {
         $inscricao = $this->inscricaoComInstituicaoCompleta();

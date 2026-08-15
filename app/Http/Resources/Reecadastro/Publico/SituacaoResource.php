@@ -22,6 +22,8 @@ class SituacaoResource extends JsonResource
     public function toArray(Request $request): array
     {
         $periodoAberto = $this->periodo && $this->periodo->status === 'Aberto';
+        $inscricao = $this->estudante?->inscricao;
+        $instituicao = $inscricao?->inscricao_instituicao;
 
         return [
             'solicitacao_id' => $this->id,
@@ -45,6 +47,32 @@ class SituacaoResource extends JsonResource
                 'email' => $this->estudante?->email,
                 'phone' => $this->estudante?->phone,
                 'address' => $this->estudante?->address,
+            ],
+            'cadastro' => [
+                'name' => $inscricao?->name ?? $this->estudante?->name,
+                'cpf' => $inscricao?->cpf ?? $this->estudante?->cpf,
+                'rg' => $inscricao?->rg,
+                'birth_date' => $inscricao?->birth_date,
+                'father_name' => $inscricao?->father_name,
+                'mother_name' => $inscricao?->mother_name,
+                'phone' => $inscricao?->phone ?? $this->estudante?->phone,
+                'email' => $inscricao?->email ?? $this->estudante?->email,
+                'cep' => $inscricao?->cep,
+                'address' => $inscricao?->address ?? $this->estudante?->address,
+                'neighborhood' => $inscricao?->neighborhood,
+                'complement' => $inscricao?->complement,
+                'city' => $inscricao?->city,
+                'number' => $inscricao?->number,
+                'course' => $instituicao?->course,
+                'semester' => $instituicao?->semester,
+                'expected_completion' => $instituicao?->expected_completion,
+                'instituicao_id' => $instituicao?->instituicao_id ?? $this->estudante?->instituicao_id,
+                'shift' => $instituicao?->shift,
+                'city_destination' => $instituicao?->city_destination,
+                'used_transport' => $instituicao?->used_transport,
+                'days_of_week' => $instituicao?->days_of_week ?? $this->estudante?->days_of_week,
+                'has_scholarship' => $instituicao?->has_scholarship,
+                'scholarship_type' => $instituicao?->scholarship_type,
             ],
             'documentos' => $this->documentosExigidos(),
         ];

@@ -9,6 +9,7 @@ use App\Models\Estudante;
 use App\Models\PeriodoReecadastro;
 use App\Models\SolicitacaoReecadastro;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Throwable;
@@ -140,6 +141,71 @@ class ReecadastroPublicoService
      *
      * @param  array<string, mixed>  $data
      */
+    public function atualizarDados(array $data, string $id): JsonResponse
+    {
+        try {
+            $solicitacao = SolicitacaoReecadastro::with([
+                'documentos',
+                'estudante.inscricao.inscricao_instituicao',
+                'periodo',
+            ])->find($id);
+
+            if ($erro = $this->recusarEnvio($solicitacao, $data['token'])) {
+                return $erro;
+            }
+
+            $inscricao = $solicitacao->estudante?->inscricao;
+
+            if (! $inscricao) {
+                return response()->json([
+                    'message' => 'O cadastro original do estudante não foi encontrado.',
+                ], 409);
+            }
+
+            $pessoais = collect($data)->only([
+                'name', 'rg', 'father_name', 'mother_name', 'birth_date', 'phone',
+                'email', 'cep', 'address', 'neighborhood', 'complement', 'city', 'number',
+            ])->all();
+            $institucionais = collect($data)->only([
+                'course', 'semester', 'expected_completion', 'instituicao_id', 'shift',
+                'city_destination', 'used_transport', 'days_of_week', 'has_scholarship',
+                'scholarship_type',
+            ])->all();
+
+            DB::transaction(function () use ($solicitacao, $inscricao, $pessoais, $institucionais) {
+                $inscricao->update($pessoais);
+                $inscricao->inscricao_instituicao()->updateOrCreate(
+                    ['inscricao_id' => $inscricao->id],
+                    $institucionais,
+                );
+                $solicitacao->estudante->update([
+                    'name' => $pessoais['name'],
+                    'email' => $pessoais['email'],
+                    'birth_date' => $pessoais['birth_date'],
+                    'phone' => $pessoais['phone'],
+                    'address' => $pessoais['address'],
+                    'days_of_week' => $institucionais['days_of_week'],
+                    'instituicao_id' => $institucionais['instituicao_id'],
+                ]);
+            });
+
+            $solicitacao->load([
+                'documentos',
+                'estudante.inscricao.inscricao_instituicao',
+                'periodo',
+            ]);
+
+            return response()->json([
+                'data' => new SituacaoResource($solicitacao),
+                'message' => 'Dados cadastrais atualizados com sucesso.',
+            ]);
+        } catch (Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'Erro ao atualizar os dados cadastrais.'], 500);
+        }
+    }
+
     public function finalizar(array $data, string $id): JsonResponse
     {
         try {

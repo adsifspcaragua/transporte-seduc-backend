@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Reecadastro;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Reecadastro\Publico\AtualizarDadosRequest;
 use App\Http\Requests\Reecadastro\Publico\ConsultaCpfRequest;
 use App\Http\Requests\Reecadastro\Publico\EnviarDocumentoRequest;
 use App\Http\Requests\Reecadastro\Publico\FinalizarReecadastroRequest;
@@ -39,6 +40,11 @@ class ReecadastroPublicoController extends Controller
     public function documento(EnviarDocumentoRequest $request, string $id)
     {
         return $this->reecadastroPublicoService->enviarDocumento($request, $id);
+    }
+
+    public function dados(AtualizarDadosRequest $request, string $id)
+    {
+        return $this->reecadastroPublicoService->atualizarDados($request->validated(), $id);
     }
 
     /**

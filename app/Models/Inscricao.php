@@ -51,4 +51,9 @@ class Inscricao extends Model
     {
         return $this->hasOne(Estudante::class);
     }
+
+    public function inscricao_documentos()
+    {
+        return $this->hasMany(InscricaoDocumento::class, 'inscricao_id');
+    }
 }
