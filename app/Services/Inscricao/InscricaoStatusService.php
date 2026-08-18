@@ -88,8 +88,13 @@ class InscricaoStatusService
 
     public function refreshStatus(Inscricao $inscricao): Inscricao
     {
+        $completa = $this->isComplete($inscricao);
+
         $inscricao->update([
-            'status' => $this->isComplete($inscricao) ? 'Em analise' : 'Incompleto',
+            'status' => $completa ? 'Em analise' : 'Incompleto',
+            // Reenviar encerra a pendencia: sem limpar, o estudante seguiria
+            // vendo "corrija estes campos" depois de ja ter corrigido.
+            'campos_pendentes' => $completa ? null : $inscricao->campos_pendentes,
         ]);
 
         return $inscricao->refresh();

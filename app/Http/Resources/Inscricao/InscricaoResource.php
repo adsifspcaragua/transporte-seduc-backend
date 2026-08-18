@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Inscricao;
 
+use App\Models\Inscricao;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -36,6 +37,15 @@ class InscricaoResource extends JsonResource
             'accepted_terms' => $this->accepted_terms,
             'accepted_terms_2' => $this->accepted_terms_2,
             'observation' => $this->observation,
+            // Campos que a responsável pediu para corrigir, com o rótulo pronto:
+            // o motivo em texto diz o que houve, isto diz onde.
+            'campos_pendentes' => collect($this->campos_pendentes ?? [])
+                ->map(fn (string $campo) => [
+                    'campo' => $campo,
+                    'label' => Inscricao::CAMPOS_CORRIGIVEIS[$campo] ?? $campo,
+                ])
+                ->values()
+                ->all(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
 

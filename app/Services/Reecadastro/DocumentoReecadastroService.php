@@ -4,6 +4,7 @@ namespace App\Services\Reecadastro;
 
 use App\Http\Resources\Reecadastro\Documento\DocumentoResource;
 use App\Models\DocumentacaoReecadastro;
+use App\Support\EntregaDeArquivo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Storage;
@@ -56,7 +57,7 @@ class DocumentoReecadastroService
      * Entrega o arquivo enviado pelo estudante. Os documentos ficam em disco
      * privado, então esta é a única forma de acessá-los.
      */
-    public function download(string $id): JsonResponse|StreamedResponse
+    public function download(string $id, bool $inline = false): JsonResponse|StreamedResponse
     {
         try {
             $documento = DocumentacaoReecadastro::find($id);
@@ -69,7 +70,11 @@ class DocumentoReecadastroService
                 return response()->json(['message' => 'Arquivo do documento não encontrado'], 404);
             }
 
-            return Storage::download($documento->file_path, $documento->nome_original ?: basename($documento->file_path));
+            return EntregaDeArquivo::responder(
+                $documento->file_path,
+                $documento->nome_original ?: basename($documento->file_path),
+                $inline,
+            );
         } catch (Throwable $e) {
             report($e);
 

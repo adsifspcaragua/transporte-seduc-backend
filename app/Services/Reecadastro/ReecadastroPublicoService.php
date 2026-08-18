@@ -247,7 +247,10 @@ class ReecadastroPublicoService
                 'aceite_veracidade' => true,
                 'aceite_ciencia' => true,
                 'enviada_em' => now(),
+                // Reenviar encerra a pendencia: sem limpar, o estudante seguiria
+                // vendo "corrija estes campos" depois de ja ter corrigido.
                 'observacoes' => null,
+                'campos_pendentes' => null,
                 'access_token' => null,
                 'token_expira_em' => null,
             ]);

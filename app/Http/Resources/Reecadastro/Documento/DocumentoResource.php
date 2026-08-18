@@ -23,6 +23,10 @@ class DocumentoResource extends JsonResource
             'nome_original' => $this->nome_original,
             'status' => $this->status,
             'observacoes' => $this->observacoes,
+            // Sem estes links a responsável não tem como abrir o arquivo: os
+            // documentos ficam em disco privado e só saem por esta rota.
+            'download_url' => url("/api/reecadastro/documentos/{$this->id}/download"),
+            'preview_url' => url("/api/reecadastro/documentos/{$this->id}/download?inline=1"),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

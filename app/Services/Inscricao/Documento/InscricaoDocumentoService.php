@@ -7,6 +7,7 @@ use App\Http\Resources\Inscricao\Documento\DocumentoResource;
 use App\Models\Inscricao;
 use App\Models\InscricaoDocumento;
 use App\Services\Inscricao\InscricaoStatusService;
+use App\Support\EntregaDeArquivo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -72,15 +73,16 @@ class InscricaoDocumentoService
         return response()->json(['message' => 'Documento removido com sucesso.']);
     }
 
-    public function download(Inscricao $inscricao, InscricaoDocumento $documento): JsonResponse|StreamedResponse
+    public function download(Inscricao $inscricao, InscricaoDocumento $documento, bool $inline = false): JsonResponse|StreamedResponse
     {
         if ($documento->inscricao_id !== $inscricao->id || ! Storage::exists($documento->file_path)) {
             return response()->json(['message' => 'Documento não encontrado.'], 404);
         }
 
-        return Storage::download(
+        return EntregaDeArquivo::responder(
             $documento->file_path,
             $documento->nome_original ?? basename($documento->file_path),
+            $inline,
         );
     }
 }

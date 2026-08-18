@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Reecadastro\Publico;
 
 use App\Models\DocumentacaoReecadastro;
+use App\Models\SolicitacaoReecadastro;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -30,6 +31,15 @@ class SituacaoResource extends JsonResource
             'token' => $this->access_token,
             'status' => $this->status,
             'observacoes' => $this->observacoes,
+            // Quais campos do cadastro a responsável pediu para corrigir, com o
+            // rótulo pronto: o motivo em texto diz o que houve, isto diz onde.
+            'campos_pendentes' => collect($this->campos_pendentes ?? [])
+                ->map(fn (string $campo) => [
+                    'campo' => $campo,
+                    'label' => SolicitacaoReecadastro::CAMPOS_CORRIGIVEIS[$campo] ?? $campo,
+                ])
+                ->values()
+                ->all(),
             'pode_enviar' => $periodoAberto && $this->aceitaEnvio(),
             'prazo_matricula' => $this->prazo_matricula,
             'prazo_cronograma' => $this->prazo_cronograma,

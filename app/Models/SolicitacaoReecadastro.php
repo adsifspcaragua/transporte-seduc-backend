@@ -16,6 +16,7 @@ class SolicitacaoReecadastro extends Model
         'periodo_id',
         'status',
         'observacoes',
+        'campos_pendentes',
         'prazo_matricula',
         'prazo_cronograma',
         'aceite_veracidade',
@@ -39,7 +40,42 @@ class SolicitacaoReecadastro extends Model
         'token_expira_em' => 'datetime',
         'enviada_em' => 'datetime',
         'analisado_em' => 'datetime',
+        'campos_pendentes' => 'array',
     ];
+
+    /**
+     * Campos do cadastro que a responsavel pode devolver para correcao.
+     *
+     * Espelha o que o estudante consegue editar no recadastro: apontar um campo
+     * que ele nao pode mexer so geraria uma pendencia sem saida.
+     */
+    public const CAMPOS_CORRIGIVEIS = [
+        'name' => 'Nome completo',
+        'rg' => 'RG',
+        'father_name' => 'Nome do pai',
+        'mother_name' => 'Nome da mãe',
+        'birth_date' => 'Data de nascimento',
+        'phone' => 'Telefone',
+        'email' => 'E-mail',
+        'cep' => 'CEP',
+        'address' => 'Endereço',
+        'number' => 'Número',
+        'complement' => 'Complemento',
+        'neighborhood' => 'Bairro',
+        'city' => 'Cidade',
+        'instituicao_id' => 'Instituição',
+        'course' => 'Curso',
+        'semester' => 'Semestre',
+        'expected_completion' => 'Previsão de conclusão',
+        'shift' => 'Turno',
+        'city_destination' => 'Cidade de destino',
+    ];
+
+    /** @return list<string> */
+    public static function camposCorrigiveis(): array
+    {
+        return array_keys(self::CAMPOS_CORRIGIVEIS);
+    }
 
     public function estudante()
     {

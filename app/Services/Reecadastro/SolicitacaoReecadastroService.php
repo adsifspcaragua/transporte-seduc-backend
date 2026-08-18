@@ -90,6 +90,11 @@ class SolicitacaoReecadastroService
                 $solicitacao->update([
                     'status' => $decisao,
                     'observacoes' => $decisao === 'Aprovado' ? null : $data['motivo'],
+                    // Só a devolução aponta campos: aprovar limpa a pendência e
+                    // rejeitar encerra a solicitação, sem nada a corrigir.
+                    'campos_pendentes' => $decisao === 'Pendencia'
+                        ? ($data['campos'] ?? [])
+                        : null,
                     'analisado_por' => Auth::id(),
                     'analisado_em' => now(),
                     'access_token' => null,

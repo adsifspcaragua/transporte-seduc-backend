@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Reecadastro\Solicitacao;
 
 use App\Models\DocumentacaoReecadastro;
+use App\Models\SolicitacaoReecadastro;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -29,6 +30,10 @@ class AnaliseSolicitacaoRequest extends FormRequest
             'motivo' => 'required_unless:decisao,Aprovado|nullable|string|min:3|max:255',
             'documentos' => 'required_if:decisao,Pendencia|array|min:1',
             'documentos.*' => [Rule::in(DocumentacaoReecadastro::slugs())],
+            // Campos do cadastro a corrigir. O motivo em texto diz o que houve;
+            // isto diz onde, para o estudante não ter de adivinhar.
+            'campos' => 'sometimes|array',
+            'campos.*' => [Rule::in(SolicitacaoReecadastro::camposCorrigiveis())],
         ];
     }
 
@@ -42,6 +47,7 @@ class AnaliseSolicitacaoRequest extends FormRequest
             'motivo.required_unless' => 'Informe o motivo da devolução ou da rejeição.',
             'documentos.required_if' => 'Informe quais documentos devem ser reenviados.',
             'documentos.*.in' => 'Documento inválido para o recadastro.',
+            'campos.*.in' => 'Campo inválido para correção.',
         ];
     }
 

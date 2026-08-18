@@ -16,7 +16,7 @@ class EstudanteService
         $allowedPerPage = [10, 15, 20, 30];
         $perPage = in_array($perPage, $allowedPerPage, true) ? $perPage : 10;
 
-        $estudantes = Estudante::with('inscricao.inscricao_instituicao')->paginate($perPage);
+        $estudantes = Estudante::with(['inscricao.inscricao_instituicao', 'inscricao.inscricao_documentos'])->paginate($perPage);
 
         if ($estudantes->isEmpty()) {
             return response()->json(['message' => 'Nenhum estudante cadastrado'], 200);
@@ -53,7 +53,7 @@ class EstudanteService
     public function show(string $id): JsonResponse
     {
         try {
-            $estudante = Estudante::with('inscricao.inscricao_instituicao')->find($id);
+            $estudante = Estudante::with(['inscricao.inscricao_instituicao', 'inscricao.inscricao_documentos'])->find($id);
 
             if (! $estudante) {
                 return response()->json(['message' => 'Estudante não encontrado'], 404);
@@ -79,7 +79,7 @@ class EstudanteService
     {
         try {
             $estudante = DB::transaction(function () use ($data, $id) {
-                $estudante = Estudante::with('inscricao.inscricao_instituicao')->find($id);
+                $estudante = Estudante::with(['inscricao.inscricao_instituicao', 'inscricao.inscricao_documentos'])->find($id);
 
                 if (! $estudante) {
                     return null;

@@ -7,9 +7,11 @@ use App\Http\Requests\Inscricao\AnaliseInscricaoRequest;
 use App\Http\Requests\Inscricao\Instituicao\StoreInscricaoInstituicaoRequest;
 use App\Http\Requests\Inscricao\StoreInscricaoRequest;
 use App\Http\Requests\Inscricao\UpdateInscricaoRequest;
+use App\Models\Inscricao;
 use App\Services\Inscricao\InscricaoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 /**
  * @group Inscricoes
@@ -66,11 +68,86 @@ class InscricaoController extends Controller
             unset($rules['inscricao_id']);
         }
 
-        Validator::make($data, $rules)->validate();
+        $messages = match ($step) {
+            0, 1 => (new StoreInscricaoRequest)->messages(),
+            2 => (new StoreInscricaoInstituicaoRequest)->messages(),
+            default => [],
+        };
+
+        // O estudante que retoma a lista de espera revalida os próprios dados.
+        // Sem ignorar a inscrição dele, as regras `unique` acusariam o CPF, o
+        // telefone e o e-mail que já são dele e travariam a etapa. O token
+        // comprova que a inscrição lhe pertence.
+        $inscricao = $this->inscricaoEmEdicao($request);
+
+        if ($inscricao) {
+            $rules = $this->ignorarInscricaoNasRegrasUnicas($rules, $inscricao);
+        }
+
+        Validator::make($data, $rules, $messages)->validate();
 
         return response()->json([
             'message' => 'Dados válidos.',
         ]);
+    }
+
+    /**
+     * Resolve a inscrição que está sendo reeditada, se o token comprovar posse.
+     *
+     * Mesma credencial usada pelo middleware `inscricao.token`: sem ela o ID
+     * sozinho não permite afrouxar a validação de outra inscrição.
+     */
+    private function inscricaoEmEdicao(Request $request): ?Inscricao
+    {
+        $id = $request->input('inscricao_id');
+
+        if (! $id) {
+            return null;
+        }
+
+        $inscricao = Inscricao::find($id);
+
+        if (! $inscricao || ! $inscricao->access_token) {
+            return null;
+        }
+
+        $token = (string) ($request->header('X-Inscricao-Token') ?? $request->input('token', ''));
+
+        if ($token === '' || ! hash_equals($inscricao->access_token, $token)) {
+            return null;
+        }
+
+        return $inscricao;
+    }
+
+    /**
+     * Reescreve as regras `unique:inscricoes` para ignorar a própria inscrição.
+     *
+     * @param  array<string, mixed>  $rules
+     * @return array<string, mixed>
+     */
+    private function ignorarInscricaoNasRegrasUnicas(array $rules, Inscricao $inscricao): array
+    {
+        foreach ($rules as $campo => $regra) {
+            $partes = is_array($regra) ? $regra : explode('|', (string) $regra);
+            $alterou = false;
+
+            foreach ($partes as $indice => $parte) {
+                if (! is_string($parte) || ! str_starts_with($parte, 'unique:inscricoes')) {
+                    continue;
+                }
+
+                $coluna = explode(',', $parte)[1] ?? $campo;
+                $partes[$indice] = Rule::unique('inscricoes', $coluna)->ignore($inscricao->id);
+                $alterou = true;
+            }
+
+            if ($alterou) {
+                $rules[$campo] = $partes;
+            }
+        }
+
+        return $rules;
     }
 
     /**

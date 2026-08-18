@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\Estudante\InscricaoController;
 use App\Http\Controllers\Api\Estudante\InscricaoInstituicaoController;
 use App\Http\Controllers\Api\Instituicao\InstituicaoController;
 use App\Http\Controllers\Api\LinhaController;
+use App\Http\Controllers\Api\Reecadastro\AusentesReecadastroController;
 use App\Http\Controllers\Api\Reecadastro\DocumentoReecadastroController;
 use App\Http\Controllers\Api\Reecadastro\PeriodoReecadastroController;
 use App\Http\Controllers\Api\Reecadastro\ReecadastroPublicoController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Api\Role\RoleController;
 use App\Http\Controllers\Api\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/auth/token', [AuthController::class, 'tokenLogin'])->middleware('throttle:5,1');
@@ -25,32 +27,49 @@ Route::post('/auth/token', [AuthController::class, 'tokenLogin'])->middleware('t
 Route::post('/password/email', [PasswordResetController::class, 'forgot'])->middleware('throttle:5,1');
 Route::post('/password/reset', [PasswordResetController::class, 'reset'])->middleware('throttle:5,1');
 
+// Leitura pública: sem login, mas dentro do escopo stateful do Sanctum.
+// Só há métodos GET aqui, que não passam por CSRF, então o estudante com token
+// segue funcionando — e a sessão continua sendo carregada, que é o que permite
+// ao administrador logado ser reconhecido em vez de cair na exigência do token.
 Route::get('instituicao', [InstituicaoController::class, 'index']);
 Route::get('curso', [CursoController::class, 'index']);
-Route::post('inscricoes/validar-step', [InscricaoController::class, 'validateStep']);
-Route::post('inscricoes', [InscricaoController::class, 'store'])->middleware('throttle:10,1');
-Route::post('area-estudante/acesso', AcessoEstudanteController::class)->middleware('throttle:10,1');
 
-// Lista de espera: o estudante nao faz login, entao cada inscrição só é
-// acessível com o token devolvido na criação.
 Route::middleware('inscricao.token')->group(function () {
     Route::get('inscricoes/{inscricao}', [InscricaoController::class, 'show']);
-    Route::put('inscricoes/{inscricao}', [InscricaoController::class, 'update']);
-    Route::patch('inscricoes/{inscricao}', [InscricaoController::class, 'update']);
-    Route::post('inscricoes/{inscricao_id}/instituicoes', [InscricaoInstituicaoController::class, 'store']);
-    Route::put('inscricoes/{inscricao_id}/instituicoes/{instituicao}', [InscricaoInstituicaoController::class, 'update']);
-    Route::patch('inscricoes/{inscricao_id}/instituicoes/{instituicao}', [InscricaoInstituicaoController::class, 'update']);
     Route::get('inscricoes/{inscricao}/documentos', [InscricaoDocumentoController::class, 'index']);
-    Route::post('inscricoes/{inscricao}/documentos', [InscricaoDocumentoController::class, 'store']);
-    Route::delete('inscricoes/{inscricao}/documentos/{documento}', [InscricaoDocumentoController::class, 'destroy']);
     Route::get('inscricoes/{inscricao}/documentos/{documento}/download', [InscricaoDocumentoController::class, 'download']);
 });
 
-// Recadastro do estudante: acesso pelo CPF, sem login, com token de sessão.
-Route::post('reecadastro/consulta', [ReecadastroPublicoController::class, 'consulta'])->middleware('throttle:10,1');
-Route::post('reecadastro/solicitacoes/{solicitacao}/documentos', [ReecadastroPublicoController::class, 'documento'])->middleware('throttle:30,1');
-Route::put('reecadastro/solicitacoes/{solicitacao}/dados', [ReecadastroPublicoController::class, 'dados'])->middleware('throttle:10,1');
-Route::post('reecadastro/solicitacoes/{solicitacao}/finalizar', [ReecadastroPublicoController::class, 'finalizar'])->middleware('throttle:10,1');
+// Escrita pública do estudante: sem login e sem sessão. Fica fora do escopo
+// stateful do Sanctum para que o CSRF não seja exigido de quem nunca recebeu um
+// cookie. A proteção é o throttle e o token devolvido na criação.
+//
+// Só o estudante escreve por aqui. O administrador usa as rotas autenticadas
+// mais abaixo; se algum dia precisar de uma destas, ela terá de voltar para o
+// escopo stateful, senão a sessão dele não será lida e o token será exigido.
+Route::withoutMiddleware(EnsureFrontendRequestsAreStateful::class)->group(function () {
+    Route::post('inscricoes/validar-step', [InscricaoController::class, 'validateStep']);
+    Route::post('inscricoes', [InscricaoController::class, 'store'])->middleware('throttle:10,1');
+    Route::post('area-estudante/acesso', AcessoEstudanteController::class)->middleware('throttle:10,1');
+
+    // Lista de espera: o estudante nao faz login, entao cada inscrição só é
+    // acessível com o token devolvido na criação.
+    Route::middleware('inscricao.token')->group(function () {
+        Route::put('inscricoes/{inscricao}', [InscricaoController::class, 'update']);
+        Route::patch('inscricoes/{inscricao}', [InscricaoController::class, 'update']);
+        Route::post('inscricoes/{inscricao_id}/instituicoes', [InscricaoInstituicaoController::class, 'store']);
+        Route::put('inscricoes/{inscricao_id}/instituicoes/{instituicao}', [InscricaoInstituicaoController::class, 'update']);
+        Route::patch('inscricoes/{inscricao_id}/instituicoes/{instituicao}', [InscricaoInstituicaoController::class, 'update']);
+        Route::post('inscricoes/{inscricao}/documentos', [InscricaoDocumentoController::class, 'store']);
+        Route::delete('inscricoes/{inscricao}/documentos/{documento}', [InscricaoDocumentoController::class, 'destroy']);
+    });
+
+    // Recadastro do estudante: acesso pelo CPF, sem login, com token de sessão.
+    Route::post('reecadastro/consulta', [ReecadastroPublicoController::class, 'consulta'])->middleware('throttle:10,1');
+    Route::post('reecadastro/solicitacoes/{solicitacao}/documentos', [ReecadastroPublicoController::class, 'documento'])->middleware('throttle:30,1');
+    Route::put('reecadastro/solicitacoes/{solicitacao}/dados', [ReecadastroPublicoController::class, 'dados'])->middleware('throttle:10,1');
+    Route::post('reecadastro/solicitacoes/{solicitacao}/finalizar', [ReecadastroPublicoController::class, 'finalizar'])->middleware('throttle:10,1');
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     /**
@@ -117,6 +136,15 @@ Route::middleware('auth:sanctum')->group(function () {
         ->only(['store', 'update'])->parameters(['periodos' => 'periodo'])->middleware('permission:periodos.write');
     Route::apiResource('reecadastro/periodos', PeriodoReecadastroController::class)
         ->only(['destroy'])->parameters(['periodos' => 'periodo'])->middleware('permission:periodos.delete');
+    // Quem esta ativo e nao concluiu o recadastro do periodo.
+    //
+    // Ver exige apenas leitura. Inativar corta o transporte de varios estudantes
+    // de uma vez, entao pede `periodos.write` (gestor/admin) e nao
+    // `estudantes.write`: o operador edita um estudante por vez, mas nao deve
+    // conseguir desativar uma turma inteira em um clique.
+    Route::get('reecadastro/periodos/{periodo}/ausentes', [AusentesReecadastroController::class, 'index'])->middleware('permission:periodos.view');
+    Route::post('reecadastro/periodos/{periodo}/inativar-ausentes', [AusentesReecadastroController::class, 'inativar'])->middleware('permission:periodos.write');
+
     Route::patch('reecadastro/periodos/{periodo}/abrir', [PeriodoReecadastroController::class, 'abrir'])->middleware('permission:periodos.write');
     Route::patch('reecadastro/periodos/{periodo}/fechar', [PeriodoReecadastroController::class, 'fechar'])->middleware('permission:periodos.write');
 

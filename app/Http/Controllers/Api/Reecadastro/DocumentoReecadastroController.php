@@ -48,9 +48,9 @@ class DocumentoReecadastroController extends Controller
      *
      * @urlParam documento integer required ID do documento de recadastro. Example: 1
      */
-    public function download(string $id)
+    public function download(Request $request, string $id)
     {
-        return $this->documentoReecadastroService->download($id);
+        return $this->documentoReecadastroService->download($id, $request->boolean('inline'));
     }
 
     /**

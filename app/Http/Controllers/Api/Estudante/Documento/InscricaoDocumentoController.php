@@ -7,6 +7,7 @@ use App\Http\Requests\Inscricao\Documento\StoreDocumentoRequest;
 use App\Models\Inscricao;
 use App\Models\InscricaoDocumento;
 use App\Services\Inscricao\Documento\InscricaoDocumentoService;
+use Illuminate\Http\Request;
 
 class InscricaoDocumentoController extends Controller
 {
@@ -27,8 +28,8 @@ class InscricaoDocumentoController extends Controller
         return $this->service->destroy($inscricao, $documento);
     }
 
-    public function download(Inscricao $inscricao, InscricaoDocumento $documento)
+    public function download(Request $request, Inscricao $inscricao, InscricaoDocumento $documento)
     {
-        return $this->service->download($inscricao, $documento);
+        return $this->service->download($inscricao, $documento, $request->boolean('inline'));
     }
 }

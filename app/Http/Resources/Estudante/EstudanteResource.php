@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Estudante;
 
+use App\Http\Resources\Inscricao\Documento\DocumentoResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -48,6 +49,11 @@ class EstudanteResource extends JsonResource
             'used_transport' => $dadosInstitucionais?->used_transport,
             'has_scholarship' => $dadosInstitucionais?->has_scholarship,
             'scholarship_type' => $dadosInstitucionais?->scholarship_type,
+            // Os documentos ficam na inscrição que originou o estudante. Sem
+            // eles aqui, a responsável aprova e perde de vista o que analisou.
+            'documentos' => DocumentoResource::collection(
+                $inscricao?->inscricao_documentos ?? collect(),
+            ),
         ];
     }
 }

@@ -19,6 +19,7 @@ class DocumentoResource extends JsonResource
             'status' => $this->status,
             'inscricao_id' => $this->inscricao_id,
             'download_url' => url("/api/inscricoes/{$this->inscricao_id}/documentos/{$this->id}/download"),
+            'preview_url' => url("/api/inscricoes/{$this->inscricao_id}/documentos/{$this->id}/download?inline=1"),
         ];
     }
 }

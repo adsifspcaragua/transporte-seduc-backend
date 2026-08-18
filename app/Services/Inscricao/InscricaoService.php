@@ -160,10 +160,40 @@ class InscricaoService
                 ], 404);
             }
 
+            // Devolver não é recusar: a inscrição volta para o aluno corrigir o que
+            // a responsável apontou, mantendo o mesmo CPF e o que já foi preenchido.
+            // Rejeitar continua sendo definitivo, para quem não tem direito ao
+            // benefício. O status volta a Incompleto, que é o que reabre a edição
+            // para o estudante e tira a inscrição da fila de análise até o reenvio.
+            if ($data['decisao'] === 'Devolvido') {
+                $inscricao->update([
+                    'status' => 'Incompleto',
+                    'observation' => $data['motivo'],
+                    'campos_pendentes' => $data['campos'] ?? [],
+                ]);
+
+                // Sem invalidar os documentos apontados, a inscrição voltaria
+                // completa para a fila no primeiro salvamento do aluno, sem que
+                // ele precisasse reenviar nada.
+                $paraReenviar = $data['documentos'] ?? [];
+
+                if ($paraReenviar !== []) {
+                    $inscricao->inscricao_documentos()
+                        ->whereIn('name', $paraReenviar)
+                        ->update(['status' => 'Rejeitado']);
+                }
+
+                return response()->json([
+                    'message' => 'Inscrição devolvida para correção',
+                ], 200);
+            }
+
             if ($data['decisao'] !== 'Aprovado') {
                 $inscricao->update([
                     'status' => 'Rejeitado',
                     'observation' => $data['motivo'],
+                    // Rejeitar encerra a inscrição: não há mais o que corrigir.
+                    'campos_pendentes' => null,
                 ]);
                 $inscricao->inscricao_documentos()->update(['status' => 'Rejeitado']);
 
@@ -202,6 +232,7 @@ class InscricaoService
                 $inscricao->update([
                     'status' => 'Aprovado',
                     'observation' => null,
+                    'campos_pendentes' => null,
                 ]);
                 $inscricao->inscricao_documentos()->update(['status' => 'Aprovado']);
 

@@ -22,6 +22,7 @@ class SolicitacaoResource extends JsonResource
             'periodo_id' => $this->periodo_id,
             'status' => $this->status,
             'observacoes' => $this->observacoes,
+            'campos_pendentes' => $this->campos_pendentes ?? [],
             'prazo_matricula' => $this->prazo_matricula,
             'prazo_cronograma' => $this->prazo_cronograma,
             'aceite_veracidade' => $this->aceite_veracidade,

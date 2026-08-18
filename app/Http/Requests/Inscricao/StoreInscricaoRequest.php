@@ -45,6 +45,28 @@ class StoreInscricaoRequest extends FormRequest
         ];
     }
 
+    /**
+     * Mensagens em português para os erros que o estudante vê no formulário.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'cpf.unique' => 'Já existe uma inscrição cadastrada com este CPF. Acesse a área do estudante e informe o CPF para ver a situação dela.',
+            'cpf.size' => 'O CPF deve ter 11 dígitos.',
+            'cpf.required' => 'Informe o CPF.',
+            'phone.unique' => 'Este telefone já está em uso em outra inscrição.',
+            'email.unique' => 'Este e-mail já está em uso em outra inscrição.',
+            'email.email' => 'Informe um e-mail válido.',
+            'name.required' => 'Informe o nome completo.',
+            'name.min' => 'O nome deve ter ao menos 3 caracteres.',
+            'birth_date.before' => 'A data de nascimento deve ser anterior a hoje.',
+            'birth_date.date_format' => 'Informe a data de nascimento no formato AAAA-MM-DD.',
+            'cep.size' => 'O CEP deve ter 8 dígitos.',
+        ];
+    }
+
     public function bodyParameters(): array
     {
         return $this->parameterDescriptions();
