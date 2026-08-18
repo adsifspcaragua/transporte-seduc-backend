@@ -27,7 +27,7 @@ class UpdateLinhaRequest extends FormRequest
             'description' => 'sometimes|string|max:255|min:3',
             'departure_time' => 'sometimes|date_format:H:i',
             'return_time' => 'sometimes|date_format:H:i|after:departure_time',
-            'max_capacity' => 'required|integer',
+            'max_capacity' => 'required|integer|min:1',
         ];
     }
 

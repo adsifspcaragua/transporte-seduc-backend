@@ -112,6 +112,17 @@ class LinhaService
                 ], 404);
             }
 
+            // Nao ha chave estrangeira em estudantes.linha_id: apagar a linha
+            // deixaria os estudantes apontando para uma linha inexistente, sem
+            // ninguem perceber. Realocar e decisao da responsavel.
+            $vinculados = $linha->estudantes()->count();
+
+            if ($vinculados > 0) {
+                return response()->json([
+                    'message' => "Esta linha tem {$vinculados} estudante(s) vinculado(s). Realoque-os antes de excluir.",
+                ], 409);
+            }
+
             $linhaExibir = $linha;
             $linha->delete();
 

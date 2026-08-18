@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Estudante;
 
 use App\Models\Estudante;
+use App\Rules\LinhaComVaga;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -69,7 +70,14 @@ class UpdateEstudanteRequest extends FormRequest
 
             'status' => 'sometimes|string|max:255',
 
-            'linha_id' => 'nullable|integer',
+            'linha_id' => [
+                'nullable',
+                'integer',
+                'exists:linhas,id',
+                new LinhaComVaga($this->route('estudante') instanceof Estudante
+                    ? $this->route('estudante')->id
+                    : (int) $this->route('estudante')),
+            ],
 
             'user_id' => 'nullable|integer|exists:users,id|unique:estudantes,user_id,'.$estudanteId,
 
@@ -85,6 +93,16 @@ class UpdateEstudanteRequest extends FormRequest
             'used_transport' => 'sometimes|nullable|boolean',
             'has_scholarship' => 'sometimes|nullable|boolean',
             'scholarship_type' => 'sometimes|nullable|string|max:255',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'linha_id.exists' => 'Linha não encontrada.',
         ];
     }
 

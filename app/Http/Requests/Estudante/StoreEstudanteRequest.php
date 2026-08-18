@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Estudante;
 
+use App\Rules\LinhaComVaga;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -38,10 +39,20 @@ class StoreEstudanteRequest extends FormRequest
             // status NÃO deve vir do front
             'status' => 'prohibited',
 
-            'linha_id' => 'nullable|integer',
+            'linha_id' => ['nullable', 'integer', 'exists:linhas,id', new LinhaComVaga],
             'user_id' => 'nullable|integer|exists:users,id',
             'inscricao_id' => 'required|integer|exists:inscricoes,id',
             'instituicao_id' => 'required|exists:instituicoes,id',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'linha_id.exists' => 'Linha não encontrada.',
         ];
     }
 

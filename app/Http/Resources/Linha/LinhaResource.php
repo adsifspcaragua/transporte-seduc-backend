@@ -21,6 +21,13 @@ class LinhaResource extends JsonResource
             'departure_time' => $this->departure_time,
             'return_time' => $this->return_time,
             'max_capacity' => $this->max_capacity,
+            // Quantos lugares ja estao tomados. So estudante ativo ocupa vaga:
+            // inativo nao anda de onibus.
+            'ocupacao' => $this->estudantes()->where('status', 'Ativo')->count(),
+            'vagas_restantes' => max(
+                0,
+                $this->max_capacity - $this->estudantes()->where('status', 'Ativo')->count(),
+            ),
         ];
     }
 }

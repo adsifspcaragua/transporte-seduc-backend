@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Linha extends Model
 {
-    protected $table = "linhas";
+    use HasFactory;
 
-    protected $fillable = [ 
+    protected $table = 'linhas';
+
+    protected $fillable = [
         'name',
         'description',
         'departure_time',
@@ -16,8 +19,8 @@ class Linha extends Model
         'max_capacity',
     ];
 
-    public function estudantes(){
-       return $this->hasMany(Estudante::class, "linha_id");
+    public function estudantes()
+    {
+        return $this->hasMany(Estudante::class, 'linha_id');
     }
-
 }
