@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
 use App\Http\Controllers\Api\Curso\CursoController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\Estudante\AcessoEstudanteController;
 use App\Http\Controllers\Api\Estudante\Documento\InscricaoDocumentoController;
 use App\Http\Controllers\Api\Estudante\EstudanteController;
@@ -90,6 +91,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Tela inicial: contadores agregados, sem dado individual, entao basta estar
+    // autenticado. Cada numero leva para a tela que ja tem sua propria permissao.
+    Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::post('/auth/token/revoke', [AuthController::class, 'tokenLogout']);
 
     // Usuários (apenas admin)
