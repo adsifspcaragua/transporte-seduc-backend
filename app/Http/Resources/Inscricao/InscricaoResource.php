@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Inscricao;
 
+use App\Http\Resources\Inscricao\Documento\DocumentoResource;
+use App\Http\Resources\Inscricao\Instituicao\InscricaoInstituicaoResource;
 use App\Models\Inscricao;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -48,6 +50,8 @@ class InscricaoResource extends JsonResource
                 ->all(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'instituicaoAcademica' => new InscricaoInstituicaoResource($this->whenLoaded('inscricao_instituicao')),
+            'documentos' => DocumentoResource::collection($this->whenLoaded('inscricao_documentos')),
 
         ];
     }

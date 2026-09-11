@@ -18,7 +18,10 @@ class InscricaoService
     public function index(): JsonResponse|AnonymousResourceCollection
     {
         try {
-            $inscricoes = Inscricao::all();
+            $inscricoes = Inscricao::with([
+                'inscricao_instituicao.instituicao',
+                'inscricao_documentos',
+            ])->get();
 
             if ($inscricoes->isEmpty()) {
                 return response()->json(['message' => 'Nenhuma inscricao cadastrada'], 200);
