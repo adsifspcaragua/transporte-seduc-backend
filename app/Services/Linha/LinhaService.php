@@ -12,7 +12,9 @@ class LinhaService
     public function index(): JsonResponse
     {
         try {
-            $linhas = Linha::all();
+            $linhas = Linha::withCount([
+                'estudantes as ocupacao' => fn ($query) => $query->where('status', 'Ativo'),
+            ])->get();
 
             if ($linhas->isEmpty()) {
                 return response()->json(['message' => 'Nenhuma linha cadastrada'], 200);

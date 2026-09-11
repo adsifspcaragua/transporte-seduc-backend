@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -114,6 +115,26 @@ class LinhaCapacidadeTest extends TestCase
 
         $this->assertSame(3, $linha['ocupacao']);
         $this->assertSame(7, $linha['vagas_restantes']);
+    }
+
+    public function test_listagem_nao_faz_consultas_adicionais_por_linha(): void
+    {
+        $this->linhaCom(capacidade: 10, ativos: 1);
+        $this->getJson('/api/linha')->assertOk();
+        DB::enableQueryLog();
+        DB::flushQueryLog();
+        $this->getJson('/api/linha')->assertOk();
+        $umaLinha = count(DB::getQueryLog());
+        DB::disableQueryLog();
+
+        Linha::factory()->count(5)->create();
+        DB::enableQueryLog();
+        DB::flushQueryLog();
+        $this->getJson('/api/linha')->assertOk()->assertJsonCount(6, 'data');
+        $seisLinhas = count(DB::getQueryLog());
+        DB::disableQueryLog();
+
+        $this->assertSame($umaLinha, $seisLinhas);
     }
 
     public function test_nao_exclui_linha_com_estudantes_vinculados(): void

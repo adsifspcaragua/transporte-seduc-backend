@@ -14,6 +14,8 @@ class LinhaResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $ocupacao = (int) ($this->ocupacao ?? $this->estudantes()->where('status', 'Ativo')->count());
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -23,10 +25,10 @@ class LinhaResource extends JsonResource
             'max_capacity' => $this->max_capacity,
             // Quantos lugares ja estao tomados. So estudante ativo ocupa vaga:
             // inativo nao anda de onibus.
-            'ocupacao' => $this->estudantes()->where('status', 'Ativo')->count(),
+            'ocupacao' => $ocupacao,
             'vagas_restantes' => max(
                 0,
-                $this->max_capacity - $this->estudantes()->where('status', 'Ativo')->count(),
+                $this->max_capacity - $ocupacao,
             ),
         ];
     }
