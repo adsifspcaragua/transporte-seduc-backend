@@ -130,6 +130,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('instituicao', InstituicaoController::class)->only(['destroy'])->middleware('permission:instituicoes.delete');
 
     // Linhas
+    Route::get('linha/{linha}/estudantes', [LinhaController::class, 'estudantes'])
+        ->middleware(['permission:linhas.view', 'permission:estudantes.view']);
     Route::apiResource('linha', LinhaController::class)->only(['index', 'show'])->middleware('permission:linhas.view');
     Route::apiResource('linha', LinhaController::class)->only(['store', 'update'])->middleware('permission:linhas.write');
     Route::apiResource('linha', LinhaController::class)->only(['destroy'])->middleware('permission:linhas.delete');

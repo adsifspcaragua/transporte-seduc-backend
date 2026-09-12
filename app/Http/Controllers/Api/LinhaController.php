@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Linha\StoreLinhaRequest;
 use App\Http\Requests\Linha\UpdateLinhaRequest;
+use App\Models\Linha;
 use App\Services\Linha\LinhaService;
+use Illuminate\Http\Request;
 
 /**
  * @group Linhas
@@ -26,6 +28,17 @@ class LinhaController extends Controller
     public function index()
     {
         return $this->linhaService->index();
+    }
+
+    /** Listar estudantes vinculados a uma linha, com paginacao. */
+    public function estudantes(Request $request, Linha $linha)
+    {
+        $data = $request->validate([
+            'page' => ['sometimes', 'integer', 'min:1'],
+            'per_page' => ['sometimes', 'integer', 'in:10,15,20,30'],
+        ]);
+
+        return $this->linhaService->estudantes($linha, (int) ($data['per_page'] ?? 10));
     }
 
     /**

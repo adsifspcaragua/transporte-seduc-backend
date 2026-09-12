@@ -2,13 +2,31 @@
 
 namespace App\Services\Linha;
 
+use App\Http\Resources\Linha\LinhaEstudanteResource;
 use App\Http\Resources\Linha\LinhaResource;
 use App\Models\Linha;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Throwable;
 
 class LinhaService
 {
+    public function estudantes(Linha $linha, int $perPage = 10): AnonymousResourceCollection
+    {
+        $estudantes = $linha->estudantes()
+            ->whereRaw('LOWER(status) = ?', ['ativo'])
+            ->with([
+                'instituicao:id,name',
+                'inscricao:id,name,email,phone',
+                'inscricao.inscricao_instituicao',
+            ])
+            ->orderBy('name')
+            ->orderBy('id')
+            ->paginate($perPage);
+
+        return LinhaEstudanteResource::collection($estudantes);
+    }
+
     public function index(): JsonResponse
     {
         try {
