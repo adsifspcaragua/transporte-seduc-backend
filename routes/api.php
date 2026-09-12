@@ -114,7 +114,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('estudantes', EstudanteController::class)->only(['store', 'update'])->middleware('permission:estudantes.write');
     Route::apiResource('estudantes', EstudanteController::class)->only(['destroy'])->middleware('permission:estudantes.delete');
     Route::get('contar-estudantes', [EstudanteController::class, 'countEstudantes'])->middleware('permission:estudantes.view');
-
+    Route::get('exportar-estudantes/{type}', [EstudanteController::class, 'exportarEstudantes']);
+    
     // Inscrições (área administrativa)
     Route::put('inscricoes/analise/{id}', [InscricaoController::class, 'analise'])->middleware('permission:inscricoes.analise');
     Route::apiResource('inscricoes', InscricaoController::class)

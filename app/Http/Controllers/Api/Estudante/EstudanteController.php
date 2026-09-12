@@ -96,4 +96,14 @@ class EstudanteController extends Controller
     {
         return $this->estudanteService->estudantesAtivos();
     }
+
+    /**
+     * Exportar estudantes.
+     *
+     * Retorna documento EXCEL/PDF/CSV.
+     */
+    public function exportarEstudantes(String $type)
+    {
+        return $this->estudanteService->exportarEstudantes($type);
+    }
 }
