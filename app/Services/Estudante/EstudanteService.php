@@ -253,7 +253,7 @@ class EstudanteService
             }
 
             return response()->json([
-                'message' => 'Tipo de arquivo inválido. Use pdf ou xlsx.',
+                'message' => 'Tipo de arquivo inválido. Use csv, pdf ou xlsx.',
             ], 400);
         } catch (Throwable $e) {
             report($e);
