@@ -59,7 +59,7 @@ class EstudanteService
             $estudante = Estudante::with(['inscricao.inscricao_instituicao', 'inscricao.inscricao_documentos'])->find($id);
 
             if (! $estudante) {
-                return response()->json(['message' => 'Estudante não encontrado'], 404);
+                return response()->json(['message' => 'Estudante não encontrado'], 404);
             }
 
             return response()->json([
@@ -153,7 +153,7 @@ class EstudanteService
             });
 
             if (! $estudante) {
-                return response()->json(['message' => 'Estudante não encontrado'], 404);
+                return response()->json(['message' => 'Estudante não encontrado'], 404);
             }
 
             return response()->json([
@@ -175,7 +175,7 @@ class EstudanteService
             $estudante = Estudante::find($id);
 
             if (! $estudante) {
-                return response()->json(['message' => 'Estudante não encontrado'], 404);
+                return response()->json(['message' => 'Estudante não encontrado'], 404);
             }
 
             $estudanteExibir = $estudante;
@@ -249,7 +249,7 @@ class EstudanteService
                 return Excel::download($arquivo, 'estudantes.xlsx');
             }
             return response()->json([
-                'message' => 'Tipo de arquivo invalido',
+                'message' => 'Tipo de arquivo inválido. Use pdf ou xlsx.',
             ], 400);
         } catch (Throwable $e) {
             report($e);

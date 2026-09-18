@@ -40,7 +40,7 @@ class LinhaService
 
             return response()->json([
                 'data' => LinhaResource::collection($linhas),
-                'message' => 'Instituição criada com sucesso',
+                'message' => 'Linhas encontradas com sucesso',
             ]);
         } catch (Throwable $e) {
             report($e);
@@ -78,7 +78,7 @@ class LinhaService
             $linha = Linha::with('motorista:id,name')->find($id);
 
             if (! $linha) {
-                return response()->json(['message' => 'Linha não encontrada'], 404);
+                return response()->json(['message' => 'Linha não encontrada'], 404);
             }
 
             return response()->json([

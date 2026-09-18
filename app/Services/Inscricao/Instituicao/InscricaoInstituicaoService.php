@@ -19,7 +19,7 @@ class InscricaoInstituicaoService
         $instituicoes = InscricaoInstituicoes::where('inscricao_id', $inscricaoId)->get();
 
         if ($instituicoes->isEmpty()) {
-            return response()->json(['message' => 'Nenhuma inscricao cadastrada'], 200);
+            return response()->json(['message' => 'Nenhum dado institucional cadastrado'], 200);
         }
 
         return InscricaoInstituicaoResource::collection($instituicoes);
@@ -40,13 +40,13 @@ class InscricaoInstituicaoService
 
             return response()->json([
                 'data' => new InscricaoInstituicaoResource($inscricaoInstituicao),
-                'message' => 'Inscrição criada com sucesso',
+                'message' => 'Dados institucionais cadastrados com sucesso',
             ], 201);
         } catch (Throwable $e) {
             report($e);
 
             return response()->json([
-                'message' => 'Erro ao criar inscrição.',
+                'message' => 'Erro ao cadastrar os dados institucionais.',
             ], 500);
         }
     }
@@ -57,15 +57,15 @@ class InscricaoInstituicaoService
             $inscricaoInstituicao = $this->findByInscricao($inscricaoId, $instituicaoId);
 
             if (! $inscricaoInstituicao) {
-                return response()->json(['message' => 'Inscricao não encontrada'], 404);
+                return response()->json(['message' => 'Dados institucionais não encontrados'], 404);
             }
 
             return response()->json([
                 'data' => new InscricaoInstituicaoResource($inscricaoInstituicao),
-                'message' => 'Incricao encontrado com sucesso',
+                'message' => 'Dados institucionais encontrados com sucesso',
             ], 200);
         } catch (Throwable) {
-            return response()->json(['message' => 'Erro ao buscar inscrição.'], 500);
+            return response()->json(['message' => 'Erro ao buscar os dados institucionais.'], 500);
         }
     }
 
@@ -79,7 +79,7 @@ class InscricaoInstituicaoService
 
             if (! $inscricaoInstituicao) {
                 return response()->json([
-                    'message' => 'Inscricao não encontrada',
+                    'message' => 'Dados institucionais não encontrados',
                 ], 404);
             }
 
@@ -92,10 +92,10 @@ class InscricaoInstituicaoService
 
             return response()->json([
                 'data' => new InscricaoInstituicaoResource($inscricaoInstituicao),
-                'message' => 'Inscricao atualizada com sucesso',
+                'message' => 'Dados institucionais atualizados com sucesso',
             ], 200);
         } catch (Throwable) {
-            return response()->json(['message' => 'Erro ao atualizar inscrição.'], 500);
+            return response()->json(['message' => 'Erro ao atualizar os dados institucionais.'], 500);
         }
     }
 
@@ -105,7 +105,7 @@ class InscricaoInstituicaoService
             $inscricaoInstituicao = $this->findByInscricao($inscricaoId, $instituicaoId);
 
             if (! $inscricaoInstituicao) {
-                return response()->json(['message' => 'Inscricao não encontrada'], 404);
+                return response()->json(['message' => 'Dados institucionais não encontrados'], 404);
             }
 
             $inscricaoInstituicao->delete();
@@ -115,9 +115,9 @@ class InscricaoInstituicaoService
                 $this->statusService->refreshStatus($inscricao);
             }
 
-            return response()->json(['message' => 'Inscricao deletada com sucesso']);
+            return response()->json(['message' => 'Dados institucionais removidos com sucesso']);
         } catch (Throwable) {
-            return response()->json(['message' => 'Erro ao deletar inscrição.'], 500);
+            return response()->json(['message' => 'Erro ao remover os dados institucionais.'], 500);
         }
     }
 

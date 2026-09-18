@@ -22,7 +22,7 @@ class UserService
 
             return response()->json([
                 'data' => UserResource::collection($users),
-                'message' => 'Usuários inscritos',
+                'message' => 'Usuários encontrados com sucesso',
             ], 200);
         } catch (Throwable) {
             return response()->json([
@@ -63,7 +63,7 @@ class UserService
             $user = User::with('roles')->find($id);
 
             if (! $user) {
-                return response()->json(['message' => 'Usuário não encontrada'], 404);
+                return response()->json(['message' => 'Usuário não encontrado'], 404);
             }
 
             return response()->json([

@@ -24,7 +24,7 @@ class InscricaoService
             ])->get();
 
             if ($inscricoes->isEmpty()) {
-                return response()->json(['message' => 'Nenhuma inscricao cadastrada'], 200);
+                return response()->json(['message' => 'Nenhuma inscrição cadastrada'], 200);
             }
 
             return InscricaoResource::collection($inscricoes);
@@ -62,12 +62,12 @@ class InscricaoService
             $inscricao = Inscricao::find($id);
 
             if (! $inscricao) {
-                return response()->json(['message' => 'Inscricao não encontrada'], 404);
+                return response()->json(['message' => 'Inscrição não encontrada'], 404);
             }
 
             return response()->json([
                 'data' => new InscricaoResource($inscricao),
-                'message' => 'Incricao encontrado com sucesso',
+                'message' => 'Inscrição encontrada com sucesso',
             ], 200);
         } catch (Throwable $ex) {
             report($ex);
@@ -87,13 +87,13 @@ class InscricaoService
 
             if (! $inscricao) {
                 return response()->json([
-                    'message' => 'Incrição não encontrada',
+                    'message' => 'Inscrição não encontrada',
                 ], 404);
             }
 
             if ($inscricao->status === 'Em analise') {
                 return response()->json([
-                    'message' => 'A inscrição já está em analise',
+                    'message' => 'A inscrição já está em análise',
                 ], 403);
             }
 
@@ -109,11 +109,11 @@ class InscricaoService
 
             return response()->json([
                 'data' => new InscricaoResource($inscricao),
-                'message' => 'Inscricao atualizada com sucesso',
+                'message' => 'Inscrição atualizada com sucesso',
             ], 200);
         } catch (Throwable) {
             return response()->json([
-                'message' => 'Falha ao atualizar inscricao',
+                'message' => 'Falha ao atualizar inscrição',
             ], 500);
         }
     }
@@ -124,17 +124,17 @@ class InscricaoService
             $inscricao = Inscricao::find($id);
 
             if (! $inscricao) {
-                return response()->json(['message' => 'Inscricao não encontrada'], 404);
+                return response()->json(['message' => 'Inscrição não encontrada'], 404);
             }
 
             $inscricao->delete();
 
             return response()->json([
-                'message' => 'Inscricao deletada com sucesso',
+                'message' => 'Inscrição deletada com sucesso',
             ], 200);
         } catch (Throwable) {
             return response()->json([
-                'message' => 'Falha ao deletar inscricao',
+                'message' => 'Falha ao deletar inscrição',
             ], 500);
         }
     }

@@ -16,12 +16,12 @@ class InstituicaoService
         $instituicoes = Instituicao::paginate(15);
 
         if ($instituicoes->isEmpty()) {
-            return response()->json(['message' => 'Nenhuma instituicao cadastrada'], 200);
+            return response()->json(['message' => 'Nenhuma instituição cadastrada'], 200);
         }
 
         return response()->json([
             'data' => InstituicaoResource::collection($instituicoes),
-            'message' => 'Instituicao encontrada com sucesso',
+            'message' => 'Instituição encontrada com sucesso',
         ], 200);
     }
 
@@ -41,7 +41,7 @@ class InstituicaoService
             report($e);
 
             return response()->json([
-                'message' => 'Erro ao cadastrar instituicao',
+                'message' => 'Erro ao cadastrar instituição',
             ], 500);
         }
     }
@@ -52,18 +52,18 @@ class InstituicaoService
             $instituicao = Instituicao::find($id);
 
             if (! $instituicao) {
-                return response()->json(['message' => 'Instituição não encontrada'], 404);
+                return response()->json(['message' => 'Instituição não encontrada'], 404);
             }
 
             return response()->json([
                 'data' => new InstituicaoResource($instituicao),
-                'message' => 'Instituicao encontrada com sucesso',
+                'message' => 'Instituição encontrada com sucesso',
             ], 200);
         } catch (Throwable $e) {
             report($e);
 
             return response()->json([
-                'message' => 'Erro ao encontrar instituicao',
+                'message' => 'Erro ao encontrar instituição',
             ], 500);
         }
     }
@@ -77,20 +77,20 @@ class InstituicaoService
             $instituicao = Instituicao::find($id);
 
             if (! $instituicao) {
-                return response()->json(['message' => 'Instituicao não encontrada'], 404);
+                return response()->json(['message' => 'Instituição não encontrada'], 404);
             }
 
             $instituicao->update($data);
 
             return response()->json([
                 'data' => new InstituicaoResource($instituicao),
-                'message' => 'Instituicao atualizada com sucesso',
+                'message' => 'Instituição atualizada com sucesso',
             ], 200);
         } catch (Throwable $e) {
             report($e);
 
             return response()->json([
-                'message' => 'Erro ao atualizar instituicao',
+                'message' => 'Erro ao atualizar instituição',
             ], 500);
         }
     }
@@ -102,13 +102,13 @@ class InstituicaoService
 
             if (! $instituicao) {
                 return response()->json([
-                    'message' => 'Instituicao não encontrada',
+                    'message' => 'Instituição não encontrada',
                 ], 404);
             }
 
             if($instituicao->inscricoesInstituicoes()->exists() ||$instituicao->estudantesInstituicoes()->exists() ){
                 return response()->json([
-                    'message' => 'Essa instituicao ainda está vinculada, não foi possivel fazer a remoção',
+                    'message' => 'Esta instituição ainda está vinculada a estudantes ou inscrições e não pode ser removida.',
                 ]);
             }
             
@@ -118,13 +118,13 @@ class InstituicaoService
 
             return response()->json([
                 'data' => new InstituicaoResource($instituicaoExibir),
-                'message' => 'Instituicao deletada com sucesso',
+                'message' => 'Instituição deletada com sucesso',
             ]);
         } catch (Throwable $e) {
             report($e);
 
             return response()->json([
-                'message' => 'Erro ao excluir instituicao',
+                'message' => 'Erro ao excluir instituição',
             ], 500);
         }
     }

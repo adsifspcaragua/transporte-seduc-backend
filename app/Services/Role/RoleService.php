@@ -49,7 +49,7 @@ class RoleService
             $role = Role::find($id);
 
             if (! $role) {
-                return response()->json(['message' => 'Cargo nao encontrado'], 404);
+                return response()->json(['message' => 'Cargo não encontrado'], 404);
             }
 
             return new RoleResource($role);
@@ -81,7 +81,7 @@ class RoleService
             });
 
             if (! $role) {
-                return response()->json(['message' => 'Cargo nao encontrado'], 404);
+                return response()->json(['message' => 'Cargo não encontrado'], 404);
             }
 
             return response()->json([
@@ -103,7 +103,7 @@ class RoleService
             $role = Role::find($id);
 
             if (! $role) {
-                return response()->json(['message' => 'Cargo nao encontrado'], 404);
+                return response()->json(['message' => 'Cargo não encontrado'], 404);
             }
 
             $roleExibir = $role;
