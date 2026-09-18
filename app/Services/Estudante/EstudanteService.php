@@ -2,13 +2,13 @@
 
 namespace App\Services\Estudante;
 
+use App\Exports\EstudantesExport;
 use App\Http\Resources\Estudante\EstudanteResource;
 use App\Models\Estudante;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade\Pdf;
-use App\Exports\EstudantesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
@@ -227,39 +227,40 @@ class EstudanteService
             ], 500);
         }
     }
-    
-    public function exportarEstudantes(String $type)
+
+    public function exportarEstudantes(string $type)
     {
         try {
             $estudantes = Estudante::with(['instituicao', 'linha'])->get()->toArray();
-            
-            if($type == "csv"){
+
+            if ($type == 'csv') {
                 $arquivo = new EstudantesExport($estudantes);
+
                 return Excel::download($arquivo, 'estudantes.csv', \Maatwebsite\Excel\Excel::CSV);
 
-            }else if ($type == "pdf"){
+            } elseif ($type == 'pdf') {
                 $arquivo = Pdf::loadView(
                     'exports.estudantes',
                     compact('estudantes')
                 );
+
                 return $arquivo->download('estudantes.pdf');
 
-            }else if($type == "xlsx"){
+            } elseif ($type == 'xlsx') {
                 $arquivo = new EstudantesExport($estudantes);
+
                 return Excel::download($arquivo, 'estudantes.xlsx');
             }
+
             return response()->json([
                 'message' => 'Tipo de arquivo inválido. Use pdf ou xlsx.',
             ], 400);
         } catch (Throwable $e) {
             report($e);
-            
+
             return response()->json([
                 'message' => 'Erro ao exportar lista de estudantes',
             ], 500);
         }
     }
-    
-    
-    
 }

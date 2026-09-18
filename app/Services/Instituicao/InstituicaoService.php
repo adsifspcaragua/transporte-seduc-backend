@@ -3,8 +3,6 @@
 namespace App\Services\Instituicao;
 
 use App\Http\Resources\Instituicao\InstituicaoResource;
-use App\Models\Estudante;
-use App\Models\InscricaoInstituicoes;
 use App\Models\Instituicao;
 use Illuminate\Http\JsonResponse;
 use Throwable;
@@ -106,12 +104,11 @@ class InstituicaoService
                 ], 404);
             }
 
-            if($instituicao->inscricoesInstituicoes()->exists() ||$instituicao->estudantesInstituicoes()->exists() ){
+            if ($instituicao->inscricoesInstituicoes()->exists() || $instituicao->estudantesInstituicoes()->exists()) {
                 return response()->json([
                     'message' => 'Esta instituição ainda está vinculada a estudantes ou inscrições e não pode ser removida.',
                 ]);
             }
-            
 
             $instituicaoExibir = $instituicao;
             $instituicao->delete();
