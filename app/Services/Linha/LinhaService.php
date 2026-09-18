@@ -30,7 +30,7 @@ class LinhaService
     public function index(): JsonResponse
     {
         try {
-            $linhas = Linha::withCount([
+            $linhas = Linha::with('motorista:id,name')->withCount([
                 'estudantes as ocupacao' => fn ($query) => $query->where('status', 'Ativo'),
             ])->get();
 
@@ -60,7 +60,7 @@ class LinhaService
             $linha = Linha::create($data);
 
             return response()->json([
-                'data' => new LinhaResource($linha),
+                'data' => new LinhaResource($linha->load('motorista:id,name')),
                 'message' => 'Linha criada com sucesso',
             ], 200);
         } catch (Throwable $e) {
@@ -75,7 +75,7 @@ class LinhaService
     public function show(string $id): JsonResponse
     {
         try {
-            $linha = Linha::find($id);
+            $linha = Linha::with('motorista:id,name')->find($id);
 
             if (! $linha) {
                 return response()->json(['message' => 'Linha não encontrada'], 404);
@@ -109,7 +109,7 @@ class LinhaService
             $linha->update($data);
 
             return response()->json([
-                'data' => new LinhaResource($linha),
+                'data' => new LinhaResource($linha->load('motorista:id,name')),
                 'message' => 'Linha atualizada com sucesso',
             ], 200);
         } catch (Throwable $e) {
@@ -140,6 +140,16 @@ class LinhaService
             if ($vinculados > 0) {
                 return response()->json([
                     'message' => "Esta linha tem {$vinculados} estudante(s) vinculado(s). Realoque-os antes de excluir.",
+                ], 409);
+            }
+
+            // Apagar a linha levaria junto as chamadas (cascata) e, com elas, a
+            // frequencia de todos que ja andaram nela.
+            $chamadas = $linha->chamadas()->count();
+
+            if ($chamadas > 0) {
+                return response()->json([
+                    'message' => "Esta linha tem {$chamadas} chamada(s) registrada(s) e não pode ser excluída sem perder o histórico de frequência.",
                 ], 409);
             }
 

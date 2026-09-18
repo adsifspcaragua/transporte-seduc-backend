@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Linha;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class LinhaSeeder extends Seeder
@@ -40,10 +41,18 @@ class LinhaSeeder extends Seeder
             ],
         ];
 
+        // O motorista de teste conduz duas linhas, para exercitar o escopo da
+        // chamada: ele ve estas e nao as outras.
+        $motoristaId = User::where('email', 'motorista@example.com')->value('id');
+        $doMotorista = ['Linha Centro', 'Linha Noturna'];
+
         foreach ($linhas as $linha) {
             Linha::updateOrCreate(
                 ['name' => $linha['name']],
-                $linha,
+                [
+                    ...$linha,
+                    'motorista_id' => in_array($linha['name'], $doMotorista, true) ? $motoristaId : null,
+                ],
             );
         }
     }

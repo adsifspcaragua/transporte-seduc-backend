@@ -127,16 +127,44 @@ O `composer.json` já traz dois scripts utilitários:
 > O `composer setup` **não** roda `db:seed` nem `storage:link` — execute esses
 > passos separadamente quando necessário.
 
+### E-mails de teste (Mailpit)
+
+Os avisos de frequência são enviados por e-mail. Em desenvolvimento eles vão
+para o **[Mailpit](https://mailpit.axllent.org/)**, um receptor local e gratuito
+que captura tudo sem entregar a ninguém:
+
+1. Baixe o binário em <https://github.com/axllent/mailpit/releases> (no Windows,
+   `mailpit-windows-amd64.zip`) e rode:
+
+   ```bash
+   mailpit --listen 127.0.0.1:8025 --smtp 127.0.0.1:1025
+   ```
+
+2. O `.env.example` já aponta para ele (`MAIL_MAILER=smtp`, porta `1025`).
+3. Abra a caixa de entrada em <http://127.0.0.1:8025>.
+
+Os e-mails saem pela **fila** (`QUEUE_CONNECTION=database`), então é preciso um
+worker rodando. O `composer dev` já sobe um; rodando só o `php artisan serve`,
+use também:
+
+```bash
+php artisan queue:work
+```
+
+> Os testes de upload geram imagens falsas e precisam da extensão **GD** do PHP
+> habilitada (`extension=gd` no `php.ini`).
+
 ---
 
 ## Usuários de teste
 
-Após `php artisan db:seed`, dois usuários ficam disponíveis (senha **`12345678`** para ambos):
+Após `php artisan db:seed`, estes usuários ficam disponíveis (senha **`12345678`** para todos):
 
 | E-mail | Perfil | Senha |
 |---|---|---|
 | `admin@example.com` | **admin** | `12345678` |
 | `user@example.com` | **operador** | `12345678` |
+| `motorista@example.com` | **motorista** (Linha Centro e Linha Noturna) | `12345678` |
 
 ---
 

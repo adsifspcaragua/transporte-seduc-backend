@@ -25,6 +25,10 @@ Particionamento em **classes de equivalência** + **análise do valor-limite**.
 | `Feature/Inscricao/AnaliseInscricaoTest.php` | Decisão da lista de espera em `PUT /api/inscricoes/analise/{id}`: aprovação gera o estudante ativo, rejeição exige motivo, inscrição sem dados institucionais não é aprovada. |
 | `Feature/Reecadastro/ReecadastroPublicoTest.php` | Fluxo público por CPF: período fechado, CPF fora do sistema, estudante inativo, abertura da solicitação, token de sessão, envio/reenvio de documentos, prazo adicional e finalização. |
 | `Feature/Reecadastro/AnaliseReecadastroTest.php` | Homologação do recadastro: aprovar / rejeitar / devolver documentos, efeito no estudante, abertura exclusiva de período e download do arquivo. |
+| `Feature/Frequencia/ChamadaTest.php` | Chamada diária do motorista: folha só com os esperados do dia (ativo + linha + dia da semana), retomada sem duplicar, marcação Presente/Falta/Justificada (motivo obrigatório), fechar só sem pendentes, reabrir, escopo do motorista na própria linha e matriz de permissões. |
+| `Feature/Frequencia/BeneficioFrequenciaTest.php` | Regra do benefício, com valores-limite: 2 seguidas (aviso) / 3 seguidas (perda); 4 no mês (aviso) / 5 no mês (perda). Recomeço da contagem na virada do mês, justificada não contando, folha aberta não contando, aviso sem repetição, aplicação ao fechar a chamada e ao rejeitar justificativa, conteúdo do e-mail. |
+| `Feature/Frequencia/JustificativaTest.php` | Justificativas: criação pela chamada ou para falta já registrada, retirada antes da análise, bloqueio da marcação já analisada, fila com pendentes primeiro, aprovar/rejeitar (parecer obrigatório), análise única e permissões (motorista justifica mas não decide; operador só vê). |
+| `Feature/Frequencia/RelatorioFrequenciaTest.php` | Relatório de frequência: percentual sem as justificadas, faltas consecutivas (justificada interrompe, pendente é ignorado), filtros de período/linha/faltas seguidas, histórico do estudante e escopo do motorista. |
 
 ## Teste Estrutural — caixa-branca
 

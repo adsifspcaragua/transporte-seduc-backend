@@ -23,6 +23,10 @@ class RolePermissionSeeder extends Seeder
         'documentos.view', 'documentos.delete',
         'periodos.view', 'periodos.write', 'periodos.delete',
         'solicitacoes.view', 'solicitacoes.analise', 'solicitacoes.delete',
+        // `frequencias.todas` alcanca a chamada de qualquer linha; sem ela, so
+        // as linhas que o usuario conduz como motorista.
+        'frequencias.view', 'frequencias.write', 'frequencias.delete', 'frequencias.todas',
+        'justificativas.view', 'justificativas.analise',
     ];
 
     /**
@@ -39,6 +43,8 @@ class RolePermissionSeeder extends Seeder
             'documentos.view', 'documentos.delete',
             'periodos.view', 'periodos.write', 'periodos.delete',
             'solicitacoes.view', 'solicitacoes.analise', 'solicitacoes.delete',
+            'frequencias.view', 'frequencias.write', 'frequencias.delete', 'frequencias.todas',
+            'justificativas.view', 'justificativas.analise',
         ],
         'operador' => [
             'estudantes.view', 'estudantes.write',
@@ -47,6 +53,13 @@ class RolePermissionSeeder extends Seeder
             'documentos.view',
             'periodos.view',
             'solicitacoes.view',
+            'frequencias.view', 'frequencias.todas',
+            'justificativas.view',
+        ],
+        // Faz a chamada da propria linha e nada mais: nao ve cadastro de
+        // estudante, inscricao nem documento.
+        'motorista' => [
+            'frequencias.view', 'frequencias.write',
         ],
     ];
 

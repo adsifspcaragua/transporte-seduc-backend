@@ -38,7 +38,20 @@ class UserSeeder extends Seeder
             ],
         );
 
+        $motorista = User::updateOrCreate(
+            ['email' => 'motorista@example.com'],
+            [
+                'name' => 'Motorista UNIBUS',
+                'password' => Hash::make('12345678'),
+                'cpf' => '12345678903',
+                'matricula' => 1003,
+                'data_nascimento' => '1985-03-03',
+                'ativo' => true,
+            ],
+        );
+
         $admin->roles()->sync(Role::where('title', 'admin')->pluck('id'));
         $operador->roles()->sync(Role::where('title', 'operador')->pluck('id'));
+        $motorista->roles()->sync(Role::where('title', 'motorista')->pluck('id'));
     }
 }

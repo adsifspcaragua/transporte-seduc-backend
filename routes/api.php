@@ -9,6 +9,9 @@ use App\Http\Controllers\Api\Estudante\Documento\InscricaoDocumentoController;
 use App\Http\Controllers\Api\Estudante\EstudanteController;
 use App\Http\Controllers\Api\Estudante\InscricaoController;
 use App\Http\Controllers\Api\Estudante\InscricaoInstituicaoController;
+use App\Http\Controllers\Api\Frequencia\ChamadaController;
+use App\Http\Controllers\Api\Frequencia\JustificativaController;
+use App\Http\Controllers\Api\Frequencia\RelatorioFrequenciaController;
 use App\Http\Controllers\Api\Instituicao\InstituicaoController;
 use App\Http\Controllers\Api\LinhaController;
 use App\Http\Controllers\Api\Reecadastro\AusentesReecadastroController;
@@ -169,4 +172,28 @@ Route::middleware('auth:sanctum')->group(function () {
         ->only(['index', 'show'])->parameters(['documentos' => 'documento'])->middleware('permission:documentos.view');
     Route::apiResource('reecadastro/documentos', DocumentoReecadastroController::class)
         ->only(['destroy'])->parameters(['documentos' => 'documento'])->middleware('permission:documentos.delete');
+
+    // Frequencia: a chamada diaria do motorista.
+    //
+    // A permissao da rota diz o que o perfil pode fazer; em quais linhas, quem
+    // decide e o EscopoFrequencia. O motorista so alcanca as linhas que conduz,
+    // mesmo trocando o id na URL; `frequencias.todas` libera todas.
+    Route::get('frequencias/linhas', [ChamadaController::class, 'linhas'])->middleware('permission:frequencias.view');
+    Route::get('frequencias/relatorio', [RelatorioFrequenciaController::class, 'index'])->middleware('permission:frequencias.view');
+    Route::get('frequencias/estudantes/{estudante}/relatorio', [RelatorioFrequenciaController::class, 'estudante'])->middleware('permission:frequencias.view');
+    Route::apiResource('frequencias/chamadas', ChamadaController::class)
+        ->only(['index', 'show'])->parameters(['chamadas' => 'chamada'])->middleware('permission:frequencias.view');
+    Route::apiResource('frequencias/chamadas', ChamadaController::class)
+        ->only(['store', 'update'])->parameters(['chamadas' => 'chamada'])->middleware('permission:frequencias.write');
+    Route::patch('frequencias/chamadas/{chamada}/fechar', [ChamadaController::class, 'fechar'])->middleware('permission:frequencias.write');
+    Route::patch('frequencias/chamadas/{chamada}/reabrir', [ChamadaController::class, 'reabrir'])->middleware('permission:frequencias.write');
+    Route::apiResource('frequencias/chamadas', ChamadaController::class)
+        ->only(['destroy'])->parameters(['chamadas' => 'chamada'])->middleware('permission:frequencias.delete');
+
+    // Justificativas de falta. Quem lanca a chamada pode justificar uma falta;
+    // so a responsavel ve a fila e decide.
+    Route::post('frequencias/justificativas', [JustificativaController::class, 'store'])->middleware('permission:frequencias.write');
+    Route::put('frequencias/justificativas/{justificativa}/analise', [JustificativaController::class, 'analise'])->middleware('permission:justificativas.analise');
+    Route::get('frequencias/justificativas', [JustificativaController::class, 'index'])->middleware('permission:justificativas.view');
+    Route::get('frequencias/justificativas/{justificativa}', [JustificativaController::class, 'show'])->middleware('permission:justificativas.view');
 });

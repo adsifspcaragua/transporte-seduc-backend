@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Linha;
 
+use App\Rules\UsuarioMotorista;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -28,6 +29,7 @@ class UpdateLinhaRequest extends FormRequest
             'departure_time' => 'sometimes|date_format:H:i',
             'return_time' => 'sometimes|date_format:H:i|after:departure_time',
             'max_capacity' => 'required|integer|min:1',
+            'motorista_id' => ['nullable', 'integer', 'exists:users,id', new UsuarioMotorista],
         ];
     }
 
@@ -39,6 +41,7 @@ class UpdateLinhaRequest extends FormRequest
             'departure_time' => ['description' => 'Horario de saida no formato HH:MM.', 'example' => '07:00'],
             'return_time' => ['description' => 'Horario de retorno no formato HH:MM.', 'example' => '18:00'],
             'max_capacity' => ['description' => 'Capacidade maxima de estudantes.', 'example' => 40],
+            'motorista_id' => ['description' => 'ID do usuario motorista que conduz a linha. Nulo desvincula.', 'example' => 3],
         ];
     }
 }

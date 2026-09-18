@@ -23,6 +23,8 @@ class LinhaResource extends JsonResource
             'departure_time' => $this->departure_time,
             'return_time' => $this->return_time,
             'max_capacity' => $this->max_capacity,
+            'motorista_id' => $this->motorista_id,
+            'motorista' => $this->whenLoaded('motorista', fn () => $this->motorista?->only(['id', 'name'])),
             // Quantos lugares ja estao tomados. So estudante ativo ocupa vaga:
             // inativo nao anda de onibus.
             'ocupacao' => $ocupacao,

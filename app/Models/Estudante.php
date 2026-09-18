@@ -55,4 +55,14 @@ class Estudante extends Model
     {
         return $this->hasMany(SolicitacaoReecadastro::class, 'estudante_id');
     }
+
+    public function frequencias()
+    {
+        return $this->hasMany(Frequencia::class, 'estudante_id');
+    }
+
+    public function avisos_frequencia()
+    {
+        return $this->hasMany(AvisoFrequencia::class, 'estudante_id');
+    }
 }
