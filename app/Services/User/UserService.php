@@ -11,6 +11,20 @@ use Throwable;
 
 class UserService
 {
+    public function motoristas(): JsonResponse
+    {
+        $motoristas = User::query()
+            ->where('ativo', true)
+            ->whereHas('roles', fn ($query) => $query->where('title', 'motorista'))
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return response()->json([
+            'data' => $motoristas,
+            'message' => 'Motoristas encontrados com sucesso',
+        ]);
+    }
+
     public function index(): JsonResponse
     {
         try {

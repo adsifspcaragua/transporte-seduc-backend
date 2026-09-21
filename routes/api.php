@@ -100,6 +100,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::post('/auth/token/revoke', [AuthController::class, 'tokenLogout']);
 
+    // A seleção expõe somente id e nome de motoristas ativos a quem gerencia linhas.
+    Route::get('users/motoristas', [UserController::class, 'motoristas'])->middleware('permission:linhas.write');
+
     // Usuários (apenas admin)
     Route::apiResource('users', UserController::class)->only(['index', 'show'])->middleware('permission:users.view');
     Route::apiResource('users', UserController::class)->only(['store', 'update'])->middleware('permission:users.write');
@@ -117,7 +120,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('estudantes', EstudanteController::class)->only(['store', 'update'])->middleware('permission:estudantes.write');
     Route::apiResource('estudantes', EstudanteController::class)->only(['destroy'])->middleware('permission:estudantes.delete');
     Route::get('contar-estudantes', [EstudanteController::class, 'countEstudantes'])->middleware('permission:estudantes.view');
-    Route::get('exportar-estudantes/{type}', [EstudanteController::class, 'exportarEstudantes']);
+    Route::get('exportar-estudantes/{type}', [EstudanteController::class, 'exportarEstudantes'])->middleware('permission:estudantes.view');
 
     // Inscrições (área administrativa)
     Route::put('inscricoes/analise/{id}', [InscricaoController::class, 'analise'])->middleware('permission:inscricoes.analise');

@@ -30,6 +30,16 @@ class UserController extends Controller
     }
 
     /**
+     * Listar motoristas ativos.
+     *
+     * Retorna apenas identificador e nome para o vínculo com linhas.
+     */
+    public function motoristas()
+    {
+        return $this->userService->motoristas();
+    }
+
+    /**
      * Cadastrar usuario.
      *
      * Cria um novo usuario do sistema.
