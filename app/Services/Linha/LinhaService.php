@@ -4,6 +4,8 @@ namespace App\Services\Linha;
 
 use App\Http\Resources\Linha\LinhaEstudanteResource;
 use App\Http\Resources\Linha\LinhaResource;
+use App\Models\Chamada;
+use App\Models\Frequencia;
 use App\Models\Linha;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -15,6 +17,22 @@ class LinhaService
     {
         $estudantes = $linha->estudantes()
             ->whereRaw('LOWER(status) = ?', ['ativo'])
+            ->withCount([
+                'frequencias as faltas' => fn ($query) => $query
+                    ->where('situacao', Frequencia::FALTA)
+                    ->whereHas('chamada', fn ($chamada) => $chamada
+                        ->where('status', Chamada::FECHADA)),
+            ])
+            ->addSelect([
+                'ultima_presenca' => Frequencia::query()
+                    ->select('chamadas.data')
+                    ->join('chamadas', 'chamadas.id', '=', 'frequencias.chamada_id')
+                    ->whereColumn('frequencias.estudante_id', 'estudantes.id')
+                    ->where('frequencias.situacao', Frequencia::PRESENTE)
+                    ->where('chamadas.status', Chamada::FECHADA)
+                    ->orderByDesc('chamadas.data')
+                    ->limit(1),
+            ])
             ->with([
                 'instituicao:id,name',
                 'inscricao:id,name,email,phone',

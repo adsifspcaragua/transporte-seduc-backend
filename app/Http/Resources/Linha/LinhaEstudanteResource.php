@@ -22,6 +22,8 @@ class LinhaEstudanteResource extends JsonResource
             'course' => $academico?->course,
             'semester' => $academico?->semester,
             'instituicao_name' => $instituicao?->name,
+            'faltas' => (int) $this->faltas,
+            'ultima_presenca' => $this->ultima_presenca,
         ];
     }
 }

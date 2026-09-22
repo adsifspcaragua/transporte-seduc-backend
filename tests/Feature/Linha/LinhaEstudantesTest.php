@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Linha;
 
+use App\Models\Chamada;
 use App\Models\Estudante;
+use App\Models\Frequencia;
 use App\Models\InscricaoInstituicoes;
 use App\Models\Linha;
 use App\Models\Permission;
@@ -94,6 +96,44 @@ class LinhaEstudantesTest extends TestCase
         $estudante->update(['linha_id' => $outra->id]);
         $this->getJson("/api/linha/{$linha->id}/estudantes")->assertOk()->assertJsonCount(0, 'data');
         $this->getJson("/api/linha/{$outra->id}/estudantes")->assertOk()->assertJsonPath('data.0.id', $estudante->id);
+    }
+
+    public function test_retorna_faltas_e_ultima_presenca_somente_de_chamadas_fechadas(): void
+    {
+        $this->autenticar();
+        $linha = Linha::factory()->create();
+        $estudante = $this->estudanteCompleto($linha);
+        $semPresenca = Estudante::factory()->create(['linha_id' => $linha->id]);
+
+        $registros = [
+            ['2026-09-01', Chamada::FECHADA, Frequencia::FALTA],
+            ['2026-09-02', Chamada::FECHADA, Frequencia::JUSTIFICADA],
+            ['2026-09-03', Chamada::FECHADA, Frequencia::PRESENTE],
+            ['2026-09-04', Chamada::FECHADA, Frequencia::PRESENTE],
+            ['2026-09-05', Chamada::ABERTA, Frequencia::FALTA],
+            ['2026-09-06', Chamada::ABERTA, Frequencia::PRESENTE],
+        ];
+
+        foreach ($registros as [$data, $status, $situacao]) {
+            $chamada = Chamada::factory()->create([
+                'linha_id' => $linha->id,
+                'data' => $data,
+                'status' => $status,
+            ]);
+            Frequencia::factory()->create([
+                'chamada_id' => $chamada->id,
+                'estudante_id' => $estudante->id,
+                'situacao' => $situacao,
+            ]);
+        }
+
+        $response = $this->getJson("/api/linha/{$linha->id}/estudantes")->assertOk();
+        $porId = collect($response->json('data'))->keyBy('id');
+
+        $this->assertSame(1, $porId[$estudante->id]['faltas']);
+        $this->assertSame('2026-09-04', $porId[$estudante->id]['ultima_presenca']);
+        $this->assertSame(0, $porId[$semPresenca->id]['faltas']);
+        $this->assertNull($porId[$semPresenca->id]['ultima_presenca']);
     }
 
     public function test_estudante_sem_dados_academicos_e_lista_vazia_sao_validos(): void
