@@ -96,6 +96,10 @@ class UserService
      */
     public function update(array $data, User $user): JsonResponse
     {
+        if ($this->isAuthenticatedUser($user) && ($data['ativo'] ?? true) === false) {
+            return $this->selfManagementDeniedResponse();
+        }
+
         try {
             $role = $data['role'] ?? null;
             unset($data['role']);
@@ -134,6 +138,10 @@ class UserService
                 ], 404);
             }
 
+            if ($this->isAuthenticatedUser($user)) {
+                return $this->selfManagementDeniedResponse();
+            }
+
             $user->delete();
 
             return response()->json([
@@ -148,6 +156,10 @@ class UserService
 
     public function inativar(User $user): JsonResponse
     {
+        if ($this->isAuthenticatedUser($user)) {
+            return $this->selfManagementDeniedResponse();
+        }
+
         return $this->setAtivo($user, false, 'Usuário inativado com sucesso');
     }
 
@@ -181,5 +193,17 @@ class UserService
         }
 
         $user->roles()->sync(Role::where('title', $role)->pluck('id'));
+    }
+
+    private function isAuthenticatedUser(User $user): bool
+    {
+        return (int) auth()->id() === (int) $user->id;
+    }
+
+    private function selfManagementDeniedResponse(): JsonResponse
+    {
+        return response()->json([
+            'message' => 'Não é permitido inativar ou excluir o próprio usuário.',
+        ], 422);
     }
 }
