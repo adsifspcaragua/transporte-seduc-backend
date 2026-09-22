@@ -87,7 +87,13 @@ Route::middleware('auth:sanctum')->group(function () {
      */
     Route::get('/me', function (Request $request) {
         try {
-            return $request->user();
+            $user = $request->user();
+
+            return response()->json([
+                ...$user->toArray(),
+                'roles' => $user->roleTitles(),
+                'permissions' => $user->permissionTitles(),
+            ]);
         } catch (Exception $e) {
             return response()->json('Falha ao retornar usuário', 401);
         }

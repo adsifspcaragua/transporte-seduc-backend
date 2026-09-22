@@ -76,6 +76,40 @@ class User extends Authenticatable
     }
 
     /**
+     * @return list<string>
+     */
+    public function roleTitles(): array
+    {
+        return $this->roles
+            ->pluck('title')
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function permissionTitles(): array
+    {
+        if ($this->hasRole('admin')) {
+            return Permission::query()
+                ->orderBy('title')
+                ->pluck('title')
+                ->all();
+        }
+
+        return $this->roles
+            ->loadMissing('permissions')
+            ->pluck('permissions')
+            ->flatten()
+            ->pluck('title')
+            ->unique()
+            ->sort()
+            ->values()
+            ->all();
+    }
+
+    /**
      * Verifica se o usuário possui a permissão informada (por título),
      * considerando as permissões de todos os seus cargos.
      */
