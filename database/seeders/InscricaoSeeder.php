@@ -169,7 +169,7 @@ class InscricaoSeeder extends Seeder
                     'expected_completion' => now()->addYears(2)->toDateString(),
                     'instituicao_id' => $instituicoes->get($data['institution']),
                     'shift' => $data['shift'],
-                    'city_destination' => 'Caraguatatuba',
+                    'city_destination' => InscricaoInstituicoes::CIDADE_DESTINO,
                     'used_transport' => $data['used_transport'],
                     'days_of_week' => $data['days_of_week'],
                     'has_scholarship' => $data['has_scholarship'],

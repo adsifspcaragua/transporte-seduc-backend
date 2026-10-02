@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Inscricao\Instituicao;
 
+use App\Models\InscricaoInstituicoes;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateInscricaoInstituicaoRequest extends FormRequest
 {
@@ -35,7 +37,7 @@ class UpdateInscricaoInstituicaoRequest extends FormRequest
             'expected_completion' => 'sometimes|date|after_or_equal:today',
             'instituicao_id' => 'sometimes|integer|exists:instituicoes,id',
             'shift' => 'sometimes|integer|in:1,2',
-            'city_destination' => 'sometimes|string|min:3|max:255',
+            'city_destination' => ['sometimes', 'string', Rule::in([InscricaoInstituicoes::CIDADE_DESTINO])],
             'used_transport' => 'sometimes|boolean',
             'days_of_week' => 'sometimes|array|min:1',
             'days_of_week.*' => 'integer|between:0,6',
@@ -53,7 +55,7 @@ class UpdateInscricaoInstituicaoRequest extends FormRequest
             'expected_completion' => ['description' => 'Data prevista de conclusao.', 'example' => '2027-12-20'],
             'instituicao_id' => ['description' => 'ID da instituicao de ensino.', 'example' => 1],
             'shift' => ['description' => 'Turno do curso: 1 para matutino, 2 para noturno.', 'example' => 1],
-            'city_destination' => ['description' => 'Cidade de destino do transporte.', 'example' => 'Vitoria da Conquista'],
+            'city_destination' => ['description' => 'Cidade de destino do transporte.', 'example' => 'São José dos Campos'],
             'used_transport' => ['description' => 'Informa se o estudante usa transporte.', 'example' => true],
             'days_of_week' => ['description' => 'Dias da semana de uso do transporte, de 0 a 6.', 'example' => [1, 3, 5]],
             'days_of_week.*' => ['description' => 'Dia da semana, de 0 a 6.', 'example' => 1],

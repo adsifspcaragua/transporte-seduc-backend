@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Estudante;
 
 use App\Models\Estudante;
+use App\Models\InscricaoInstituicoes;
 use App\Rules\LinhaComVaga;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -91,7 +92,7 @@ class UpdateEstudanteRequest extends FormRequest
             'semester' => 'sometimes|nullable|string|max:255',
             'expected_completion' => 'sometimes|nullable|date',
             'shift' => 'sometimes|nullable|integer|in:1,2',
-            'city_destination' => 'sometimes|nullable|string|max:255',
+            'city_destination' => ['sometimes', 'nullable', 'string', Rule::in([InscricaoInstituicoes::CIDADE_DESTINO])],
             'used_transport' => 'sometimes|nullable|boolean',
             'has_scholarship' => 'sometimes|nullable|boolean',
             'scholarship_type' => 'sometimes|nullable|string|max:255',

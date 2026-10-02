@@ -27,7 +27,7 @@ class InscricaoInstituicoesFactory extends Factory
             'expected_completion' => '2027-12-15',
             'instituicao_id' => Instituicao::factory(),
             'shift' => 1,
-            'city_destination' => 'Vitoria da Conquista',
+            'city_destination' => InscricaoInstituicoes::CIDADE_DESTINO,
             'used_transport' => true,
             'days_of_week' => ['seg', 'ter', 'qua'],
             'has_scholarship' => false,

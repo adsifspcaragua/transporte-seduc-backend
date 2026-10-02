@@ -177,8 +177,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'city_destination' => [
+            'in' => 'A cidade de destino deve ser São José dos Campos.',
         ],
     ],
 

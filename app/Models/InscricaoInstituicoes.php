@@ -9,34 +9,36 @@ class InscricaoInstituicoes extends Model
 {
     use HasFactory;
 
-    protected $table = "inscricao_instituicoes";
+    /** O transporte universitário só leva estudantes para São José dos Campos. */
+    public const CIDADE_DESTINO = 'São José dos Campos';
+
+    protected $table = 'inscricao_instituicoes';
+
     protected $fillable = [
-            'course',
-            'semester',
-            'expected_completion', // DATA
-            'shift', // MATUTINO / NOTURNO
-            'city_destination',
-            'used_transport',
-            'days_of_week',
-            'has_scholarship',
-            'scholarship_type',
-            'instituicao_id',
-            'inscricao_id'
+        'course',
+        'semester',
+        'expected_completion', // DATA
+        'shift', // MATUTINO / NOTURNO
+        'city_destination',
+        'used_transport',
+        'days_of_week',
+        'has_scholarship',
+        'scholarship_type',
+        'instituicao_id',
+        'inscricao_id',
     ];
 
     protected $casts = [
         'days_of_week' => 'array',
     ];
 
-
-
-    public function inscricao(){
-        return $this->belongsTo(Inscricao::class, "inscricao_id");
+    public function inscricao()
+    {
+        return $this->belongsTo(Inscricao::class, 'inscricao_id');
     }
 
     public function instituicao()
     {
         return $this->belongsTo(Instituicao::class, 'instituicao_id');
     }
-    
 }
