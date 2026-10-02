@@ -74,12 +74,14 @@ class DashboardTest extends TestCase
     {
         Inscricao::factory()->create(['status' => 'Em analise']);
         Inscricao::factory()->count(2)->create(['status' => 'Incompleto']);
+        Inscricao::factory()->create(['status' => 'Em revisao']);
         Inscricao::factory()->create(['status' => 'Aprovado']);
 
         $inscricoes = $this->resumo()['inscricoes'];
 
         $this->assertSame(1, $inscricoes['em_analise']);
         $this->assertSame(2, $inscricoes['incompletas']);
+        $this->assertSame(1, $inscricoes['em_revisao']);
         $this->assertSame(1, $inscricoes['aprovadas']);
     }
 

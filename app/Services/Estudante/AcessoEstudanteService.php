@@ -45,7 +45,7 @@ class AcessoEstudanteService
         return response()->json([
             'fluxo' => 'lista_espera',
             'data' => [
-                'pode_editar' => $inscricao->status === 'Incompleto',
+                'pode_editar' => in_array($inscricao->status, ['Incompleto', 'Em revisao'], true),
                 'inscricao' => new InscricaoResource($inscricao->refresh()),
                 'instituicao' => $inscricao->inscricao_instituicao
                     ? new InscricaoInstituicaoResource($inscricao->inscricao_instituicao)
