@@ -77,7 +77,7 @@ class BeneficioFrequenciaTest extends TestCase
 
     private function estudante(): Estudante
     {
-        return Estudante::factory()->create(['linha_id' => Linha::factory(), 'status' => 'Ativo']);
+        return Estudante::factory()->create(['linha_id' => Linha::factory(), 'situacao' => 'Ativo']);
     }
 
     private function avaliar(Estudante $estudante): void
@@ -92,7 +92,7 @@ class BeneficioFrequenciaTest extends TestCase
 
         $this->avaliar($estudante);
 
-        $this->assertSame('Ativo', $estudante->refresh()->status);
+        $this->assertSame('Ativo', $estudante->refresh()->situacao);
         Mail::assertQueued(AvisoFaltasMail::class, fn (AvisoFaltasMail $mail) => $mail->hasTo($estudante->email)
             && $mail->motivos === [AvisoFrequencia::PERTO_DO_LIMITE_SEGUIDAS]);
         Mail::assertNotQueued(BeneficioPerdidoMail::class);
@@ -105,7 +105,7 @@ class BeneficioFrequenciaTest extends TestCase
 
         $this->avaliar($estudante);
 
-        $this->assertSame('Inativo', $estudante->refresh()->status);
+        $this->assertSame('Inativo', $estudante->refresh()->situacao);
         Mail::assertQueued(BeneficioPerdidoMail::class, fn (BeneficioPerdidoMail $mail) => $mail->hasTo($estudante->email));
         $this->assertDatabaseHas('avisos_frequencia', [
             'estudante_id' => $estudante->id,
@@ -123,7 +123,7 @@ class BeneficioFrequenciaTest extends TestCase
 
         $this->avaliar($estudante);
 
-        $this->assertSame('Ativo', $estudante->refresh()->status);
+        $this->assertSame('Ativo', $estudante->refresh()->situacao);
         Mail::assertQueued(AvisoFaltasMail::class, fn (AvisoFaltasMail $mail) => $mail->motivos === [AvisoFrequencia::PERTO_DO_LIMITE_NO_MES]);
     }
 
@@ -134,7 +134,7 @@ class BeneficioFrequenciaTest extends TestCase
 
         $this->avaliar($estudante);
 
-        $this->assertSame('Inativo', $estudante->refresh()->status);
+        $this->assertSame('Inativo', $estudante->refresh()->situacao);
         Mail::assertQueued(BeneficioPerdidoMail::class);
     }
 
@@ -145,7 +145,7 @@ class BeneficioFrequenciaTest extends TestCase
 
         $this->avaliar($estudante);
 
-        $this->assertSame('Ativo', $estudante->refresh()->status);
+        $this->assertSame('Ativo', $estudante->refresh()->situacao);
         Mail::assertNothingQueued();
     }
 
@@ -159,7 +159,7 @@ class BeneficioFrequenciaTest extends TestCase
 
         $this->avaliar($estudante);
 
-        $this->assertSame('Ativo', $estudante->refresh()->status);
+        $this->assertSame('Ativo', $estudante->refresh()->situacao);
         Mail::assertNothingQueued();
     }
 
@@ -171,7 +171,7 @@ class BeneficioFrequenciaTest extends TestCase
         $this->avaliar($estudante);
 
         // 4 faltas: aviso do mes, mas nenhuma sequencia.
-        $this->assertSame('Ativo', $estudante->refresh()->status);
+        $this->assertSame('Ativo', $estudante->refresh()->situacao);
         Mail::assertQueued(AvisoFaltasMail::class, fn (AvisoFaltasMail $mail) => $mail->motivos === [AvisoFrequencia::PERTO_DO_LIMITE_NO_MES]);
     }
 
@@ -182,7 +182,7 @@ class BeneficioFrequenciaTest extends TestCase
 
         $this->avaliar($estudante);
 
-        $this->assertSame('Inativo', $estudante->refresh()->status);
+        $this->assertSame('Inativo', $estudante->refresh()->situacao);
     }
 
     public function test_folha_aberta_ainda_nao_conta(): void
@@ -193,7 +193,7 @@ class BeneficioFrequenciaTest extends TestCase
 
         $this->avaliar($estudante);
 
-        $this->assertSame('Ativo', $estudante->refresh()->status);
+        $this->assertSame('Ativo', $estudante->refresh()->situacao);
     }
 
     public function test_o_mesmo_aviso_nao_e_enviado_duas_vezes_no_mes(): void
@@ -210,7 +210,7 @@ class BeneficioFrequenciaTest extends TestCase
     public function test_estudante_inativo_nao_e_avaliado(): void
     {
         $estudante = $this->estudante();
-        $estudante->update(['status' => 'Inativo']);
+        $estudante->update(['situacao' => 'Inativo']);
         $this->historico($estudante, ['Falta', 'Falta', 'Falta']);
 
         $this->avaliar($estudante);
@@ -235,11 +235,11 @@ class BeneficioFrequenciaTest extends TestCase
         ])->assertOk();
 
         // Marcar nao basta: a folha aberta ainda pode ser corrigida.
-        $this->assertSame('Ativo', $estudante->refresh()->status);
+        $this->assertSame('Ativo', $estudante->refresh()->situacao);
 
         $this->patchJson("/api/frequencias/chamadas/{$chamadaId}/fechar")->assertOk();
 
-        $this->assertSame('Inativo', $estudante->refresh()->status);
+        $this->assertSame('Inativo', $estudante->refresh()->situacao);
         Mail::assertQueued(BeneficioPerdidoMail::class);
     }
 
@@ -259,7 +259,7 @@ class BeneficioFrequenciaTest extends TestCase
             'parecer' => 'Sem comprovante.',
         ])->assertOk();
 
-        $this->assertSame('Inativo', $estudante->refresh()->status);
+        $this->assertSame('Inativo', $estudante->refresh()->situacao);
         Mail::assertQueued(BeneficioPerdidoMail::class);
     }
 
@@ -276,7 +276,7 @@ class BeneficioFrequenciaTest extends TestCase
 
         $this->putJson("/api/frequencias/justificativas/{$justificativa->id}/analise", ['decisao' => 'Aprovada'])->assertOk();
 
-        $this->assertSame('Ativo', $estudante->refresh()->status);
+        $this->assertSame('Ativo', $estudante->refresh()->situacao);
         $this->assertSame(2, app(BeneficioFrequenciaService::class)->situacao($estudante, today())['faltas_no_mes']);
         Mail::assertNotQueued(BeneficioPerdidoMail::class);
     }

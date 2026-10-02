@@ -25,6 +25,7 @@ class Estudante extends Model
         'days_of_week',
         'observation',
         'status',
+        'situacao',
         'linha_id',
         'user_id',
         'inscricao_id',

@@ -38,6 +38,7 @@ class StoreEstudanteRequest extends FormRequest
 
             // status NÃO deve vir do front
             'status' => 'prohibited',
+            'situacao' => 'prohibited',
 
             'linha_id' => ['nullable', 'integer', 'exists:linhas,id', new LinhaComVaga],
             'user_id' => 'nullable|integer|exists:users,id',
@@ -69,6 +70,7 @@ class StoreEstudanteRequest extends FormRequest
             'days_of_week.*' => ['description' => 'Dia da semana, de 0 a 6.', 'example' => 1],
             'observation' => ['description' => 'Observacao opcional sobre o estudante.', 'example' => 'Necessita embarque no ponto central.'],
             'status' => ['description' => 'Campo controlado pelo sistema. Nao envie este campo.', 'example' => 'No-example'],
+            'situacao' => ['description' => 'Campo controlado pelo sistema. Nao envie este campo.', 'example' => 'No-example'],
             'linha_id' => ['description' => 'ID da linha vinculada ao estudante.', 'example' => 1],
             'user_id' => ['description' => 'ID do usuario associado ao estudante.', 'example' => 1],
             'inscricao_id' => ['description' => 'ID da inscricao que originou o estudante.', 'example' => 1],

@@ -67,7 +67,8 @@ class AnaliseInscricaoTest extends TestCase
 
         $this->assertSame('Aprovado', $inscricao->refresh()->status);
         $this->assertNotNull($estudante);
-        $this->assertSame('Ativo', $estudante->status);
+        $this->assertSame('Aprovado', $estudante->status);
+        $this->assertSame('Ativo', $estudante->situacao);
         $this->assertSame($inscricao->cpf, $estudante->cpf);
     }
 

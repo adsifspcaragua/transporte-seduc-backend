@@ -68,7 +68,9 @@ class UpdateEstudanteRequest extends FormRequest
 
             'observation' => 'nullable|string|max:1000',
 
-            'status' => 'sometimes|string|max:255',
+            'status' => 'sometimes|string|in:Aprovado,Recusado,Lista de espera',
+
+            'situacao' => 'sometimes|string|in:Ativo,Inativo',
 
             'linha_id' => [
                 'nullable',
@@ -118,7 +120,8 @@ class UpdateEstudanteRequest extends FormRequest
             'days_of_week' => ['description' => 'Dias da semana de uso do transporte, de 0 a 6.', 'example' => [1, 3, 5]],
             'days_of_week.*' => ['description' => 'Dia da semana, de 0 a 6.', 'example' => 1],
             'observation' => ['description' => 'Observacao opcional sobre o estudante.', 'example' => 'Necessita embarque no ponto central.'],
-            'status' => ['description' => 'Status atual do estudante.', 'example' => 'ATIVO'],
+            'status' => ['description' => 'Resultado da análise: Aprovado, Recusado ou Lista de espera.', 'example' => 'Aprovado'],
+            'situacao' => ['description' => 'Situação do benefício: Ativo ou Inativo.', 'example' => 'Ativo'],
             'linha_id' => ['description' => 'ID da linha vinculada ao estudante.', 'example' => 1],
             'user_id' => ['description' => 'ID do usuario associado ao estudante.', 'example' => 1],
             'inscricao_id' => ['description' => 'ID da inscricao que originou o estudante.', 'example' => 1],

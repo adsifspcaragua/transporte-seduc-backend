@@ -75,7 +75,7 @@ class AusentesReecadastroService
         }
 
         DB::transaction(function () use ($alvos) {
-            Estudante::whereIn('id', $alvos)->update(['status' => 'Inativo']);
+            Estudante::whereIn('id', $alvos)->update(['situacao' => 'Inativo']);
         });
 
         return response()->json([
@@ -96,7 +96,7 @@ class AusentesReecadastroService
             ->whereIn('status', self::EM_ANDAMENTO)
             ->pluck('estudante_id');
 
-        return Estudante::where('status', 'Ativo')
+        return Estudante::where('situacao', 'Ativo')
             ->whereNotIn('id', $emDia)
             ->orderBy('name')
             ->get();

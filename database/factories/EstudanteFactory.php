@@ -29,7 +29,8 @@ class EstudanteFactory extends Factory
             'phone' => fake()->numerify('###########'),
             'address' => 'Rua das Palmeiras, 100',
             'days_of_week' => [1, 2, 3, 4, 5],
-            'status' => 'Ativo',
+            'status' => 'Aprovado',
+            'situacao' => 'Ativo',
             'instituicao_id' => Instituicao::factory(),
             'inscricao_id' => Inscricao::factory()->state(['status' => 'Aprovado']),
         ];
@@ -38,6 +39,6 @@ class EstudanteFactory extends Factory
     /** Estudante que perdeu o beneficio. */
     public function inativo(): static
     {
-        return $this->state(['status' => 'Inativo']);
+        return $this->state(['situacao' => 'Inativo']);
     }
 }

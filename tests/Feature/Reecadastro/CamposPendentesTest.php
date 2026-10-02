@@ -34,7 +34,7 @@ class CamposPendentesTest extends TestCase
         $this->seed(RolePermissionSeeder::class);
 
         $periodo = PeriodoReecadastro::factory()->create(['status' => 'Aberto']);
-        $this->estudante = Estudante::factory()->create(['status' => 'Ativo']);
+        $this->estudante = Estudante::factory()->create(['situacao' => 'Ativo']);
         $this->solicitacao = SolicitacaoReecadastro::create([
             'estudante_id' => $this->estudante->id,
             'periodo_id' => $periodo->id,

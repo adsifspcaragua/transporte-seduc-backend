@@ -43,26 +43,29 @@ class DashboardTest extends TestCase
 
     public function test_conta_estudantes_por_situacao(): void
     {
-        Estudante::factory()->count(2)->create(['status' => 'Ativo']);
-        Estudante::factory()->create(['status' => 'Inativo']);
-        Estudante::factory()->create(['status' => 'Em espera']);
+        Estudante::factory()->count(2)->create(['situacao' => 'Ativo']);
+        Estudante::factory()->create(['situacao' => 'Inativo']);
+        Estudante::factory()->create(['status' => 'Recusado', 'situacao' => 'Inativo']);
+        Estudante::factory()->create(['status' => 'Lista de espera', 'situacao' => 'Inativo']);
 
         $estudantes = $this->resumo()['estudantes'];
 
         $this->assertSame(2, $estudantes['ativos']);
-        $this->assertSame(1, $estudantes['inativos']);
-        $this->assertSame(1, $estudantes['em_espera']);
-        $this->assertSame(4, $estudantes['total']);
+        $this->assertSame(3, $estudantes['inativos']);
+        $this->assertSame(3, $estudantes['aprovados']);
+        $this->assertSame(1, $estudantes['recusados']);
+        $this->assertSame(1, $estudantes['lista_de_espera']);
+        $this->assertSame(5, $estudantes['total']);
     }
 
     public function test_conta_apenas_ativos_sem_linha(): void
     {
         $linha = Linha::factory()->create(['max_capacity' => 10]);
 
-        Estudante::factory()->create(['status' => 'Ativo', 'linha_id' => null]);
-        Estudante::factory()->create(['status' => 'Ativo', 'linha_id' => $linha->id]);
+        Estudante::factory()->create(['situacao' => 'Ativo', 'linha_id' => null]);
+        Estudante::factory()->create(['situacao' => 'Ativo', 'linha_id' => $linha->id]);
         // Inativo sem linha nao e pendencia: ele nao anda de onibus.
-        Estudante::factory()->create(['status' => 'Inativo', 'linha_id' => null]);
+        Estudante::factory()->create(['situacao' => 'Inativo', 'linha_id' => null]);
 
         $this->assertSame(1, $this->resumo()['estudantes']['sem_linha']);
     }
@@ -83,8 +86,8 @@ class DashboardTest extends TestCase
     public function test_ocupacao_das_linhas_conta_so_ativos(): void
     {
         $linha = Linha::factory()->create(['max_capacity' => 10]);
-        Estudante::factory()->count(2)->create(['linha_id' => $linha->id, 'status' => 'Ativo']);
-        Estudante::factory()->create(['linha_id' => $linha->id, 'status' => 'Inativo']);
+        Estudante::factory()->count(2)->create(['linha_id' => $linha->id, 'situacao' => 'Ativo']);
+        Estudante::factory()->create(['linha_id' => $linha->id, 'situacao' => 'Inativo']);
 
         $linhas = $this->resumo()['linhas'];
 
@@ -96,7 +99,7 @@ class DashboardTest extends TestCase
 
     public function test_sem_periodo_aberto_o_recadastro_vem_zerado(): void
     {
-        Estudante::factory()->count(3)->create(['status' => 'Ativo']);
+        Estudante::factory()->count(3)->create(['situacao' => 'Ativo']);
 
         $recadastro = $this->resumo()['recadastro'];
 
@@ -110,21 +113,21 @@ class DashboardTest extends TestCase
     {
         $periodo = PeriodoReecadastro::factory()->create(['status' => 'Aberto']);
 
-        $emDia = Estudante::factory()->create(['status' => 'Ativo']);
+        $emDia = Estudante::factory()->create(['situacao' => 'Ativo']);
         SolicitacaoReecadastro::create([
             'estudante_id' => $emDia->id,
             'periodo_id' => $periodo->id,
             'status' => 'Aprovado',
         ]);
 
-        $emAnalise = Estudante::factory()->create(['status' => 'Ativo']);
+        $emAnalise = Estudante::factory()->create(['situacao' => 'Ativo']);
         SolicitacaoReecadastro::create([
             'estudante_id' => $emAnalise->id,
             'periodo_id' => $periodo->id,
             'status' => 'Em analise',
         ]);
 
-        Estudante::factory()->count(2)->create(['status' => 'Ativo']);
+        Estudante::factory()->count(2)->create(['situacao' => 'Ativo']);
 
         $recadastro = $this->resumo()['recadastro'];
 

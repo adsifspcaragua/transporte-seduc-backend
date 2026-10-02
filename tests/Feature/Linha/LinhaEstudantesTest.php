@@ -48,14 +48,14 @@ class LinhaEstudantesTest extends TestCase
         $outra = Linha::factory()->create();
         Estudante::factory()->count(11)->create(['linha_id' => $linha->id]);
         Estudante::factory()->inativo()->create(['linha_id' => $linha->id, 'name' => 'AAA Inativo']);
-        Estudante::factory()->create(['linha_id' => $linha->id, 'name' => 'AAA Espera', 'status' => 'Em espera']);
-        Estudante::factory()->create(['linha_id' => $linha->id, 'name' => 'AAA Ativo', 'status' => 'ATIVO']);
+        Estudante::factory()->create(['linha_id' => $linha->id, 'name' => 'AAA Espera', 'status' => 'Lista de espera', 'situacao' => 'Inativo']);
+        Estudante::factory()->create(['linha_id' => $linha->id, 'name' => 'AAA Ativo', 'situacao' => 'ATIVO']);
         $fora = Estudante::factory()->create(['linha_id' => $outra->id]);
 
         $primeira = $this->getJson("/api/linha/{$linha->id}/estudantes")->assertOk()
             ->assertJsonCount(10, 'data')
             ->assertJsonPath('meta.total', 12)
-            ->assertJsonPath('data.0.status', 'ATIVO');
+            ->assertJsonPath('data.0.situacao', 'ATIVO');
         $segunda = $this->getJson("/api/linha/{$linha->id}/estudantes?page=2")->assertOk()
             ->assertJsonCount(2, 'data')->assertJsonPath('meta.current_page', 2);
 
@@ -63,7 +63,7 @@ class LinhaEstudantesTest extends TestCase
         $this->assertCount(12, array_unique($ids));
         $this->assertNotContains($fora->id, $ids);
         $this->assertEqualsCanonicalizing(
-            Estudante::where('linha_id', $linha->id)->whereRaw('LOWER(status) = ?', ['ativo'])->pluck('id')->all(),
+            Estudante::where('linha_id', $linha->id)->whereRaw('LOWER(situacao) = ?', ['ativo'])->pluck('id')->all(),
             $ids,
         );
         $this->getJson("/api/linha/{$linha->id}/estudantes?per_page=15")->assertOk()->assertJsonCount(12, 'data');

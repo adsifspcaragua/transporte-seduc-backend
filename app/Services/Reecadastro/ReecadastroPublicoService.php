@@ -49,7 +49,7 @@ class ReecadastroPublicoService
                 ], 404);
             }
 
-            if ($estudante->status !== 'Ativo') {
+            if ($estudante->situacao !== 'Ativo') {
                 return response()->json([
                     'message' => 'Seu cadastro não está ativo. Procure a responsável pelo transporte universitário.',
                 ], 403);

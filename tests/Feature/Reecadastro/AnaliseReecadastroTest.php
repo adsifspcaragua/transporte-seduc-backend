@@ -74,7 +74,7 @@ class AnaliseReecadastroTest extends TestCase
 
         $this->assertSame('Aprovado', $solicitacao->status);
         $this->assertNotNull($solicitacao->analisado_em);
-        $this->assertSame('Ativo', Estudante::find($solicitacao->estudante_id)->status);
+        $this->assertSame('Ativo', Estudante::find($solicitacao->estudante_id)->situacao);
         $this->assertTrue($solicitacao->documentos->every(fn ($doc) => $doc->status === 'Aprovado'));
     }
 
@@ -96,7 +96,7 @@ class AnaliseReecadastroTest extends TestCase
 
         $this->assertSame('Rejeitado', $solicitacao->status);
         $this->assertSame('Documentos de outro estudante.', $solicitacao->observacoes);
-        $this->assertSame('Inativo', Estudante::find($solicitacao->estudante_id)->status);
+        $this->assertSame('Inativo', Estudante::find($solicitacao->estudante_id)->situacao);
     }
 
     public function test_pendencia_exige_a_lista_de_documentos_devolvidos(): void
@@ -126,7 +126,7 @@ class AnaliseReecadastroTest extends TestCase
         $this->assertSame('Pendencia', $solicitacao->status);
         $this->assertSame('Rejeitado', $solicitacao->documentos->firstWhere('type', 'comprovante_residencia')->status);
         $this->assertSame('Aprovado', $solicitacao->documentos->firstWhere('type', 'cronograma_aulas')->status);
-        $this->assertSame('Ativo', Estudante::find($solicitacao->estudante_id)->status);
+        $this->assertSame('Ativo', Estudante::find($solicitacao->estudante_id)->situacao);
     }
 
     public function test_estudante_reenvia_apenas_o_documento_devolvido(): void

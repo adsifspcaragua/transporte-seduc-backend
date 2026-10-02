@@ -35,7 +35,8 @@ class EstudanteService
     {
         try {
             $estudante = DB::transaction(function () use ($data) {
-                $data['status'] = 'Em espera';
+                $data['status'] = 'Lista de espera';
+                $data['situacao'] = 'Inativo';
 
                 return Estudante::create($data);
             });
@@ -97,6 +98,7 @@ class EstudanteService
                     'address',
                     'observation',
                     'status',
+                    'situacao',
                     'linha_id',
                     'user_id',
                     'instituicao_id',
@@ -213,7 +215,7 @@ class EstudanteService
     public function estudantesAtivos(): JsonResponse
     {
         try {
-            $estudantes = Estudante::where('status', 'ATIVO')->paginate(10);
+            $estudantes = Estudante::where('situacao', 'Ativo')->paginate(10);
 
             return response()->json([
                 'data' => EstudanteResource::collection($estudantes),

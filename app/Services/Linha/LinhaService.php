@@ -16,7 +16,7 @@ class LinhaService
     public function estudantes(Linha $linha, int $perPage = 10): AnonymousResourceCollection
     {
         $estudantes = $linha->estudantes()
-            ->whereRaw('LOWER(status) = ?', ['ativo'])
+            ->whereRaw('LOWER(situacao) = ?', ['ativo'])
             ->withCount([
                 'frequencias as faltas' => fn ($query) => $query
                     ->where('situacao', Frequencia::FALTA)
@@ -49,7 +49,7 @@ class LinhaService
     {
         try {
             $linhas = Linha::with('motorista:id,name')->withCount([
-                'estudantes as ocupacao' => fn ($query) => $query->where('status', 'Ativo'),
+                'estudantes as ocupacao' => fn ($query) => $query->where('situacao', 'Ativo'),
             ])->get();
 
             if ($linhas->isEmpty()) {

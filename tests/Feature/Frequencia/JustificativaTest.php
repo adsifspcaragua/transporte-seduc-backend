@@ -233,7 +233,7 @@ class JustificativaTest extends TestCase
     public function test_aprovar_de_estudante_inativo_avisa_que_a_reativacao_e_manual(): void
     {
         $justificativa = $this->justificativa();
-        $justificativa->frequencia->estudante->update(['status' => 'Inativo']);
+        $justificativa->frequencia->estudante->update(['situacao' => 'Inativo']);
 
         Sanctum::actingAs($this->usuario('gestor'));
 
@@ -241,7 +241,7 @@ class JustificativaTest extends TestCase
             ->assertOk()
             ->assertJsonStructure(['alerta']);
 
-        $this->assertSame('Inativo', $justificativa->frequencia->estudante->refresh()->status);
+        $this->assertSame('Inativo', $justificativa->frequencia->estudante->refresh()->situacao);
     }
 
     public function test_motorista_justifica_falta_da_propria_linha_mas_nao_ve_a_fila(): void

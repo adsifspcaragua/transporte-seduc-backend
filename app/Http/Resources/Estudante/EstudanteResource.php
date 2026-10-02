@@ -37,6 +37,7 @@ class EstudanteResource extends JsonResource
             'days_of_week' => $dadosInstitucionais?->days_of_week ?? $this->days_of_week,
             'observation' => $this->observation,
             'status' => $this->status,
+            'situacao' => $this->situacao,
             'linha_id' => $this->linha_id,
             'user_id' => $this->user_id,
             'instituicao_id' => $this->instituicao_id ?? $dadosInstitucionais?->instituicao_id,
