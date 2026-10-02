@@ -3,180 +3,175 @@
 namespace Database\Seeders;
 
 use App\Models\Inscricao;
+use App\Models\InscricaoDocumento;
 use App\Models\InscricaoInstituicoes;
 use App\Models\Instituicao;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Database\Seeders\Support\Cenarios;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class InscricaoSeeder extends Seeder
 {
+    private const ENDERECOS = [
+        ['Rua Santa Cruz', 'Centro', '11660040'],
+        ['Avenida da Praia', 'Martim de Sá', '11662000'],
+        ['Rua das Palmeiras', 'Indaiá', '11665000'],
+        ['Rua Projetada', 'Porto Novo', '11667000'],
+        ['Rua Benedito Zacarias', 'Travessão', '11668200'],
+        ['Avenida José Herculano', 'Massaguaçu', '11674000'],
+        ['Rua Sebastião Mariano Nepomuceno', 'Olaria', '11661000'],
+        ['Rua Jorge Burihan', 'Sumaré', '11661220'],
+    ];
+
+    private const CURSOS = [
+        'Administração', 'Ciência da Computação', 'Direito', 'Enfermagem',
+        'Engenharia Civil', 'Engenharia de Software', 'Fisioterapia', 'Pedagogia',
+        'Psicologia', 'Sistemas de Informação', 'Arquitetura e Urbanismo', 'Educação Física',
+    ];
+
+    private const BOLSAS = ['Bolsa integral', '75%', '50%', '25%'];
+
+    /** Motivo e campos apontados em cada devolução para correção. */
+    private const REVISOES = [
+        ['O nome não confere com o documento de identidade.', ['name'], ['identidade']],
+        ['Comprovante de residência ilegível e número do endereço ausente.', ['number', 'cep'], ['residencia']],
+        ['Declaração de matrícula de semestre anterior.', [], ['matricula']],
+    ];
+
+    private const RECUSAS = [
+        'Estudante reside fora do município.',
+        'Curso não atendido pelo transporte universitário.',
+        'Documentação inconsistente com os dados informados.',
+        'Já possui benefício de transporte de outro programa.',
+    ];
+
+    private ?string $pdfDeTeste = null;
+
     public function run(): void
     {
-        $instituicoes = Instituicao::pluck('id', 'name');
+        $instituicoes = Instituicao::orderBy('id')->pluck('id')->values();
 
-        $inscricoes = [
-            [
-                'name' => 'João da Silva',
-                'cpf' => '11111111111',
-                'rg' => '12345678',
-                'birth_date' => '2005-03-15',
-                'phone' => '12999990001',
-                'email' => 'joao.silva@example.com',
-                'cep' => '11660000',
-                'address' => 'Rua Santa Cruz',
-                'neighborhood' => 'Centro',
-                'city' => 'Caraguatatuba',
-                'number' => '123',
-                'father_name' => 'José da Silva',
-                'mother_name' => 'Maria da Silva',
-                'observation' => 'Inscrição pendente para análise.',
-                'status' => 'Incompleto',
-                'course' => 'Engenharia Civil',
-                'semester' => '3',
-                'institution' => 'Universidade do Vale do Paraíba',
-                'shift' => 2,
-                'used_transport' => true,
-                'days_of_week' => [1, 2, 3, 4, 5],
-                'has_scholarship' => false,
-            ],
-            [
-                'name' => 'Maria Oliveira',
-                'cpf' => '22222222222',
-                'rg' => '87654321',
-                'birth_date' => '2006-05-20',
-                'phone' => '12999990002',
-                'email' => 'maria.oliveira@example.com',
-                'cep' => '11662000',
-                'address' => 'Avenida da Praia',
-                'neighborhood' => 'Martim de Sá',
-                'city' => 'Caraguatatuba',
-                'number' => '456',
-                'father_name' => 'Carlos Oliveira',
-                'mother_name' => 'Ana Oliveira',
-                'observation' => 'Documentação completa.',
-                'status' => 'Aprovado',
-                'course' => 'Direito',
-                'semester' => '4',
-                'institution' => 'Faculdade Módulo',
-                'shift' => 2,
-                'used_transport' => true,
-                'days_of_week' => [1, 3, 5],
-                'has_scholarship' => true,
-                'scholarship_type' => 'Parcial',
-            ],
-            [
-                'name' => 'Ana Clara Souza',
-                'cpf' => '33333333333',
-                'rg' => '33445566',
-                'birth_date' => '2004-11-03',
-                'phone' => '12999990003',
-                'email' => 'ana.souza@example.com',
-                'cep' => '11664000',
-                'address' => 'Rua das Palmeiras',
-                'neighborhood' => 'Indaiá',
-                'city' => 'Caraguatatuba',
-                'number' => '78',
-                'father_name' => 'Roberto Souza',
-                'mother_name' => 'Patrícia Souza',
-                'observation' => 'Falta comprovante atualizado.',
-                'status' => 'Rejeitado',
-                'course' => 'Psicologia',
-                'semester' => '2',
-                'institution' => 'Universidade Paulista',
-                'shift' => 1,
-                'used_transport' => false,
-                'days_of_week' => [2, 4],
-                'has_scholarship' => false,
-            ],
-            [
-                'name' => 'Lucas Henrique Martins',
-                'cpf' => '44444444444',
-                'rg' => '44556677',
-                'birth_date' => '2003-07-12',
-                'phone' => '12999990004',
-                'email' => 'lucas.martins@example.com',
-                'cep' => '11668000',
-                'address' => 'Rua Projetada',
-                'neighborhood' => 'Porto Novo',
-                'city' => 'Caraguatatuba',
-                'number' => '901',
-                'father_name' => 'Henrique Martins',
-                'mother_name' => 'Cláudia Martins',
-                'observation' => 'Aguardando análise da secretaria.',
-                'status' => 'Incompleto',
-                'course' => 'Sistemas de Informação',
-                'semester' => '6',
-                'institution' => 'FATEC Caraguatatuba',
-                'shift' => 2,
-                'used_transport' => true,
-                'days_of_week' => [1, 2, 3, 4],
-                'has_scholarship' => false,
-            ],
-            [
-                'name' => 'Fernanda Gomes Silva',
-                'cpf' => '55555555555',
-                'rg' => '55667788',
-                'birth_date' => '2002-02-08',
-                'phone' => '12999990005',
-                'email' => 'fernanda.gomes@example.com',
-                'cep' => '11670000',
-                'address' => 'Rua Benedito Zacarias',
-                'neighborhood' => 'Travessão',
-                'city' => 'Caraguatatuba',
-                'number' => '54',
-                'father_name' => 'Marcos Silva',
-                'mother_name' => 'Eliane Gomes',
-                'observation' => 'Inscrição aprovada em teste.',
-                'status' => 'Aprovado',
-                'course' => 'Pedagogia',
-                'semester' => '8',
-                'institution' => 'UNIVESP Polo Caraguatatuba',
-                'shift' => 1,
-                'used_transport' => true,
-                'days_of_week' => [6],
-                'has_scholarship' => true,
-                'scholarship_type' => 'Integral',
-            ],
-        ];
+        foreach (Cenarios::pessoas() as $pessoa) {
+            $inscricao = $this->inscricao($pessoa);
 
-        foreach ($inscricoes as $data) {
-            $inscricao = Inscricao::updateOrCreate(
-                ['cpf' => $data['cpf']],
-                [
-                    'name' => $data['name'],
-                    'rg' => $data['rg'],
-                    'birth_date' => $data['birth_date'],
-                    'phone' => $data['phone'],
-                    'email' => $data['email'],
-                    'cep' => $data['cep'],
-                    'address' => $data['address'],
-                    'neighborhood' => $data['neighborhood'],
-                    'city' => $data['city'],
-                    'number' => $data['number'],
-                    'father_name' => $data['father_name'],
-                    'mother_name' => $data['mother_name'],
-                    'observation' => $data['observation'],
-                    'status' => $data['status'],
-                    'accepted_terms' => true,
-                    'accepted_terms_2' => true,
-                ],
-            );
-
-            InscricaoInstituicoes::updateOrCreate(
-                ['inscricao_id' => $inscricao->id],
-                [
-                    'course' => $data['course'],
-                    'semester' => $data['semester'],
-                    'expected_completion' => now()->addYears(2)->toDateString(),
-                    'instituicao_id' => $instituicoes->get($data['institution']),
-                    'shift' => $data['shift'],
-                    'city_destination' => InscricaoInstituicoes::CIDADE_DESTINO,
-                    'used_transport' => $data['used_transport'],
-                    'days_of_week' => $data['days_of_week'],
-                    'has_scholarship' => $data['has_scholarship'],
-                    'scholarship_type' => $data['scholarship_type'] ?? null,
-                ],
-            );
-
+            $this->dadosInstitucionais($inscricao, $pessoa, $instituicoes);
+            $this->documentos($inscricao, $pessoa);
         }
+    }
+
+    /**
+     * @param  array<string, mixed>  $pessoa
+     */
+    private function inscricao(array $pessoa): Inscricao
+    {
+        $i = $pessoa['indice'];
+        [$rua, $bairro, $cep] = self::ENDERECOS[$i % count(self::ENDERECOS)];
+        $sobrenome = Str::afterLast($pessoa['nome'], ' ');
+        $incompleta = $pessoa['inscricao'] === 'Incompleto';
+        $revisao = $pessoa['inscricao'] === 'Em revisao'
+            ? self::REVISOES[$i % count(self::REVISOES)]
+            : null;
+
+        return Inscricao::updateOrCreate(
+            ['cpf' => $pessoa['cpf']],
+            [
+                'name' => $pessoa['nome'],
+                'rg' => (string) (300000000 + $i * 104729),
+                'birth_date' => sprintf('%d-%02d-%02d', 1999 + $i % 7, $i % 12 + 1, $i % 27 + 1),
+                'phone' => '1298'.str_pad((string) (1234567 + $i * 1379), 7, '0', STR_PAD_LEFT),
+                'email' => Str::slug(Str::before($pessoa['nome'], ' ').' '.$sobrenome, '.').$i.'@example.com',
+                'cep' => $cep,
+                'address' => $rua,
+                'neighborhood' => $bairro,
+                'city' => 'Caraguatatuba',
+                // Incompleta de propósito: sem número nem nome da mãe.
+                'number' => $incompleta ? null : (string) ($i * 37 % 900 + 10),
+                'complement' => $i % 5 === 0 ? 'Apto '.($i + 11) : null,
+                'father_name' => $i % 4 === 0 ? null : 'José '.$sobrenome,
+                'mother_name' => $incompleta ? null : 'Maria '.$sobrenome,
+                'observation' => match ($pessoa['inscricao']) {
+                    'Em revisao' => $revisao[0],
+                    'Rejeitado' => self::RECUSAS[$i % count(self::RECUSAS)],
+                    default => null,
+                },
+                'campos_pendentes' => $revisao[1] ?? null,
+                'status' => $pessoa['inscricao'],
+                'accepted_terms' => ! $incompleta,
+                'accepted_terms_2' => ! $incompleta,
+            ],
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $pessoa
+     * @param  Collection<int, int>  $instituicoes
+     */
+    private function dadosInstitucionais(Inscricao $inscricao, array $pessoa, $instituicoes): void
+    {
+        $i = $pessoa['indice'];
+        $bolsista = $i % 4 === 1;
+
+        InscricaoInstituicoes::updateOrCreate(
+            ['inscricao_id' => $inscricao->id],
+            [
+                'course' => self::CURSOS[$i % count(self::CURSOS)],
+                'semester' => (string) ($i % 8 + 1),
+                'expected_completion' => now()->addYears($i % 4 + 1)->endOfYear()->toDateString(),
+                'instituicao_id' => $instituicoes[$i % $instituicoes->count()],
+                'shift' => $i % 3 === 0 ? 1 : 2,
+                'city_destination' => InscricaoInstituicoes::CIDADE_DESTINO,
+                'used_transport' => $i % 3 !== 2,
+                'days_of_week' => [[1, 2, 3, 4, 5], [1, 3, 5], [2, 4], [1, 2, 3, 4], [6]][$i % 5],
+                'has_scholarship' => $bolsista,
+                'scholarship_type' => $bolsista ? self::BOLSAS[$i % count(self::BOLSAS)] : null,
+            ],
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $pessoa
+     */
+    private function documentos(Inscricao $inscricao, array $pessoa): void
+    {
+        $nomes = InscricaoDocumento::OBRIGATORIOS;
+
+        // Quem ainda está preenchendo só enviou parte dos documentos.
+        if ($pessoa['inscricao'] === 'Incompleto') {
+            $nomes = array_slice($nomes, 0, $pessoa['indice'] % 3 + 1);
+        }
+
+        $paraReenviar = $pessoa['inscricao'] === 'Em revisao'
+            ? self::REVISOES[$pessoa['indice'] % count(self::REVISOES)][2]
+            : [];
+
+        foreach ($nomes as $nome) {
+            $caminho = "inscricoes/{$inscricao->id}/{$nome}.pdf";
+            Storage::put($caminho, $this->pdfDeTeste());
+
+            $inscricao->inscricao_documentos()->updateOrCreate(
+                ['name' => $nome],
+                [
+                    'type' => 'application/pdf',
+                    'file_path' => $caminho,
+                    'nome_original' => "{$nome}.pdf",
+                    'status' => match ($pessoa['inscricao']) {
+                        'Aprovado' => 'Aprovado',
+                        'Rejeitado' => 'Rejeitado',
+                        default => in_array($nome, $paraReenviar, true) ? 'Rejeitado' : 'Em analise',
+                    },
+                ],
+            );
+        }
+    }
+
+    private function pdfDeTeste(): string
+    {
+        return $this->pdfDeTeste ??= Pdf::loadHTML(
+            '<h1 style="font-family: Helvetica">Documento de teste</h1>'
+            .'<p style="font-family: Helvetica">Arquivo gerado pela seeder para testar a visualização de documentos.</p>'
+        )->output();
     }
 }
