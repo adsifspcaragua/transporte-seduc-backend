@@ -6,6 +6,7 @@ use App\Exports\EstudantesExport;
 use App\Http\Resources\Estudante\EstudanteResource;
 use App\Models\Estudante;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Dompdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
@@ -35,7 +36,8 @@ class EstudanteService
     {
         try {
             $estudante = DB::transaction(function () use ($data) {
-                $data['status'] = 'Em espera';
+                $data['status'] = 'Lista de espera';
+                $data['situacao'] = 'Inativo';
 
                 return Estudante::create($data);
             });
@@ -97,6 +99,7 @@ class EstudanteService
                     'address',
                     'observation',
                     'status',
+                    'situacao',
                     'linha_id',
                     'user_id',
                     'instituicao_id',
@@ -213,7 +216,7 @@ class EstudanteService
     public function estudantesAtivos(): JsonResponse
     {
         try {
-            $estudantes = Estudante::where('status', 'ATIVO')->paginate(10);
+            $estudantes = Estudante::where('situacao', 'Ativo')->paginate(10);
 
             return response()->json([
                 'data' => EstudanteResource::collection($estudantes),
@@ -231,30 +234,38 @@ class EstudanteService
     public function exportarEstudantes(string $type)
     {
         try {
-            $estudantes = Estudante::with(['instituicao', 'linha'])->get()->toArray();
-
-            if ($type == 'csv') {
-                $arquivo = new EstudantesExport($estudantes);
-
-                return Excel::download($arquivo, 'estudantes.csv', \Maatwebsite\Excel\Excel::CSV);
-
-            } elseif ($type == 'pdf') {
-                $arquivo = Pdf::loadView(
-                    'exports.estudantes',
-                    compact('estudantes')
-                );
-
-                return $arquivo->download('estudantes.pdf');
-
-            } elseif ($type == 'xlsx') {
-                $arquivo = new EstudantesExport($estudantes);
-
-                return Excel::download($arquivo, 'estudantes.xlsx');
+            if (! in_array($type, ['csv', 'pdf', 'xlsx'], true)) {
+                return response()->json([
+                    'message' => 'Tipo de arquivo inválido. Use csv, pdf ou xlsx.',
+                ], 400);
             }
 
-            return response()->json([
-                'message' => 'Tipo de arquivo inválido. Use csv, pdf ou xlsx.',
-            ], 400);
+            $export = new EstudantesExport(
+                Estudante::with(['instituicao', 'linha', 'inscricao.inscricao_instituicao'])
+                    ->orderBy('name')
+                    ->get(),
+            );
+            $geradoEm = now('America/Sao_Paulo');
+            $arquivo = 'estudantes-'.$geradoEm->format('Y-m-d').'.'.$type;
+
+            if ($type === 'pdf') {
+                $pdf = Pdf::loadView('exports.estudantes', [
+                    'estudantes' => $export->linhas(),
+                    'resumo' => $export->resumo(),
+                    'geradoEm' => $geradoEm,
+                ])->setPaper('a4', 'landscape');
+
+                $pdf->render();
+                $this->numerarPaginas($pdf->getDomPDF());
+
+                return $pdf->download($arquivo);
+            }
+
+            return Excel::download(
+                $export,
+                $arquivo,
+                $type === 'csv' ? \Maatwebsite\Excel\Excel::CSV : \Maatwebsite\Excel\Excel::XLSX,
+            );
         } catch (Throwable $e) {
             report($e);
 
@@ -262,5 +273,27 @@ class EstudanteService
                 'message' => 'Erro ao exportar lista de estudantes',
             ], 500);
         }
+    }
+
+    /**
+     * O total de páginas só existe depois da renderização, por isso o
+     * "Página X de Y" é escrito no canvas e não no HTML.
+     */
+    private function numerarPaginas(Dompdf $dompdf): void
+    {
+        $canvas = $dompdf->getCanvas();
+        $fonte = $dompdf->getFontMetrics()->getFont('Helvetica');
+        $tamanho = 6;
+        $texto = 'Página {PAGE_NUM} de {PAGE_COUNT}';
+        $largura = $dompdf->getFontMetrics()->getTextWidth('Página 0 de 0', $fonte, $tamanho);
+
+        $canvas->page_text(
+            $canvas->get_width() - 24 - $largura,
+            $canvas->get_height() - 30,
+            $texto,
+            $fonte,
+            $tamanho,
+            [0.392, 0.455, 0.545],
+        );
     }
 }

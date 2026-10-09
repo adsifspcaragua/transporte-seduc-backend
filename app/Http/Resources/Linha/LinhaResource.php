@@ -14,7 +14,7 @@ class LinhaResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $ocupacao = (int) ($this->ocupacao ?? $this->estudantes()->where('status', 'Ativo')->count());
+        $ocupacao = (int) ($this->ocupacao ?? $this->estudantes()->where('situacao', 'Ativo')->count());
 
         return [
             'id' => $this->id,

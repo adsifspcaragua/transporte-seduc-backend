@@ -34,7 +34,7 @@ class LinhaComVaga implements ValidationRule
         }
 
         $ocupacao = Estudante::where('linha_id', $linha->id)
-            ->where('status', 'Ativo')
+            ->where('situacao', 'Ativo')
             ->when($this->estudanteId, fn ($query) => $query->whereKeyNot($this->estudanteId))
             ->count();
 

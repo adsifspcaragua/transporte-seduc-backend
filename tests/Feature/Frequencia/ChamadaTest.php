@@ -53,12 +53,12 @@ class ChamadaTest extends TestCase
     /**
      * @param  list<int>  $dias
      */
-    private function estudanteNa(Linha $linha, array $dias = [1, 2, 3, 4, 5], string $status = 'Ativo', ?string $nome = null): Estudante
+    private function estudanteNa(Linha $linha, array $dias = [1, 2, 3, 4, 5], string $situacao = 'Ativo', ?string $nome = null): Estudante
     {
         return Estudante::factory()->create(array_filter([
             'linha_id' => $linha->id,
             'days_of_week' => $dias,
-            'status' => $status,
+            'situacao' => $situacao,
             'name' => $nome,
         ]));
     }
@@ -79,7 +79,7 @@ class ChamadaTest extends TestCase
         $esperadoA = $this->estudanteNa($linha, nome: 'Ana');
         $esperadoB = $this->estudanteNa($linha, [self::QUARTA], nome: 'Bruno');
         $this->estudanteNa($linha, [1, 5]); // nao vai as quartas
-        $this->estudanteNa($linha, status: 'Inativo'); // perdeu o beneficio
+        $this->estudanteNa($linha, situacao: 'Inativo'); // perdeu o beneficio
         $this->estudanteNa($this->linhaDe()); // outra linha
 
         Sanctum::actingAs($motorista);

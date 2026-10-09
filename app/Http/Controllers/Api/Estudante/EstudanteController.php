@@ -34,7 +34,7 @@ class EstudanteController extends Controller
     /**
      * Cadastrar estudante.
      *
-     * Cria um estudante e define o status inicial como "Em espera".
+     * Cria um estudante e define o status inicial como "Lista de espera" e a situação como "Inativo".
      */
     public function store(StoreEstudanteRequest $request)
     {
@@ -90,7 +90,7 @@ class EstudanteController extends Controller
     /**
      * Listar estudantes ativos.
      *
-     * Retorna estudantes com status ATIVO.
+     * Retorna estudantes com situação Ativo.
      */
     public function estudantesAtivos()
     {
@@ -102,7 +102,7 @@ class EstudanteController extends Controller
      *
      * Retorna documento EXCEL/PDF/CSV.
      */
-    public function exportarEstudantes(String $type)
+    public function exportarEstudantes(string $type)
     {
         return $this->estudanteService->exportarEstudantes($type);
     }

@@ -118,7 +118,7 @@ class BeneficioFrequenciaService
         $estudante = Estudante::find($estudanteId);
 
         // Quem ja esta fora do beneficio nao tem o que perder nem por que ser avisado.
-        if (! $estudante || $estudante->status !== 'Ativo') {
+        if (! $estudante || $estudante->situacao !== 'Ativo') {
             return;
         }
 
@@ -139,7 +139,7 @@ class BeneficioFrequenciaService
     private function retirarBeneficio(Estudante $estudante, array $situacao): void
     {
         DB::transaction(function () use ($estudante, $situacao) {
-            $estudante->update(['status' => 'Inativo']);
+            $estudante->update(['situacao' => 'Inativo']);
             $this->registrar($estudante, $situacao, AvisoFrequencia::BENEFICIO_PERDIDO);
         });
 

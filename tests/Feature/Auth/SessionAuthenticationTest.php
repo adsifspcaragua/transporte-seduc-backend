@@ -118,11 +118,26 @@ class SessionAuthenticationTest extends TestCase
             $cookies[config('session.cookie')]
         );
 
+        $csrfRefreshResponse = $this
+            ->withCredentials()
+            ->withHeaders($this->statefulHeaders())
+            ->withUnencryptedCookies([
+                config('session.cookie') => $sessionCookie,
+            ])
+            ->get('/sanctum/csrf-cookie');
+
+        $refreshedCookies = $this->extractCookies($csrfRefreshResponse);
+        $sessionCookie = $this->cookieValue(
+            $csrfRefreshResponse,
+            config('session.cookie'),
+            $sessionCookie
+        );
+
         $logoutResponse = $this
             ->withCredentials()
-            ->withHeaders($this->statefulHeaders($cookies['XSRF-TOKEN']))
+            ->withHeaders($this->statefulHeaders($refreshedCookies['XSRF-TOKEN']))
             ->withUnencryptedCookies([
-                'XSRF-TOKEN' => $cookies['XSRF-TOKEN'],
+                'XSRF-TOKEN' => $refreshedCookies['XSRF-TOKEN'],
                 config('session.cookie') => $sessionCookie,
             ])
             ->postJson('/api/logout');

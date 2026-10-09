@@ -232,7 +232,7 @@ class JustificativaService
     {
         $estudante = $justificativa->frequencia->estudante;
 
-        if ($rejeitada || ! $estudante || $estudante->status === 'Ativo') {
+        if ($rejeitada || ! $estudante || $estudante->situacao === 'Ativo') {
             return [];
         }
 

@@ -57,7 +57,7 @@ class AcessoEstudanteService
 
     private function recadastro(Estudante $estudante): JsonResponse
     {
-        if ($estudante->status !== 'Ativo') {
+        if ($estudante->situacao !== 'Ativo') {
             return response()->json([
                 'message' => 'Seu cadastro não está ativo. Procure a responsável pelo transporte universitário.',
             ], 403);

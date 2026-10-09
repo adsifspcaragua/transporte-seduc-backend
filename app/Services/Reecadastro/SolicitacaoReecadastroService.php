@@ -113,11 +113,11 @@ class SolicitacaoReecadastroService
                 }
 
                 if ($decisao === 'Aprovado') {
-                    $solicitacao->estudante?->update(['status' => 'Ativo']);
+                    $solicitacao->estudante?->update(['status' => 'Aprovado', 'situacao' => 'Ativo']);
                 }
 
                 if ($decisao === 'Rejeitado') {
-                    $solicitacao->estudante?->update(['status' => 'Inativo']);
+                    $solicitacao->estudante?->update(['situacao' => 'Inativo']);
                 }
             });
 

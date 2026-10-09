@@ -46,14 +46,20 @@ class DashboardService
             ->groupBy('status')
             ->pluck('total', 'status');
 
+        $porSituacao = Estudante::selectRaw('situacao, COUNT(*) as total')
+            ->groupBy('situacao')
+            ->pluck('total', 'situacao');
+
         return [
-            'ativos' => (int) ($porStatus['Ativo'] ?? 0),
-            'inativos' => (int) ($porStatus['Inativo'] ?? 0),
-            'em_espera' => (int) ($porStatus['Em espera'] ?? 0),
+            'ativos' => (int) ($porSituacao['Ativo'] ?? 0),
+            'inativos' => (int) ($porSituacao['Inativo'] ?? 0),
+            'aprovados' => (int) ($porStatus['Aprovado'] ?? 0),
+            'recusados' => (int) ($porStatus['Recusado'] ?? 0),
+            'lista_de_espera' => (int) ($porStatus['Lista de espera'] ?? 0),
             'total' => (int) $porStatus->sum(),
             // Ativo sem linha nao tem como ser transportado: e uma pendencia,
             // nao um numero de panorama.
-            'sem_linha' => Estudante::where('status', 'Ativo')->whereNull('linha_id')->count(),
+            'sem_linha' => Estudante::where('situacao', 'Ativo')->whereNull('linha_id')->count(),
         ];
     }
 
@@ -106,7 +112,7 @@ class DashboardService
             'pendencias' => SolicitacaoReecadastro::where('periodo_id', $periodo->id)
                 ->where('status', 'Pendencia')
                 ->count(),
-            'ausentes' => Estudante::where('status', 'Ativo')
+            'ausentes' => Estudante::where('situacao', 'Ativo')
                 ->whereNotIn('id', $emDia)
                 ->count(),
         ];
@@ -120,7 +126,7 @@ class DashboardService
         // withCount resolve a ocupacao de todas as linhas em uma consulta, em vez
         // de uma por linha.
         $linhas = Linha::withCount([
-            'estudantes as ocupacao' => fn ($query) => $query->where('status', 'Ativo'),
+            'estudantes as ocupacao' => fn ($query) => $query->where('situacao', 'Ativo'),
         ])->orderBy('name')->get();
 
         return [

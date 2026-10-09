@@ -40,7 +40,7 @@ class LinhaCapacidadeTest extends TestCase
 
         Estudante::factory()->count($ativos)->create([
             'linha_id' => $linha->id,
-            'status' => 'Ativo',
+            'situacao' => 'Ativo',
         ]);
 
         return $linha;
@@ -49,7 +49,7 @@ class LinhaCapacidadeTest extends TestCase
     public function test_nao_aloca_estudante_em_linha_lotada(): void
     {
         $linha = $this->linhaCom(capacidade: 1, ativos: 1);
-        $estudante = Estudante::factory()->create(['status' => 'Ativo']);
+        $estudante = Estudante::factory()->create(['situacao' => 'Ativo']);
 
         $this->putJson("/api/estudantes/{$estudante->id}", ['linha_id' => $linha->id])
             ->assertStatus(422)
@@ -63,7 +63,7 @@ class LinhaCapacidadeTest extends TestCase
         $linha = $this->linhaCom(capacidade: 1);
         $estudante = Estudante::factory()->create([
             'linha_id' => $linha->id,
-            'status' => 'Ativo',
+            'situacao' => 'Ativo',
         ]);
 
         // Salvar o cadastro de quem ja ocupa a unica vaga nao pode ser recusado.
@@ -76,9 +76,9 @@ class LinhaCapacidadeTest extends TestCase
     public function test_estudante_inativo_nao_ocupa_vaga(): void
     {
         $linha = Linha::factory()->create(['max_capacity' => 1]);
-        Estudante::factory()->create(['linha_id' => $linha->id, 'status' => 'Inativo']);
+        Estudante::factory()->create(['linha_id' => $linha->id, 'situacao' => 'Inativo']);
 
-        $ativo = Estudante::factory()->create(['status' => 'Ativo']);
+        $ativo = Estudante::factory()->create(['situacao' => 'Ativo']);
 
         $this->putJson("/api/estudantes/{$ativo->id}", ['linha_id' => $linha->id])
             ->assertOk();
@@ -86,7 +86,7 @@ class LinhaCapacidadeTest extends TestCase
 
     public function test_linha_inexistente_e_recusada(): void
     {
-        $estudante = Estudante::factory()->create(['status' => 'Ativo']);
+        $estudante = Estudante::factory()->create(['situacao' => 'Ativo']);
 
         $this->putJson("/api/estudantes/{$estudante->id}", ['linha_id' => 999999])
             ->assertStatus(422)
@@ -98,7 +98,7 @@ class LinhaCapacidadeTest extends TestCase
         $linha = $this->linhaCom(capacidade: 10);
         $estudante = Estudante::factory()->create([
             'linha_id' => $linha->id,
-            'status' => 'Ativo',
+            'situacao' => 'Ativo',
         ]);
 
         $this->putJson("/api/estudantes/{$estudante->id}", ['linha_id' => null])

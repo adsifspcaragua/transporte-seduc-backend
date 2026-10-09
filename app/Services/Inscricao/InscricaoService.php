@@ -200,7 +200,7 @@ class InscricaoService
                 ]);
                 $inscricao->inscricao_documentos()->update(['status' => 'Rejeitado']);
 
-                $inscricao->estudante?->update(['status' => 'Inativo']);
+                $inscricao->estudante?->update(['status' => 'Recusado', 'situacao' => 'Inativo']);
 
                 return response()->json([
                     'message' => 'Inscrição rejeitada',
@@ -248,7 +248,8 @@ class InscricaoService
                     'address' => $inscricao->address,
                     'days_of_week' => $dadosInstitucionais?->days_of_week ?? [],
                     'observation' => $inscricao->observation,
-                    'status' => 'Ativo',
+                    'status' => 'Aprovado',
+                    'situacao' => 'Ativo',
                 ];
 
                 if ($instituicaoId !== null) {

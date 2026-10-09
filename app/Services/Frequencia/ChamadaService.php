@@ -429,7 +429,7 @@ class ChamadaService
         $diaDaSemana = $dia->dayOfWeek;
 
         return Estudante::where('linha_id', $linha->id)
-            ->where('status', 'Ativo')
+            ->where('situacao', 'Ativo')
             ->where(fn ($query) => $query
                 ->whereJsonContains('days_of_week', $diaDaSemana)
                 ->orWhereJsonContains('days_of_week', (string) $diaDaSemana))

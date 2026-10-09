@@ -21,7 +21,8 @@ class EstudanteSeeder extends Seeder
         $estudantes = [
             [
                 'cpf' => '11111111111',
-                'status' => 'Em espera',
+                'status' => 'Lista de espera',
+                'situacao' => 'Inativo',
                 'institution' => 'Universidade do Vale do Paraíba',
                 'line' => 'Linha Centro',
                 'days_of_week' => [1, 2, 3, 4, 5],
@@ -29,7 +30,8 @@ class EstudanteSeeder extends Seeder
             ],
             [
                 'cpf' => '22222222222',
-                'status' => 'Ativo',
+                'status' => 'Aprovado',
+                'situacao' => 'Ativo',
                 'institution' => 'Faculdade Módulo',
                 'line' => 'Linha Noturna',
                 'days_of_week' => [1, 3, 5],
@@ -37,7 +39,8 @@ class EstudanteSeeder extends Seeder
             ],
             [
                 'cpf' => '33333333333',
-                'status' => 'Inativo',
+                'status' => 'Aprovado',
+                'situacao' => 'Inativo',
                 'institution' => 'Universidade Paulista',
                 'line' => null,
                 'days_of_week' => [2, 4],
@@ -45,7 +48,8 @@ class EstudanteSeeder extends Seeder
             ],
             [
                 'cpf' => '44444444444',
-                'status' => 'Ativo',
+                'status' => 'Aprovado',
+                'situacao' => 'Ativo',
                 'institution' => 'FATEC Caraguatatuba',
                 'line' => 'Linha Norte',
                 'days_of_week' => [1, 2, 3, 4],
@@ -53,7 +57,8 @@ class EstudanteSeeder extends Seeder
             ],
             [
                 'cpf' => '55555555555',
-                'status' => 'Inativo',
+                'status' => 'Aprovado',
+                'situacao' => 'Inativo',
                 'institution' => 'UNIVESP Polo Caraguatatuba',
                 'line' => 'Linha Sul',
                 'days_of_week' => [6],
@@ -79,6 +84,7 @@ class EstudanteSeeder extends Seeder
                     'days_of_week' => $data['days_of_week'],
                     'observation' => $inscricao->observation,
                     'status' => $data['status'],
+                    'situacao' => $data['situacao'],
                     'instituicao_id' => $instituicoes->get($data['institution']),
                     'linha_id' => $data['line'] ? $linhas->get($data['line']) : null,
                     'user_id' => $data['user_id'],

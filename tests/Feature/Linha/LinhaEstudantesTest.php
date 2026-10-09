@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Linha;
 
+use App\Models\Chamada;
 use App\Models\Estudante;
+use App\Models\Frequencia;
 use App\Models\InscricaoInstituicoes;
 use App\Models\Linha;
 use App\Models\Permission;
@@ -46,14 +48,14 @@ class LinhaEstudantesTest extends TestCase
         $outra = Linha::factory()->create();
         Estudante::factory()->count(11)->create(['linha_id' => $linha->id]);
         Estudante::factory()->inativo()->create(['linha_id' => $linha->id, 'name' => 'AAA Inativo']);
-        Estudante::factory()->create(['linha_id' => $linha->id, 'name' => 'AAA Espera', 'status' => 'Em espera']);
-        Estudante::factory()->create(['linha_id' => $linha->id, 'name' => 'AAA Ativo', 'status' => 'ATIVO']);
+        Estudante::factory()->create(['linha_id' => $linha->id, 'name' => 'AAA Espera', 'status' => 'Lista de espera', 'situacao' => 'Inativo']);
+        Estudante::factory()->create(['linha_id' => $linha->id, 'name' => 'AAA Ativo', 'situacao' => 'ATIVO']);
         $fora = Estudante::factory()->create(['linha_id' => $outra->id]);
 
         $primeira = $this->getJson("/api/linha/{$linha->id}/estudantes")->assertOk()
             ->assertJsonCount(10, 'data')
             ->assertJsonPath('meta.total', 12)
-            ->assertJsonPath('data.0.status', 'ATIVO');
+            ->assertJsonPath('data.0.situacao', 'ATIVO');
         $segunda = $this->getJson("/api/linha/{$linha->id}/estudantes?page=2")->assertOk()
             ->assertJsonCount(2, 'data')->assertJsonPath('meta.current_page', 2);
 
@@ -61,7 +63,7 @@ class LinhaEstudantesTest extends TestCase
         $this->assertCount(12, array_unique($ids));
         $this->assertNotContains($fora->id, $ids);
         $this->assertEqualsCanonicalizing(
-            Estudante::where('linha_id', $linha->id)->whereRaw('LOWER(status) = ?', ['ativo'])->pluck('id')->all(),
+            Estudante::where('linha_id', $linha->id)->whereRaw('LOWER(situacao) = ?', ['ativo'])->pluck('id')->all(),
             $ids,
         );
         $this->getJson("/api/linha/{$linha->id}/estudantes?per_page=15")->assertOk()->assertJsonCount(12, 'data');
@@ -94,6 +96,44 @@ class LinhaEstudantesTest extends TestCase
         $estudante->update(['linha_id' => $outra->id]);
         $this->getJson("/api/linha/{$linha->id}/estudantes")->assertOk()->assertJsonCount(0, 'data');
         $this->getJson("/api/linha/{$outra->id}/estudantes")->assertOk()->assertJsonPath('data.0.id', $estudante->id);
+    }
+
+    public function test_retorna_faltas_e_ultima_presenca_somente_de_chamadas_fechadas(): void
+    {
+        $this->autenticar();
+        $linha = Linha::factory()->create();
+        $estudante = $this->estudanteCompleto($linha);
+        $semPresenca = Estudante::factory()->create(['linha_id' => $linha->id]);
+
+        $registros = [
+            ['2026-09-01', Chamada::FECHADA, Frequencia::FALTA],
+            ['2026-09-02', Chamada::FECHADA, Frequencia::JUSTIFICADA],
+            ['2026-09-03', Chamada::FECHADA, Frequencia::PRESENTE],
+            ['2026-09-04', Chamada::FECHADA, Frequencia::PRESENTE],
+            ['2026-09-05', Chamada::ABERTA, Frequencia::FALTA],
+            ['2026-09-06', Chamada::ABERTA, Frequencia::PRESENTE],
+        ];
+
+        foreach ($registros as [$data, $status, $situacao]) {
+            $chamada = Chamada::factory()->create([
+                'linha_id' => $linha->id,
+                'data' => $data,
+                'status' => $status,
+            ]);
+            Frequencia::factory()->create([
+                'chamada_id' => $chamada->id,
+                'estudante_id' => $estudante->id,
+                'situacao' => $situacao,
+            ]);
+        }
+
+        $response = $this->getJson("/api/linha/{$linha->id}/estudantes")->assertOk();
+        $porId = collect($response->json('data'))->keyBy('id');
+
+        $this->assertSame(1, $porId[$estudante->id]['faltas']);
+        $this->assertSame('2026-09-04', $porId[$estudante->id]['ultima_presenca']);
+        $this->assertSame(0, $porId[$semPresenca->id]['faltas']);
+        $this->assertNull($porId[$semPresenca->id]['ultima_presenca']);
     }
 
     public function test_estudante_sem_dados_academicos_e_lista_vazia_sao_validos(): void

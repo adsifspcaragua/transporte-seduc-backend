@@ -39,9 +39,9 @@ class AusentesReecadastroTest extends TestCase
         Sanctum::actingAs($user);
     }
 
-    private function estudanteCom(?string $statusSolicitacao, string $statusEstudante = 'Ativo'): Estudante
+    private function estudanteCom(?string $statusSolicitacao, string $situacaoEstudante = 'Ativo'): Estudante
     {
-        $estudante = Estudante::factory()->create(['status' => $statusEstudante]);
+        $estudante = Estudante::factory()->create(['situacao' => $situacaoEstudante]);
 
         if ($statusSolicitacao !== null) {
             SolicitacaoReecadastro::create([
@@ -109,8 +109,8 @@ class AusentesReecadastroTest extends TestCase
             'estudantes' => [$alvo->id],
         ])->assertOk();
 
-        $this->assertSame('Inativo', $alvo->refresh()->status);
-        $this->assertSame('Ativo', $poupado->refresh()->status);
+        $this->assertSame('Inativo', $alvo->refresh()->situacao);
+        $this->assertSame('Ativo', $poupado->refresh()->situacao);
     }
 
     public function test_quem_recadastrou_nao_e_inativado_nem_em_lista_mista(): void
@@ -122,8 +122,8 @@ class AusentesReecadastroTest extends TestCase
             'estudantes' => [$ausente->id, $aprovado->id],
         ])->assertOk();
 
-        $this->assertSame('Inativo', $ausente->refresh()->status);
-        $this->assertSame('Ativo', $aprovado->refresh()->status);
+        $this->assertSame('Inativo', $ausente->refresh()->situacao);
+        $this->assertSame('Ativo', $aprovado->refresh()->situacao);
         $this->assertSame([$aprovado->id], $resposta->json('ignorados'));
     }
 
@@ -135,7 +135,7 @@ class AusentesReecadastroTest extends TestCase
             'estudantes' => [$aprovado->id],
         ])->assertStatus(422);
 
-        $this->assertSame('Ativo', $aprovado->refresh()->status);
+        $this->assertSame('Ativo', $aprovado->refresh()->situacao);
     }
 
     public function test_lista_vazia_e_recusada(): void
@@ -157,6 +157,6 @@ class AusentesReecadastroTest extends TestCase
             'estudantes' => [$ausente->id],
         ])->assertForbidden();
 
-        $this->assertSame('Ativo', $ausente->refresh()->status);
+        $this->assertSame('Ativo', $ausente->refresh()->situacao);
     }
 }

@@ -67,6 +67,37 @@ class PermissionEnforcementTest extends TestCase
         $this->getJson('/api/users')->assertForbidden();
     }
 
+    public function test_gestor_lists_only_active_drivers_for_line_assignment(): void
+    {
+        $activeDriver = $this->userWithRole('motorista');
+        $inactiveDriver = $this->userWithRole('motorista');
+        $inactiveDriver->update(['ativo' => false]);
+        $this->userWithRole('operador');
+
+        Sanctum::actingAs($this->userWithRole('gestor'));
+
+        $this->getJson('/api/users/motoristas')
+            ->assertOk()
+            ->assertJsonPath('data.0.id', $activeDriver->id)
+            ->assertJsonPath('data.0.name', $activeDriver->name)
+            ->assertJsonMissingPath('data.0.email')
+            ->assertJsonCount(1, 'data');
+    }
+
+    public function test_user_without_line_write_cannot_list_drivers(): void
+    {
+        Sanctum::actingAs($this->userWithRole('operador'));
+
+        $this->getJson('/api/users/motoristas')->assertForbidden();
+    }
+
+    public function test_student_export_requires_view_permission(): void
+    {
+        Sanctum::actingAs($this->userWithRole('motorista'));
+
+        $this->getJson('/api/exportar-estudantes/csv')->assertForbidden();
+    }
+
     public function test_inactive_user_is_blocked_by_middleware(): void
     {
         $user = $this->userWithRole('gestor');
