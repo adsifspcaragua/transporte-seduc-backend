@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             InscricaoSeeder::class,
             EstudanteSeeder::class,
             PeriodoReecadastroSeeder::class,
+            SolicitacaoReecadastroSeeder::class,
         ]);
     }
 }

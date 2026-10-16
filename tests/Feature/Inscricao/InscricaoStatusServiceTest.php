@@ -147,4 +147,18 @@ class InscricaoStatusServiceTest extends TestCase
 
         $this->assertSame('Incompleto', $atualizada->status);
     }
+
+    /** Devolvida para correção, salvar pela metade não a devolve à lista de espera. */
+    public function test_refresh_status_mantem_em_revisao_enquanto_nao_completa(): void
+    {
+        $inscricao = Inscricao::factory()->create([
+            'status' => 'Em revisao',
+            'campos_pendentes' => ['name'],
+        ]);
+
+        $atualizada = $this->service->refreshStatus($inscricao);
+
+        $this->assertSame('Em revisao', $atualizada->status);
+        $this->assertSame(['name'], $atualizada->campos_pendentes);
+    }
 }

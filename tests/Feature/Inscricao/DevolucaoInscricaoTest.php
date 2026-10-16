@@ -73,7 +73,7 @@ class DevolucaoInscricaoTest extends TestCase
 
         $inscricao->refresh();
 
-        $this->assertSame('Incompleto', $inscricao->status);
+        $this->assertSame('Em revisao', $inscricao->status);
         $this->assertSame('Comprovante de residencia ilegivel.', $inscricao->observation);
     }
 

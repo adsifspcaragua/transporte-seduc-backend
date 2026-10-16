@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Reecadastro\Publico;
 
+use App\Models\InscricaoInstituicoes;
 use App\Models\SolicitacaoReecadastro;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -49,7 +50,7 @@ class AtualizarDadosRequest extends FormRequest
             'expected_completion' => 'required|date',
             'instituicao_id' => 'required|integer|exists:instituicoes,id',
             'shift' => 'required|integer|in:1,2',
-            'city_destination' => 'required|string|min:3|max:255',
+            'city_destination' => ['required', 'string', Rule::in([InscricaoInstituicoes::CIDADE_DESTINO])],
             'used_transport' => 'required|boolean',
             'days_of_week' => 'required|array|min:1',
             'days_of_week.*' => 'integer|between:0,6',

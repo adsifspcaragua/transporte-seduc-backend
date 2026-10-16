@@ -166,11 +166,11 @@ class InscricaoService
             // Devolver não é recusar: a inscrição volta para o aluno corrigir o que
             // a responsável apontou, mantendo o mesmo CPF e o que já foi preenchido.
             // Rejeitar continua sendo definitivo, para quem não tem direito ao
-            // benefício. O status volta a Incompleto, que é o que reabre a edição
-            // para o estudante e tira a inscrição da fila de análise até o reenvio.
+            // benefício. O status passa a Em revisao, que reabre a edição para o
+            // estudante e tira a inscrição da fila de análise até o reenvio.
             if ($data['decisao'] === 'Devolvido') {
                 $inscricao->update([
-                    'status' => 'Incompleto',
+                    'status' => 'Em revisao',
                     'observation' => $data['motivo'],
                     'campos_pendentes' => $data['campos'] ?? [],
                 ]);

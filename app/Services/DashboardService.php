@@ -75,6 +75,7 @@ class DashboardService
         return [
             'em_analise' => (int) ($porStatus['Em analise'] ?? 0),
             'incompletas' => (int) ($porStatus['Incompleto'] ?? 0),
+            'em_revisao' => (int) ($porStatus['Em revisao'] ?? 0),
             'aprovadas' => (int) ($porStatus['Aprovado'] ?? 0),
             'rejeitadas' => (int) ($porStatus['Rejeitado'] ?? 0),
             'total' => (int) $porStatus->sum(),

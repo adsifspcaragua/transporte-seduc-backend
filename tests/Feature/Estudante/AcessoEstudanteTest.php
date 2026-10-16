@@ -37,6 +37,16 @@ class AcessoEstudanteTest extends TestCase
             ->assertJsonStructure(['data' => ['inscricao' => ['token']]]);
     }
 
+    public function test_inscricao_em_revisao_pode_ser_editada_pelo_estudante(): void
+    {
+        $inscricao = Inscricao::factory()->create(['status' => 'Em revisao']);
+
+        $this->postJson('/api/area-estudante/acesso', ['cpf' => $inscricao->cpf])
+            ->assertOk()
+            ->assertJsonPath('fluxo', 'lista_espera')
+            ->assertJsonPath('data.pode_editar', true);
+    }
+
     public function test_aluno_ativo_com_periodo_aberto_entra_no_recadastro_com_dados(): void
     {
         PeriodoReecadastro::factory()->aberto()->create();
@@ -86,7 +96,7 @@ class AcessoEstudanteTest extends TestCase
             'expected_completion' => '2028-12-10',
             'instituicao_id' => $dadosInstitucionais->instituicao_id,
             'shift' => 2,
-            'city_destination' => 'São Sebastião',
+            'city_destination' => 'São José dos Campos',
             'used_transport' => true,
             'days_of_week' => [1, 3, 5],
             'has_scholarship' => false,

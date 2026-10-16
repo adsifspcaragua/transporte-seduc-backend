@@ -90,8 +90,12 @@ class InscricaoStatusService
     {
         $completa = $this->isComplete($inscricao);
 
+        // Devolvida para correção, a inscrição só sai da revisão quando o
+        // estudante reenviar tudo; salvar pela metade não a devolve à lista.
+        $pendente = $inscricao->status === 'Em revisao' ? 'Em revisao' : 'Incompleto';
+
         $inscricao->update([
-            'status' => $completa ? 'Em analise' : 'Incompleto',
+            'status' => $completa ? 'Em analise' : $pendente,
             // Reenviar encerra a pendencia: sem limpar, o estudante seguiria
             // vendo "corrija estes campos" depois de ja ter corrigido.
             'campos_pendentes' => $completa ? null : $inscricao->campos_pendentes,

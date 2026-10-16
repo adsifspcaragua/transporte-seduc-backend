@@ -5,73 +5,38 @@ namespace Database\Seeders;
 use App\Models\Estudante;
 use App\Models\Inscricao;
 use App\Models\Instituicao;
-use App\Models\Linha;
-use App\Models\User;
+use Database\Seeders\Support\Cenarios;
 use Illuminate\Database\Seeder;
 
 class EstudanteSeeder extends Seeder
 {
+    /** [status, situação] de cada tipo de estudante do roteiro. */
+    private const SITUACOES = [
+        'Ativo' => ['Aprovado', 'Ativo'],
+        'Inativo' => ['Aprovado', 'Inativo'],
+        'Recusado' => ['Recusado', 'Inativo'],
+    ];
+
     public function run(): void
     {
-        $instituicoes = Instituicao::pluck('id', 'name');
-        $linhas = Linha::pluck('id', 'name');
-        $adminId = User::where('email', 'admin@example.com')->value('id');
-        $operadorId = User::where('email', 'user@example.com')->value('id');
+        $linhasPorInstituicao = Instituicao::pluck('linhas_ids', 'id');
 
-        $estudantes = [
-            [
-                'cpf' => '11111111111',
-                'status' => 'Lista de espera',
-                'situacao' => 'Inativo',
-                'institution' => 'Universidade do Vale do Paraíba',
-                'line' => 'Linha Centro',
-                'days_of_week' => [1, 2, 3, 4, 5],
-                'user_id' => $adminId,
-            ],
-            [
-                'cpf' => '22222222222',
-                'status' => 'Aprovado',
-                'situacao' => 'Ativo',
-                'institution' => 'Faculdade Módulo',
-                'line' => 'Linha Noturna',
-                'days_of_week' => [1, 3, 5],
-                'user_id' => $operadorId,
-            ],
-            [
-                'cpf' => '33333333333',
-                'status' => 'Aprovado',
-                'situacao' => 'Inativo',
-                'institution' => 'Universidade Paulista',
-                'line' => null,
-                'days_of_week' => [2, 4],
-                'user_id' => $operadorId,
-            ],
-            [
-                'cpf' => '44444444444',
-                'status' => 'Aprovado',
-                'situacao' => 'Ativo',
-                'institution' => 'FATEC Caraguatatuba',
-                'line' => 'Linha Norte',
-                'days_of_week' => [1, 2, 3, 4],
-                'user_id' => $adminId,
-            ],
-            [
-                'cpf' => '55555555555',
-                'status' => 'Aprovado',
-                'situacao' => 'Inativo',
-                'institution' => 'UNIVESP Polo Caraguatatuba',
-                'line' => 'Linha Sul',
-                'days_of_week' => [6],
-                'user_id' => $adminId,
-            ],
-        ];
+        foreach (Cenarios::pessoas() as $pessoa) {
+            // Só vira estudante quem foi aprovado: a lista de espera fica apenas
+            // nas solicitações.
+            if ($pessoa['estudante'] === null) {
+                continue;
+            }
 
-        foreach ($estudantes as $data) {
-            $inscricao = Inscricao::where('cpf', $data['cpf'])->first();
+            $inscricao = Inscricao::with('inscricao_instituicao')->where('cpf', $pessoa['cpf'])->first();
 
             if (! $inscricao) {
                 continue;
             }
+
+            [$status, $situacao] = self::SITUACOES[$pessoa['estudante']];
+            $academico = $inscricao->inscricao_instituicao;
+            $linhas = array_values($linhasPorInstituicao->get($academico->instituicao_id) ?? []);
 
             Estudante::updateOrCreate(
                 ['cpf' => $inscricao->cpf],
@@ -80,17 +45,32 @@ class EstudanteSeeder extends Seeder
                     'email' => $inscricao->email,
                     'birth_date' => $inscricao->birth_date,
                     'phone' => $inscricao->phone,
-                    'address' => $inscricao->address,
-                    'days_of_week' => $data['days_of_week'],
+                    'address' => "{$inscricao->address}, {$inscricao->number}",
+                    'days_of_week' => $academico->days_of_week,
                     'observation' => $inscricao->observation,
-                    'status' => $data['status'],
-                    'situacao' => $data['situacao'],
-                    'instituicao_id' => $instituicoes->get($data['institution']),
-                    'linha_id' => $data['line'] ? $linhas->get($data['line']) : null,
-                    'user_id' => $data['user_id'],
+                    'status' => $status,
+                    'situacao' => $situacao,
+                    'instituicao_id' => $academico->instituicao_id,
+                    'linha_id' => $this->linha($pessoa, $situacao, $linhas),
                     'inscricao_id' => $inscricao->id,
                 ],
             );
         }
+    }
+
+    /**
+     * Ativos ficam numa linha que atende a instituição, menos alguns que ficam
+     * sem linha para exercitar a pendência "ativo sem linha" do painel.
+     *
+     * @param  array<string, mixed>  $pessoa
+     * @param  list<int>  $linhas
+     */
+    private function linha(array $pessoa, string $situacao, array $linhas): ?int
+    {
+        if ($situacao !== 'Ativo' || $linhas === [] || $pessoa['indice'] % 9 === 6) {
+            return null;
+        }
+
+        return $linhas[$pessoa['indice'] % count($linhas)];
     }
 }
