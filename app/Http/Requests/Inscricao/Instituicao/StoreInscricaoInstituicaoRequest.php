@@ -49,6 +49,13 @@ class StoreInscricaoInstituicaoRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'city_destination.in' => 'A cidade de destino deve ser São José dos Campos.',
+        ];
+    }
+
     public function bodyParameters(): array
     {
         return [
