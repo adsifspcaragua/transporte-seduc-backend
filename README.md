@@ -165,6 +165,28 @@ Após `php artisan db:seed`, estes usuários ficam disponíveis (senha **`123456
 | `admin@example.com` | **admin** | `12345678` |
 | `user@example.com` | **operador** | `12345678` |
 | `motorista@example.com` | **motorista** (Linha Centro e Linha Noturna) | `12345678` |
+| `estudante@example.com` | **estudante** (ligado a um estudante ativo da Linha Centro) | `12345678` |
+
+---
+
+## Presença por QR Code
+
+O estudante registra a própria presença lendo o QR fixo da van, com o navegador
+previamente autorizado (chave ECDSA P-256), dentro da janela de horário e da
+geocerca — sem depender do motorista. O desenho, as decisões em aberto com o PO
+e o que já foi implementado estão no [`ROADMAP.md`](ROADMAP.md) (seção 18).
+
+- Parâmetros (janela, precisão, raio máximo, retenção) ficam em
+  `config/presenca.php` e nas variáveis `PRESENCA_*` do `.env.example`.
+- O `db:seed` cria uma van por linha e mostra no terminal a URL do QR de cada
+  uma. O token só aparece quando é gerado; para ver de novo, rotacione o QR
+  (`POST /api/veiculos/{id}/qr`). Pontos e raios do seeder são fictícios.
+- As viagens do dia são geradas sob demanda, mas o agendador também as gera
+  com antecedência e limpa desafios vencidos. Em desenvolvimento:
+
+  ```bash
+  php artisan schedule:work
+  ```
 
 ---
 

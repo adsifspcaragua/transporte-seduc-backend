@@ -3,7 +3,7 @@
 **Sistema de Gestão do Transporte Universitário de Caraguatatuba**  
 **Módulo:** Vinculação de dispositivo e controle de presença por QR Code, geolocalização e horário  
 **Versão do planejamento:** 1.0 — 16/10/2026  
-**Estado:** Proposta técnica para validação com o Product Owner (PO) e equipe de desenvolvimento
+**Estado:** Proposta técnica para validação com o Product Owner (PO) e equipe de desenvolvimento. Backend das Fases 1 a 5 implementado em 16/10/2026 — ver seção 18.
 
 > **Objetivo:** permitir que estudantes registrem sua própria presença na viagem, usando o SIGTU em um celular, com verificações de dispositivo autorizado, QR Code da van, linha/viagem, janela de horário e localização. A solução deve aproveitar a infraestrutura existente, **sem compra de dispositivos para as vans, sem serviço pago obrigatório e sem exigir interação do motorista**.
 >
@@ -554,12 +554,12 @@ Não expor detalhes que ajudem terceiros a enumerar contas ou chaves.
 
 ### Fase 1 — Modelagem de dados e regras de viagem
 
-- [ ] Revisar schema e autenticação atuais do SIGTU.
-- [ ] Criar/adaptar migrations de linhas, veículos, atribuições, horários e ocorrências de viagem.
-- [ ] Garantir suporte a **ida/retorno, datas, feriados e troca de van**.
-- [ ] Implementar serviço `TripResolver` que determina a viagem a partir do QR e do horário de servidor.
-- [ ] Implementar autorização estudante × linha/viagem.
-- [ ] Criar testes de conflito, troca de veículo e viagens sobrepostas.
+- [x] Revisar schema e autenticação atuais do SIGTU.
+- [x] Criar/adaptar migrations de linhas, veículos, atribuições, horários e ocorrências de viagem.
+- [x] Garantir suporte a **ida/retorno, datas, feriados e troca de van**.
+- [x] Implementar serviço `TripResolver` que determina a viagem a partir do QR e do horário de servidor.
+- [x] Implementar autorização estudante × linha/viagem.
+- [x] Criar testes de conflito, troca de veículo e viagens sobrepostas.
 
 **Entrega:** API identifica inequivocamente a viagem candidata a partir do veículo, estudante e horário.
 
@@ -567,50 +567,50 @@ Não expor detalhes que ajudem terceiros a enumerar contas ou chaves.
 
 - [ ] Implementar geração de chave ECDSA P-256 no Next.js.
 - [ ] Persistir `CryptoKey` privada não exportável no IndexedDB.
-- [ ] Criar fluxo de solicitação, aprovação e revogação.
-- [ ] Implementar prova de posse e validação de assinatura no Laravel.
-- [ ] Testar interoperabilidade de assinatura **P1363 ↔ DER**.
-- [ ] Restringir a **uma credencial ativa por estudante** e uma chave pública única.
-- [ ] Testar falha de armazenamento, troca de navegador, perda e revogação.
-- [ ] Reforçar CSP, validações, rate limits e logs.
+- [x] Criar fluxo de solicitação, aprovação e revogação.
+- [x] Implementar prova de posse e validação de assinatura no Laravel.
+- [ ] Testar interoperabilidade de assinatura **P1363 ↔ DER**. *(lado Laravel testado com assinatura no formato da Web Crypto; falta validar com navegadores reais)*
+- [x] Restringir a **uma credencial ativa por estudante** e uma chave pública única.
+- [ ] Testar falha de armazenamento, troca de navegador, perda e revogação. *(backend: troca e revogação testadas; armazenamento é do frontend)*
+- [ ] Reforçar CSP, validações, rate limits e logs. *(backend: validações, rate limits e registro de tentativas feitos; CSP é do frontend)*
 
 **Entrega:** aluno só consegue confirmar operação protegida com sua credencial autorizada.
 
 ### Fase 3 — QR fixo e fluxo de presença
 
-- [ ] Criar identificador opaco aleatório por van.
-- [ ] Gerar arte de QR para impressão/afixação.
+- [x] Criar identificador opaco aleatório por van.
+- [ ] Gerar arte de QR para impressão/afixação. *(a API entrega `qr.url` uma única vez, no cadastro/rotação; a arte fica com o frontend)*
 - [ ] Implementar scanner via câmera no Next.js.
-- [ ] Implementar endpoints de resolução e confirmação de presença.
-- [ ] Implementar desafios de curta duração, com expiração e consumo único.
-- [ ] Implementar validação definitiva de credencial, linha, viagem e horário.
-- [ ] Garantir **uma presença por estudante × ocorrência de viagem**.
-- [ ] Implementar tela de sucesso, erros e histórico.
+- [x] Implementar endpoints de resolução e confirmação de presença.
+- [x] Implementar desafios de curta duração, com expiração e consumo único.
+- [x] Implementar validação definitiva de credencial, linha, viagem e horário.
+- [x] Garantir **uma presença por estudante × ocorrência de viagem**.
+- [ ] Implementar tela de sucesso, erros e histórico. *(API pronta: códigos de erro, `/api/me/presencas`, `/api/me/viagens`)*
 
 **Entrega:** presença com QR + dispositivo + linha/viagem + horário, ainda sem liberar produção até validação geográfica.
 
 ### Fase 4 — Geocerca configurável
 
-- [ ] Implementar abstração `GeoFencePolicy` independente do tipo de área.
-- [ ] Caso pontos fixos: cadastro de `stops`, vínculos com linhas, raios e horários.
-- [ ] Caso regiões/corredores: geometrias e consultas adequadas.
+- [x] Implementar abstração `GeoFencePolicy` independente do tipo de área.
+- [x] Caso pontos fixos: cadastro de `stops`, vínculos com linhas, raios e horários.
+- [ ] Caso regiões/corredores: geometrias e consultas adequadas. *(aguarda D02; entra como nova implementação de `PoliticaGeocerca`)*
 - [ ] Implementar coleta da localização no momento da tentativa.
-- [ ] Validar latitude/longitude, precisão informada e política de geocerca.
-- [ ] Implementar cálculo de distância via Haversine ou `ST_Distance_Sphere()`.
-- [ ] Tornar raio e limites de precisão **configuráveis**, não hardcoded.
-- [ ] Criar mensagens de correção e protocolo de análise de exceções.
+- [x] Validar latitude/longitude, precisão informada e política de geocerca.
+- [x] Implementar cálculo de distância via Haversine ou `ST_Distance_Sphere()`.
+- [x] Tornar raio e limites de precisão **configuráveis**, não hardcoded.
+- [x] Criar mensagens de correção e protocolo de análise de exceções.
 - [ ] Testar situações reais de GPS e raio de **1 km versus valores menores**.
 
 **Entrega:** validação integrada de horário + geocerca definida pelo PO.
 
 ### Fase 5 — Painel de gestão e auditoria
 
-- [ ] Configurar horários, vans, linhas, pontos/geocercas e exceções.
-- [ ] Aprovar/revogar dispositivos com justificativa.
-- [ ] Criar painel de tentativas negadas e revisão de presença.
-- [ ] Auditar trocas de veículo, sobreposições, alterações e acessos sensíveis.
-- [ ] Criar relatórios por linha, viagem, data e motivo de falha.
-- [ ] Aplicar política de retenção e acesso aos dados de localização.
+- [x] Configurar horários, vans, linhas, pontos/geocercas e exceções.
+- [x] Aprovar/revogar dispositivos com justificativa.
+- [x] Criar painel de tentativas negadas e revisão de presença.
+- [ ] Auditar trocas de veículo, sobreposições, alterações e acessos sensíveis. *(alterações auditadas; leitura de dados sensíveis ainda não)*
+- [x] Criar relatórios por linha, viagem, data e motivo de falha.
+- [ ] Aplicar política de retenção e acesso aos dados de localização. *(coordenadas não são guardadas; expurgo de tentativas pronto, prazo aguarda D10)*
 
 **Entrega:** operação independente de motorista, com suporte administrativo.
 
@@ -693,6 +693,78 @@ LEVANTAMENTO PO
 - MySQL 8 — `ST_Distance_Sphere()`: https://dev.mysql.com/doc/refman/8.0/en/spatial-convenience-functions.html
 - Laravel — Cache e Atomic Locks (consultar versão efetivamente utilizada): https://laravel.com/docs/cache
 - ANPD — Portal institucional e orientações de proteção de dados: https://www.gov.br/anpd/pt-br
+
+---
+
+## 18. Status da implementação — backend (16/10/2026)
+
+O backend das Fases 1 a 5 está implementado e coberto por testes. **Nenhuma decisão em aberto (D01–D10) foi presumida**: o que depende do PO ficou configurável em `config/presenca.php` ou foi tratado de forma conservadora (na dúvida, a presença não é aprovada sozinha e vai para revisão).
+
+### 18.1. Nomes adotados (seguindo o schema existente, em português)
+
+| Proposta (seção 9) | Implementado |
+|---|---|
+| `lines` | `linhas` (já existia) |
+| `vehicles` | `veiculos` — QR guardado só como hash (`qr_token_hash`) |
+| `vehicle_assignments` | `atribuicoes_veiculo` — vale a de início mais recente (troca de um dia sobrepõe a permanente) |
+| `trip_schedules` / `trips` | `horarios_viagem` / `viagens` — ida e volta separadas; `viagens.veiculo_substituido` marca a troca manual |
+| feriados/exceções | `dias_sem_operacao` (linha nula = todas) |
+| `stops` / `line_stops` | `pontos_embarque` / `linha_ponto` (por linha **e sentido**, com horário previsto opcional) |
+| `student_line_authorizations` | `estudantes.linha_id` + `autorizacoes_linha` (remanejamento com prazo) |
+| `student_devices` | `dispositivos_estudante` (UUID) |
+| `device_enrollment_requests` | `solicitacoes_dispositivo` (Vinculacao / Troca) |
+| `device_challenges` | `desafios_dispositivo` (UUID, só o hash do texto) |
+| `attendances` | `presencas` — `UNIQUE(estudante_id, viagem_id)`, **sem coordenadas** |
+| `attendance_attempts` / `audit_logs` | `tentativas_presenca` (com pedido de revisão) / `registros_auditoria` |
+
+"Uma credencial ativa por estudante" e "uma solicitação em aberto por estudante" são garantidas no banco por colunas com índice único (`estudante_ativo_id`, `estudante_em_aberto_id`), mantidas pelos models. Não são colunas geradas porque o MySQL não aceita coluna gerada sobre FK com `ON DELETE CASCADE`.
+
+### 18.2. API
+
+| Rota | Quem | Função |
+|---|---|---|
+| `GET /api/me/dispositivo` | estudante | Situação: `sem_dispositivo`, `aguardando_aprovacao`, `aguardando_conclusao`, `ativo` |
+| `POST /api/me/dispositivo/solicitacoes` | estudante | Pede vinculação (ou troca, com motivo, se já há credencial ativa) |
+| `POST /api/me/dispositivo/solicitacoes/{id}/desafio` | estudante | Desafio de cadastro (só com aprovação válida) |
+| `POST /api/me/dispositivo/solicitacoes/{id}/concluir` | estudante | Envia chave pública SPKI + assinatura P1363 |
+| `POST /api/presencas/resolver-qr` | estudante | Prévia: qual viagem a van está fazendo agora |
+| `POST /api/presencas/desafios` | estudante | Desafio de presença (estudante + dispositivo + van + viagem) |
+| `POST /api/presencas` | estudante | Confirma: assinatura + localização (ou `erro_localizacao`) |
+| `GET /api/me/viagens`, `/api/me/presencas`, `/api/me/presencas/tentativas` | estudante | Próximas viagens, histórico e negativas |
+| `POST /api/me/presencas/tentativas/{id}/revisao` | estudante | Pede revisão de negativa por GPS/horário/geocerca |
+| `/api/dispositivos/solicitacoes[/{id}/aprovar\|rejeitar]`, `/api/dispositivos[/{id}/revogar]` | atendimento | Fila, aprovação com parecer, revogação |
+| `/api/veiculos[/{id}/qr]`, `/api/veiculos/atribuicoes` | gestão | Vans, rotação de QR, atribuição van × linha |
+| `/api/horarios-viagem`, `/api/dias-sem-operacao`, `/api/viagens[/gerar]` | gestão | Programação, feriados, ajuste de janela/van/status |
+| `/api/pontos-embarque[/linhas]`, `/api/autorizacoes-linha` | gestão | Geocercas e remanejamentos |
+| `/api/presencas`, `/api/presencas/manual`, `/api/presencas/tentativas[/{id}/revisao]`, `/api/presencas/indicadores`, `/api/auditoria` | gestão | Acompanhamento, exceções, revisões, relatórios e trilha |
+
+As recusas trazem `codigo` (os da seção 10, mais `STUDENT_NOT_ELIGIBLE`), `message` pronta para o estudante, `tentativa_id` e `pode_pedir_revisao`. O texto a assinar é montado pelo servidor (`SIGTU\nv1\n<propósito>\n<id>\nestudante:<id>\n<referência>\n<nonce>\n<expiração>`); o cliente assina os bytes UTF-8 exatamente como recebeu e devolve o texto junto. Detalhes de cada rota: `php artisan scribe:generate` → `/docs`.
+
+### 18.3. Permissões
+
+Novas: `veiculos.*`, `viagens.*`, `geocercas.*`, `dispositivos.view/analise`, `presencas.view/analise`, `presencas.registrar`, `auditoria.view`. **Gestor** tem todas, menos `presencas.registrar`; **operador** só visualiza (não aprova dispositivo nem abre exceção — D07 em aberto); **motorista** não ganhou nada; novo perfil **estudante** só tem `presencas.registrar`. O estudante é identificado pela conta autenticada (`estudantes.user_id`), nunca por id na URL.
+
+### 18.4. Parâmetros provisórios (`config/presenca.php` / `.env`)
+
+| Parâmetro | Valor inicial | Observação |
+|---|---|---|
+| `PRESENCA_FUSO` | `America/Sao_Paulo` | Horários e datas da programação são locais; a aplicação roda em UTC e os instantes vão para o banco em UTC |
+| `PRESENCA_JANELA_ANTES_MIN` / `_DEPOIS_MIN` | 15 / 15 | Padrão quando o horário não define a sua |
+| `PRESENCA_DESAFIO_SEGUNDOS` | 120 | Cobre GPS lento (15 s) |
+| `PRESENCA_APROVACAO_MINUTOS` | 30 | Prazo para concluir a vinculação após o atendimento |
+| `PRESENCA_PRECISAO_MAXIMA_METROS` | 100 | Pior que isso pede nova leitura; **não** amplia o raio |
+| `PRESENCA_RAIO_MAXIMO_METROS` | 1000 | Só o teto do cadastro (D03). Cada ponto informa o raio; não há raio padrão |
+| `PRESENCA_RETENCAO_TENTATIVAS_DIAS` | nulo | Nada é expurgado até D10 ser decidido |
+| `PRESENCA_GEOCERCA_POLITICA` | `pontos` | Única implementada (Alternativa A) |
+
+### 18.5. Pendências
+
+- **Frontend (Next.js):** geração/guarda da chave (Web Crypto + IndexedDB), scanner restrito ao domínio do SIGTU, coleta da localização, telas, arte do QR para impressão e CSP.
+- **Conta do estudante:** o perfil `estudante` existe, mas `POST /api/users` continua recusando-o (decisão já coberta por teste). Falta definir como a conta do estudante é criada e ligada a `estudantes.user_id`. O seeder cria `estudante@example.com` para desenvolvimento.
+- **PO / gestão:** todas as decisões D01–D10; coordenadas e raios reais (os do seeder são fictícios); regiões ou corredor de rota, se D02 pedir.
+- **Relação com a chamada do motorista:** a presença por QR é independente de `chamadas`/`frequencias` e ainda não alimenta a regra de perda do benefício. Integrar ou substituir é decisão do PO.
+- **Fuso da aplicação:** `config/app.php` está em UTC. O módulo de presença converte explicitamente (`App\Support\HorarioLocal`), mas o restante do sistema usa `today()` em UTC — por exemplo, depois das 21h locais a chamada do motorista já enxerga o dia seguinte. Vale avaliar à parte.
+- **Fase 6:** piloto, testes em aparelhos reais e aceite formal dos riscos residuais.
 
 ---
 
