@@ -3,9 +3,13 @@
 namespace Tests\Feature\Seeders;
 
 use App\Models\Estudante;
+use App\Models\HorarioViagem;
 use App\Models\Inscricao;
 use App\Models\InscricaoInstituicoes;
+use App\Models\Linha;
 use App\Models\SolicitacaoReecadastro;
+use App\Models\User;
+use App\Models\Veiculo;
 use App\Services\Inscricao\InscricaoStatusService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -134,10 +138,23 @@ class DatabaseSeederTest extends TestCase
 
     public function test_rodar_de_novo_nao_duplica(): void
     {
-        $antes = [Inscricao::count(), Estudante::count(), SolicitacaoReecadastro::count()];
+        $antes = [Inscricao::count(), Estudante::count(), SolicitacaoReecadastro::count(), Veiculo::count(), HorarioViagem::count(), Veiculo::pluck('qr_token_hash', 'id')->all()];
 
         $this->seed(DatabaseSeeder::class);
 
-        $this->assertSame($antes, [Inscricao::count(), Estudante::count(), SolicitacaoReecadastro::count()]);
+        $this->assertSame($antes, [Inscricao::count(), Estudante::count(), SolicitacaoReecadastro::count(), Veiculo::count(), HorarioViagem::count(), Veiculo::pluck('qr_token_hash', 'id')->all()]);
+    }
+
+    public function test_cenario_da_presenca_por_qr(): void
+    {
+        $this->assertSame(Linha::count(), Veiculo::whereNotNull('qr_token_hash')->count());
+        $this->assertSame(Linha::count() * 2, HorarioViagem::count());
+
+        $conta = User::where('email', 'estudante@example.com')->sole();
+        $this->assertSame(['estudante'], $conta->roleTitles());
+
+        $estudante = Estudante::where('user_id', $conta->id)->sole();
+        $this->assertSame('Ativo', $estudante->situacao);
+        $this->assertSame('Linha Centro', $estudante->linha->name);
     }
 }

@@ -27,6 +27,17 @@ class RolePermissionSeeder extends Seeder
         // as linhas que o usuario conduz como motorista.
         'frequencias.view', 'frequencias.write', 'frequencias.delete', 'frequencias.todas',
         'justificativas.view', 'justificativas.analise',
+        // Presenca por QR + dispositivo autorizado (ROADMAP.md).
+        'veiculos.view', 'veiculos.write', 'veiculos.delete',
+        'viagens.view', 'viagens.write',
+        'geocercas.view', 'geocercas.write',
+        // `dispositivos.analise` aprova/rejeita vinculacao e revoga credencial.
+        'dispositivos.view', 'dispositivos.analise',
+        // `presencas.analise` decide revisoes e registra presenca manual.
+        'presencas.view', 'presencas.analise',
+        // Exclusiva do estudante: registrar a propria presenca.
+        'presencas.registrar',
+        'auditoria.view',
     ];
 
     /**
@@ -45,7 +56,15 @@ class RolePermissionSeeder extends Seeder
             'solicitacoes.view', 'solicitacoes.analise', 'solicitacoes.delete',
             'frequencias.view', 'frequencias.write', 'frequencias.delete', 'frequencias.todas',
             'justificativas.view', 'justificativas.analise',
+            'veiculos.view', 'veiculos.write', 'veiculos.delete',
+            'viagens.view', 'viagens.write',
+            'geocercas.view', 'geocercas.write',
+            'dispositivos.view', 'dispositivos.analise',
+            'presencas.view', 'presencas.analise',
+            'auditoria.view',
         ],
+        // Acompanha tudo, mas nao aprova dispositivo nem abre excecao de
+        // presenca: quem libera a credencial ainda e decisao da gestao (D07).
         'operador' => [
             'estudantes.view', 'estudantes.write',
             'inscricoes.view',
@@ -55,11 +74,19 @@ class RolePermissionSeeder extends Seeder
             'solicitacoes.view',
             'frequencias.view', 'frequencias.todas',
             'justificativas.view',
+            'veiculos.view', 'viagens.view', 'geocercas.view',
+            'dispositivos.view', 'presencas.view',
         ],
         // Faz a chamada da propria linha e nada mais: nao ve cadastro de
-        // estudante, inscricao nem documento.
+        // estudante, inscricao nem documento. A presenca por QR nao depende
+        // dele, entao nenhuma permissao nova entra aqui.
         'motorista' => [
             'frequencias.view', 'frequencias.write',
+        ],
+        // A conta do estudante (estudantes.user_id): so registra e consulta a
+        // propria presenca.
+        'estudante' => [
+            'presencas.registrar',
         ],
     ];
 

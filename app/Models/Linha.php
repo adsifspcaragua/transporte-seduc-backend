@@ -34,4 +34,24 @@ class Linha extends Model
     {
         return $this->hasMany(Chamada::class, 'linha_id');
     }
+
+    public function horarios()
+    {
+        return $this->hasMany(HorarioViagem::class, 'linha_id');
+    }
+
+    public function viagens()
+    {
+        return $this->hasMany(Viagem::class, 'linha_id');
+    }
+
+    public function atribuicoesVeiculo()
+    {
+        return $this->hasMany(AtribuicaoVeiculo::class, 'linha_id');
+    }
+
+    public function pontos()
+    {
+        return $this->hasMany(LinhaPonto::class, 'linha_id');
+    }
 }

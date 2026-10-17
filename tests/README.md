@@ -30,6 +30,10 @@ Particionamento em **classes de equivalência** + **análise do valor-limite**.
 | `Feature/Frequencia/BeneficioFrequenciaTest.php` | Regra do benefício, com valores-limite: 2 seguidas (aviso) / 3 seguidas (perda); 4 no mês (aviso) / 5 no mês (perda). Recomeço da contagem na virada do mês, justificada não contando, folha aberta não contando, aviso sem repetição, aplicação ao fechar a chamada e ao rejeitar justificativa, conteúdo do e-mail. |
 | `Feature/Frequencia/JustificativaTest.php` | Justificativas: criação pela chamada ou para falta já registrada, retirada antes da análise, bloqueio da marcação já analisada, fila com pendentes primeiro, aprovar/rejeitar (parecer obrigatório), análise única e permissões (motorista justifica mas não decide; operador só vê). |
 | `Feature/Frequencia/RelatorioFrequenciaTest.php` | Relatório de frequência: percentual sem as justificadas, faltas consecutivas (justificada interrompe, pendente é ignorado), filtros de período/linha/faltas seguidas, histórico do estudante e escopo do motorista. |
+| `Feature/Presenca/ResolvedorViagemTest.php` | Viagem deduzida da van + estudante + relógio do servidor: limites inclusivos da janela (17h15/17h45), ida × volta, janela que passa da meia-noite, fim de semana, dia sem operação, remanejamento temporário, troca de van de um dia, van inativa, viagem cancelada e conflito de janelas sobrepostas. |
+| `Feature/Presenca/VinculacaoDispositivoTest.php` | Vínculo do navegador: senha sozinha não vincula, aprovação com prazo, desafio de uso único/expirado/alterado, chave fora do padrão (P-384, RSA), mesma chave em duas contas, troca revogando a antiga, uma credencial ativa e uma solicitação em aberto (garantidas no banco), revogação e permissões. |
+| `Feature/Presenca/RegistroPresencaTest.php` | Tabela "Cenários típicos" do ROADMAP: registro válido, senha sem credencial, linha não autorizada, fora do horário, longe da geocerca, borda do raio (200 m × 201 m), precisão (100 × 101 m), replay, duplicidade e índice único, ida/volta, GPS negado → revisão → presença manual, sem geocerca, horário do ponto, revogação imediata, QR rotacionado, troca de van, histórico, indicadores e limite de tentativas. |
+| `Feature/Presenca/GestaoTransporteTest.php` | Painel de gestão: QR entregue uma única vez e rotação, atribuição de um dia, alteração de horário refazendo viagens futuras, ajuste de viagem com motivo e sem van em duas viagens, dia sem operação, raio obrigatório com teto, remanejamento, auditoria e matriz de permissões. |
 
 ## Teste Estrutural — caixa-branca
 
@@ -39,6 +43,7 @@ controle.
 | Arquivo | Alvo |
 |---|---|
 | `Feature/Inscricao/InscricaoStatusServiceTest.php` | `InscricaoStatusService::isComplete()` — cada ramo (entrada nula, não encontrada, campo de inscrição nulo, termo não aceito, sem instituição, campo de instituição nulo, tudo completo → true). |
+| `Unit/Presenca/AssinaturaEcdsaTest.php` | `AssinaturaEcdsa`: conversão P1363 → DER byte a byte (byte alto ligado e zeros à esquerda), recusa de texto alterado, de outra chave e de assinatura fora do formato, aceitação só de EC P-256 e Haversine em distâncias conhecidas. O navegador é simulado por `Tests\Support\NavegadorDeTeste`. |
 
 ## Teste de Mutação
 

@@ -45,6 +45,8 @@ class MeTest extends TestCase
                 'periodos.view', 'solicitacoes.view',
                 'frequencias.view', 'frequencias.write', 'frequencias.todas',
                 'justificativas.view',
+                'veiculos.view', 'viagens.view', 'geocercas.view',
+                'dispositivos.view', 'presencas.view',
             ],
             $response->json('permissions')
         );

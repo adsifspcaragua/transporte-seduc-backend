@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             EstudanteSeeder::class,
             PeriodoReecadastroSeeder::class,
             SolicitacaoReecadastroSeeder::class,
+            PresencaSeeder::class,
         ]);
     }
 }

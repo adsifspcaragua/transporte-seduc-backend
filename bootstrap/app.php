@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckPermission;
+use App\Http\Middleware\ResolveEstudanteDaConta;
 use App\Http\Middleware\VerifyInscricaoToken;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -29,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'permission' => CheckPermission::class,
             'inscricao.token' => VerifyInscricaoToken::class,
+            'estudante' => ResolveEstudanteDaConta::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
@@ -82,20 +84,21 @@ return Application::configure(basePath: dirname(__DIR__))
             ? $responder('Método não permitido nesta rota.', 405)
             : null);
 
-        $exceptions->render(function (ThrottleRequestsException $e, Request $request) use ($emJson, $responder) {
+        $exceptions->render(function (ThrottleRequestsException $e, Request $request) use ($emJson) {
             if (! $emJson($request)) {
                 return null;
             }
 
             $segundos = (int) ($e->getHeaders()['Retry-After'] ?? 0);
 
-            return $responder(
-                $segundos > 0
+            // `codigo` segue os codigos do fluxo de presenca (CodigoPresenca),
+            // para o frontend tratar o limite como os demais motivos.
+            return response()->json([
+                'message' => $segundos > 0
                     ? "Muitas tentativas. Tente novamente em {$segundos} segundos."
                     : 'Muitas tentativas. Aguarde um momento e tente novamente.',
-                429,
-                $e->getHeaders(),
-            );
+                'codigo' => 'RATE_LIMITED',
+            ], 429, $e->getHeaders());
         });
 
         // A API e stateful (Sanctum): o cookie de sessao pode expirar.

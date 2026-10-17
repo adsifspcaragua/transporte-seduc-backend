@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\Api\Auditoria\AuditoriaController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
 use App\Http\Controllers\Api\Curso\CursoController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\Dispositivo\AnaliseDispositivoController;
+use App\Http\Controllers\Api\Dispositivo\MeuDispositivoController;
 use App\Http\Controllers\Api\Estudante\AcessoEstudanteController;
 use App\Http\Controllers\Api\Estudante\Documento\InscricaoDocumentoController;
 use App\Http\Controllers\Api\Estudante\EstudanteController;
@@ -14,6 +17,8 @@ use App\Http\Controllers\Api\Frequencia\JustificativaController;
 use App\Http\Controllers\Api\Frequencia\RelatorioFrequenciaController;
 use App\Http\Controllers\Api\Instituicao\InstituicaoController;
 use App\Http\Controllers\Api\LinhaController;
+use App\Http\Controllers\Api\Presenca\PresencaController;
+use App\Http\Controllers\Api\Presenca\RegistroPresencaController;
 use App\Http\Controllers\Api\Reecadastro\AusentesReecadastroController;
 use App\Http\Controllers\Api\Reecadastro\DocumentoReecadastroController;
 use App\Http\Controllers\Api\Reecadastro\PeriodoReecadastroController;
@@ -21,6 +26,11 @@ use App\Http\Controllers\Api\Reecadastro\ReecadastroPublicoController;
 use App\Http\Controllers\Api\Reecadastro\SolicitacaoReecadastroController;
 use App\Http\Controllers\Api\Role\RoleController;
 use App\Http\Controllers\Api\User\UserController;
+use App\Http\Controllers\Api\Viagem\AutorizacaoLinhaController;
+use App\Http\Controllers\Api\Viagem\PontoEmbarqueController;
+use App\Http\Controllers\Api\Viagem\ProgramacaoController;
+use App\Http\Controllers\Api\Viagem\VeiculoController;
+use App\Http\Controllers\Api\Viagem\ViagemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
@@ -206,4 +216,87 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('frequencias/justificativas/{justificativa}/analise', [JustificativaController::class, 'analise'])->middleware('permission:justificativas.analise');
     Route::get('frequencias/justificativas', [JustificativaController::class, 'index'])->middleware('permission:justificativas.view');
     Route::get('frequencias/justificativas/{justificativa}', [JustificativaController::class, 'show'])->middleware('permission:justificativas.view');
+
+    // Presenca registrada pelo proprio estudante: QR fixo da van, navegador
+    // autorizado, horario e geocerca (ROADMAP.md). Nao passa pelo motorista.
+    //
+    // O estudante sai da conta autenticada (middleware `estudante`), nunca da
+    // URL ou do corpo da requisicao.
+    Route::middleware(['permission:presencas.registrar', 'estudante'])->group(function () {
+        Route::get('me/dispositivo', [MeuDispositivoController::class, 'show']);
+        Route::middleware('throttle:dispositivo')->group(function () {
+            Route::post('me/dispositivo/solicitacoes', [MeuDispositivoController::class, 'solicitar']);
+            Route::delete('me/dispositivo/solicitacoes/{solicitacao}', [MeuDispositivoController::class, 'cancelar']);
+            Route::post('me/dispositivo/solicitacoes/{solicitacao}/desafio', [MeuDispositivoController::class, 'desafio']);
+            Route::post('me/dispositivo/solicitacoes/{solicitacao}/concluir', [MeuDispositivoController::class, 'concluir']);
+        });
+
+        Route::get('me/viagens', [RegistroPresencaController::class, 'viagens']);
+        Route::get('me/presencas', [RegistroPresencaController::class, 'presencas']);
+        Route::get('me/presencas/tentativas', [RegistroPresencaController::class, 'tentativas']);
+
+        Route::middleware('throttle:presenca')->group(function () {
+            Route::post('me/presencas/tentativas/{tentativa}/revisao', [RegistroPresencaController::class, 'pedirRevisao']);
+            Route::post('presencas/resolver-qr', [RegistroPresencaController::class, 'resolverQr']);
+            Route::post('presencas/desafios', [RegistroPresencaController::class, 'desafio']);
+            Route::post('presencas', [RegistroPresencaController::class, 'confirmar']);
+        });
+    });
+
+    // Vans, QR fixo e atribuicao van x linha. As rotas de atribuicao vem antes
+    // de `veiculos/{veiculo}` para "atribuicoes" nao ser lido como id.
+    Route::get('veiculos/atribuicoes', [VeiculoController::class, 'atribuicoes'])->middleware('permission:veiculos.view');
+    Route::post('veiculos/atribuicoes', [VeiculoController::class, 'atribuir'])->middleware('permission:veiculos.write');
+    Route::match(['put', 'patch'], 'veiculos/atribuicoes/{atribuicao}', [VeiculoController::class, 'atualizarAtribuicao'])->middleware('permission:veiculos.write');
+    Route::delete('veiculos/atribuicoes/{atribuicao}', [VeiculoController::class, 'removerAtribuicao'])->middleware('permission:veiculos.write');
+    Route::post('veiculos/{veiculo}/qr', [VeiculoController::class, 'rotacionarQr'])->middleware('permission:veiculos.write');
+    Route::apiResource('veiculos', VeiculoController::class)->only(['index', 'show'])->middleware('permission:veiculos.view');
+    Route::apiResource('veiculos', VeiculoController::class)->only(['store', 'update'])->middleware('permission:veiculos.write');
+    Route::apiResource('veiculos', VeiculoController::class)->only(['destroy'])->middleware('permission:veiculos.delete');
+
+    // Programacao: horarios de ida/volta, dias sem operacao e viagens datadas.
+    Route::get('horarios-viagem', [ProgramacaoController::class, 'horarios'])->middleware('permission:viagens.view');
+    Route::get('horarios-viagem/{horario}', [ProgramacaoController::class, 'horario'])->middleware('permission:viagens.view');
+    Route::post('horarios-viagem', [ProgramacaoController::class, 'criarHorario'])->middleware('permission:viagens.write');
+    Route::match(['put', 'patch'], 'horarios-viagem/{horario}', [ProgramacaoController::class, 'atualizarHorario'])->middleware('permission:viagens.write');
+    Route::delete('horarios-viagem/{horario}', [ProgramacaoController::class, 'removerHorario'])->middleware('permission:viagens.write');
+    Route::get('dias-sem-operacao', [ProgramacaoController::class, 'diasSemOperacao'])->middleware('permission:viagens.view');
+    Route::post('dias-sem-operacao', [ProgramacaoController::class, 'criarDiaSemOperacao'])->middleware('permission:viagens.write');
+    Route::delete('dias-sem-operacao/{dia}', [ProgramacaoController::class, 'removerDiaSemOperacao'])->middleware('permission:viagens.write');
+    Route::post('viagens/gerar', [ViagemController::class, 'gerar'])->middleware('permission:viagens.write');
+    Route::get('viagens', [ViagemController::class, 'index'])->middleware('permission:viagens.view');
+    Route::get('viagens/{viagem}', [ViagemController::class, 'show'])->middleware('permission:viagens.view');
+    Route::match(['put', 'patch'], 'viagens/{viagem}', [ViagemController::class, 'update'])->middleware('permission:viagens.write');
+
+    // Remanejamento temporario de linha: e cadastro do estudante, entao segue
+    // as permissoes de estudante.
+    Route::get('autorizacoes-linha', [AutorizacaoLinhaController::class, 'index'])->middleware('permission:estudantes.view');
+    Route::post('autorizacoes-linha', [AutorizacaoLinhaController::class, 'store'])->middleware('permission:estudantes.write');
+    Route::delete('autorizacoes-linha/{autorizacao}', [AutorizacaoLinhaController::class, 'destroy'])->middleware('permission:estudantes.write');
+
+    // Geocercas: pontos fixos de embarque e em quais linhas/sentidos valem.
+    Route::get('pontos-embarque/linhas', [PontoEmbarqueController::class, 'vinculos'])->middleware('permission:geocercas.view');
+    Route::post('pontos-embarque/linhas', [PontoEmbarqueController::class, 'vincular'])->middleware('permission:geocercas.write');
+    Route::match(['put', 'patch'], 'pontos-embarque/linhas/{vinculo}', [PontoEmbarqueController::class, 'atualizarVinculo'])->middleware('permission:geocercas.write');
+    Route::delete('pontos-embarque/linhas/{vinculo}', [PontoEmbarqueController::class, 'desvincular'])->middleware('permission:geocercas.write');
+    Route::apiResource('pontos-embarque', PontoEmbarqueController::class)
+        ->only(['index', 'show'])->parameters(['pontos-embarque' => 'ponto'])->middleware('permission:geocercas.view');
+    Route::apiResource('pontos-embarque', PontoEmbarqueController::class)
+        ->only(['store', 'update', 'destroy'])->parameters(['pontos-embarque' => 'ponto'])->middleware('permission:geocercas.write');
+
+    // Atendimento: aprovar/rejeitar vinculacao e troca, revogar credenciais.
+    Route::get('dispositivos/solicitacoes', [AnaliseDispositivoController::class, 'solicitacoes'])->middleware('permission:dispositivos.view');
+    Route::get('dispositivos/solicitacoes/{solicitacao}', [AnaliseDispositivoController::class, 'solicitacao'])->middleware('permission:dispositivos.view');
+    Route::patch('dispositivos/solicitacoes/{solicitacao}/aprovar', [AnaliseDispositivoController::class, 'aprovar'])->middleware('permission:dispositivos.analise');
+    Route::patch('dispositivos/solicitacoes/{solicitacao}/rejeitar', [AnaliseDispositivoController::class, 'rejeitar'])->middleware('permission:dispositivos.analise');
+    Route::get('dispositivos', [AnaliseDispositivoController::class, 'dispositivos'])->middleware('permission:dispositivos.view');
+    Route::patch('dispositivos/{dispositivo}/revogar', [AnaliseDispositivoController::class, 'revogar'])->middleware('permission:dispositivos.analise');
+
+    // Acompanhamento das presencas, revisoes, excecoes e auditoria.
+    Route::get('presencas', [PresencaController::class, 'index'])->middleware('permission:presencas.view');
+    Route::post('presencas/manual', [PresencaController::class, 'manual'])->middleware('permission:presencas.analise');
+    Route::get('presencas/tentativas', [PresencaController::class, 'tentativas'])->middleware('permission:presencas.view');
+    Route::put('presencas/tentativas/{tentativa}/revisao', [PresencaController::class, 'analisarRevisao'])->middleware('permission:presencas.analise');
+    Route::get('presencas/indicadores', [PresencaController::class, 'indicadores'])->middleware('permission:presencas.view');
+    Route::get('auditoria', [AuditoriaController::class, 'index'])->middleware('permission:auditoria.view');
 });

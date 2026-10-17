@@ -66,4 +66,31 @@ class Estudante extends Model
     {
         return $this->hasMany(AvisoFrequencia::class, 'estudante_id');
     }
+
+    public function dispositivos()
+    {
+        return $this->hasMany(DispositivoEstudante::class, 'estudante_id');
+    }
+
+    /** A instalacao de navegador autorizada, se houver. Ha no maximo uma. */
+    public function dispositivoAtivo()
+    {
+        return $this->hasOne(DispositivoEstudante::class, 'estudante_id')
+            ->where('status', DispositivoEstudante::ATIVO);
+    }
+
+    public function solicitacoesDispositivo()
+    {
+        return $this->hasMany(SolicitacaoDispositivo::class, 'estudante_id');
+    }
+
+    public function autorizacoesLinha()
+    {
+        return $this->hasMany(AutorizacaoLinha::class, 'estudante_id');
+    }
+
+    public function presencas()
+    {
+        return $this->hasMany(Presenca::class, 'estudante_id');
+    }
 }
