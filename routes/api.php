@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Dispositivo\AnaliseDispositivoController;
 use App\Http\Controllers\Api\Dispositivo\MeuDispositivoController;
 use App\Http\Controllers\Api\Estudante\AcessoEstudanteController;
 use App\Http\Controllers\Api\Estudante\ContaEstudanteController;
+use App\Http\Controllers\Api\Estudante\CorrecaoEmailController;
 use App\Http\Controllers\Api\Estudante\Documento\InscricaoDocumentoController;
 use App\Http\Controllers\Api\Estudante\EstudanteController;
 use App\Http\Controllers\Api\Estudante\InscricaoController;
@@ -142,6 +143,10 @@ Route::middleware(['auth:sanctum', 'conta.ativa'])->group(function () {
 
     // Estudantes
     Route::post('estudantes/{estudante}/conta', [ContaEstudanteController::class, 'store'])->middleware('permission:estudantes.write');
+    // Estudante sem acesso ao e-mail do cadastro: o atendimento confere a
+    // identidade e corrige. Quem ainda esta na fila depende da analise.
+    Route::patch('estudantes/{estudante}/email', [CorrecaoEmailController::class, 'estudante'])->middleware('permission:estudantes.write');
+    Route::patch('inscricoes/{inscricao}/email', [CorrecaoEmailController::class, 'inscricao'])->middleware('permission:inscricoes.analise');
     Route::apiResource('estudantes', EstudanteController::class)->only(['index', 'show'])->middleware('permission:estudantes.view');
     Route::apiResource('estudantes', EstudanteController::class)->only(['store', 'update'])->middleware('permission:estudantes.write');
     Route::apiResource('estudantes', EstudanteController::class)->only(['destroy'])->middleware('permission:estudantes.delete');

@@ -19,6 +19,7 @@ class AtualizarDadosRequest extends FormRequest
         $solicitacao = SolicitacaoReecadastro::with('estudante')->find($this->route('solicitacao'));
         $estudanteId = $solicitacao?->estudante_id;
         $inscricaoId = $solicitacao?->estudante?->inscricao_id;
+        $userId = $solicitacao?->estudante?->user_id;
 
         return [
             'token' => 'required|string',
@@ -38,6 +39,8 @@ class AtualizarDadosRequest extends FormRequest
                 'email',
                 Rule::unique('inscricoes', 'email')->ignore($inscricaoId),
                 Rule::unique('estudantes', 'email')->ignore($estudanteId),
+                // A conta do estudante acompanha o e-mail do cadastro.
+                ...($userId ? [Rule::unique('users', 'email')->ignore($userId)] : []),
             ],
             'cep' => 'required|string|size:8',
             'address' => 'required|string|min:3|max:255',

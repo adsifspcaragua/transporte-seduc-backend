@@ -28,7 +28,8 @@ class UpdateEstudanteRequest extends FormRequest
     {
         $estudante = $this->route('estudante');
         $estudanteId = is_object($estudante) ? $estudante->id : $estudante;
-        $inscricaoId = Estudante::find($estudanteId)?->inscricao_id;
+        $registro = Estudante::find($estudanteId);
+        $inscricaoId = $registro?->inscricao_id;
 
         return [
             'name' => 'sometimes|string|max:255',
@@ -39,6 +40,8 @@ class UpdateEstudanteRequest extends FormRequest
                 'email',
                 Rule::unique('estudantes', 'email')->ignore($estudanteId),
                 Rule::unique('inscricoes', 'email')->ignore($inscricaoId),
+                // A conta do estudante acompanha o e-mail do cadastro.
+                ...($registro?->user_id ? [Rule::unique('users', 'email')->ignore($registro->user_id)] : []),
             ],
 
             'cpf' => [

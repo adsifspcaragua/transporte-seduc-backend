@@ -757,7 +757,7 @@ Novas: `veiculos.*`, `viagens.*`, `geocercas.*`, `dispositivos.view/analise`, `p
 | `PRESENCA_RETENCAO_TENTATIVAS_DIAS` | nulo | Nada é expurgado até D10 ser decidido |
 | `PRESENCA_GEOCERCA_POLITICA` | `pontos` | Única implementada (Alternativa A) |
 
-A conta do estudante é criada por `POST /api/estudantes/{id}/conta` (`estudantes.write`), e cada conta pode estar ligada a um único estudante. A fonte dos horários é `horarios_viagem`; `linhas.departure_time` e `return_time` são espelho. Linha, estudante e viagem com presença não podem ser excluídos. O comando `presenca:carga-inicial` prepara um ambiente existente (ver README).
+A conta do estudante é criada por `POST /api/estudantes/{id}/conta` (`estudantes.write`), e cada conta pode estar ligada a um único estudante. A fonte dos horários é `horarios_viagem`; `linhas.departure_time` e `return_time` são espelho. Linha, estudante e viagem com presença não podem ser excluídos, nem estudante com frequência marcada. O comando `presenca:carga-inicial` prepara um ambiente existente (ver README).
 
 ### 18.5. Pendências
 

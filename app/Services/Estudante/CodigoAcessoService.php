@@ -139,7 +139,7 @@ class CodigoAcessoService
     }
 
     /** an***@g***.com: o bastante para o dono reconhecer, pouco para os outros. */
-    private function mascarar(string $email): string
+    public function mascarar(string $email): string
     {
         [$usuario, $dominio] = array_pad(explode('@', $email, 2), 2, '');
         $final = str_contains($dominio, '.') ? substr($dominio, strrpos($dominio, '.')) : '';

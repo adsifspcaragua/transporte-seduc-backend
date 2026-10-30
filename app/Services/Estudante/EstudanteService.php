@@ -5,6 +5,7 @@ namespace App\Services\Estudante;
 use App\Exports\EstudantesExport;
 use App\Http\Resources\Estudante\EstudanteResource;
 use App\Models\Estudante;
+use App\Models\Frequencia;
 use App\Models\User;
 use App\Services\Auditoria\AuditoriaService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -185,13 +186,15 @@ class EstudanteService
                 return response()->json(['message' => 'Estudante não encontrado'], 404);
             }
 
-            // Presenca e historico: o caminho para quem saiu do transporte e
-            // inativar, nao apagar.
+            // Presenca e frequencia sao historico: o caminho para quem saiu do
+            // transporte e inativar, nao apagar. Uma linha "Pendente" na chamada
+            // aberta ainda nao diz nada sobre o estudante, entao nao conta.
             $presencas = $estudante->presencas()->count();
+            $frequencias = $estudante->frequencias()->where('situacao', '!=', Frequencia::PENDENTE)->count();
 
-            if ($presencas > 0) {
+            if ($presencas > 0 || $frequencias > 0) {
                 return response()->json([
-                    'message' => "Este estudante tem {$presencas} presença(s) registrada(s). Inative-o em vez de excluir.",
+                    'message' => "Este estudante tem histórico registrado ({$presencas} presença(s) e {$frequencias} marcação(ões) de frequência). Inative-o em vez de excluir.",
                 ], 409);
             }
 
@@ -200,7 +203,10 @@ class EstudanteService
                 'dispositivos_removidos' => $estudante->dispositivos()->count(),
                 'solicitacoes_removidas' => $estudante->solicitacoesDispositivo()->count(),
             ];
-            $estudante->delete();
+            DB::transaction(function () use ($estudante) {
+                $estudante->frequencias()->where('situacao', Frequencia::PENDENTE)->delete();
+                $estudante->delete();
+            });
             $this->auditoria->registrar($user, 'estudante.excluir', null, ['estudante_id' => (int) $id, ...$removidos]);
 
             return response()->json([

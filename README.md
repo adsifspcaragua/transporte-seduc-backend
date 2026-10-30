@@ -15,7 +15,7 @@ controle de acesso baseado em papéis (RBAC).
 
 | Camada | Tecnologia |
 |---|---|
-| Linguagem | **PHP 8.3** |
+| Linguagem | **PHP 8.4** |
 | Framework | **Laravel 13** |
 | Autenticação | **Laravel Sanctum** (sessão e tokens) |
 | Monitoramento | **Laravel Pulse** |
@@ -29,7 +29,7 @@ controle de acesso baseado em papéis (RBAC).
 
 ## Pré-requisitos
 
-- **PHP 8.3+** (com as extensões padrão do Laravel)
+- **PHP 8.4+** (com as extensões padrão do Laravel; os pacotes do Symfony 8 exigem essa versão)
 - **Composer**
 - **MySQL**
 - **Node.js** (para o Vite / build de assets)
@@ -218,8 +218,16 @@ e-mail do cadastro, e os dados e o token só saem com esse código.
 | Confirmar o código | `POST /api/area-estudante/acesso/verificar` | `POST /api/reecadastro/consulta/verificar` |
 
 O código vale 10 minutos, aceita 5 tentativas e é limitado a 5 envios por hora
-para cada CPF. O e-mail sai pela fila, então é preciso um worker rodando. Quem
-não tem mais acesso ao e-mail cadastrado precisa procurar o atendimento.
+para cada CPF. O e-mail sai pela fila, então é preciso um worker rodando.
+
+Quem não tem mais acesso ao e-mail cadastrado procura o atendimento, que confere
+a identidade e corrige o endereço, com justificativa registrada na auditoria:
+
+- `PATCH /api/estudantes/{id}/email` (permissão `estudantes.write`)
+- `PATCH /api/inscricoes/{id}/email` (permissão `inscricoes.analise`)
+
+O e-mail da conta do estudante acompanha o do cadastro, e códigos e links de senha
+enviados ao endereço antigo deixam de valer.
 
 ---
 

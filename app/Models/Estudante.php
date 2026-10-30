@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Estudante extends Model
 {
@@ -31,6 +32,27 @@ class Estudante extends Model
         'inscricao_id',
         'instituicao_id',
     ];
+
+    protected static function booted(): void
+    {
+        // O e-mail recebe o codigo de acesso e o link de senha. Mudou, vale so o
+        // novo: a conta acompanha, e o que foi enviado ao antigo deixa de valer.
+        static::updated(function (self $estudante) {
+            if (! $estudante->wasChanged('email') || blank($estudante->email)) {
+                return;
+            }
+
+            CodigoAcesso::where('cpf', $estudante->cpf)->delete();
+
+            if ($estudante->user_id !== null) {
+                User::whereKey($estudante->user_id)->update(['email' => $estudante->email]);
+
+                DB::table(config('auth.passwords.users.table'))
+                    ->where('email', $estudante->getPrevious()['email'] ?? null)
+                    ->delete();
+            }
+        });
+    }
 
     public function inscricao()
     {

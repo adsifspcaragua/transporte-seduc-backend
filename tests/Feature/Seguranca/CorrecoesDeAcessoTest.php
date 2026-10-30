@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Seguranca;
 
+use App\Models\Chamada;
 use App\Models\Estudante;
+use App\Models\Frequencia;
 use App\Models\HorarioViagem;
 use App\Models\Linha;
 use App\Models\Presenca;
@@ -139,6 +141,79 @@ class CorrecoesDeAcessoTest extends TestCase
         $this->deleteJson("/api/estudantes/{$estudante->id}")->assertOk();
 
         $this->assertTrue(RegistroAuditoria::where('acao', 'estudante.excluir')->exists());
+    }
+
+    public function test_estudante_com_frequencia_marcada_nao_e_excluido(): void
+    {
+        $linha = Linha::factory()->create();
+        $estudante = Estudante::factory()->create(['linha_id' => $linha->id]);
+        $chamada = Chamada::factory()->create(['linha_id' => $linha->id]);
+        Frequencia::factory()->create(['chamada_id' => $chamada->id, 'estudante_id' => $estudante->id, 'situacao' => Frequencia::FALTA]);
+
+        Sanctum::actingAs($this->usuario('gestor'));
+        $this->deleteJson("/api/estudantes/{$estudante->id}")->assertStatus(409);
+
+        $this->assertSame(1, Frequencia::count());
+        $this->assertNotNull($estudante->fresh());
+    }
+
+    public function test_frequencia_ainda_pendente_nao_impede_a_exclusao(): void
+    {
+        $linha = Linha::factory()->create();
+        $estudante = Estudante::factory()->create(['linha_id' => $linha->id]);
+        $chamada = Chamada::factory()->create(['linha_id' => $linha->id]);
+        Frequencia::factory()->create(['chamada_id' => $chamada->id, 'estudante_id' => $estudante->id, 'situacao' => Frequencia::PENDENTE]);
+
+        Sanctum::actingAs($this->usuario('gestor'));
+        $this->deleteJson("/api/estudantes/{$estudante->id}")->assertOk();
+
+        $this->assertSame(0, Frequencia::count());
+        $this->assertNull($estudante->fresh());
+    }
+
+    public function test_banco_tambem_impede_apagar_frequencia_em_cascata(): void
+    {
+        $linha = Linha::factory()->create();
+        $estudante = Estudante::factory()->create(['linha_id' => $linha->id]);
+        $chamada = Chamada::factory()->create(['linha_id' => $linha->id]);
+        Frequencia::factory()->create(['chamada_id' => $chamada->id, 'estudante_id' => $estudante->id, 'situacao' => Frequencia::FALTA]);
+
+        $this->expectException(QueryException::class);
+
+        $estudante->delete();
+    }
+
+    public function test_excluir_a_chamada_ainda_leva_as_marcacoes_dela(): void
+    {
+        $linha = Linha::factory()->create();
+        $estudante = Estudante::factory()->create(['linha_id' => $linha->id]);
+        $chamada = Chamada::factory()->create(['linha_id' => $linha->id]);
+        Frequencia::factory()->create(['chamada_id' => $chamada->id, 'estudante_id' => $estudante->id, 'situacao' => Frequencia::FALTA]);
+
+        Sanctum::actingAs($this->usuario('gestor'));
+        $this->deleteJson("/api/frequencias/chamadas/{$chamada->id}")->assertOk();
+
+        $this->assertSame(0, Frequencia::count());
+    }
+
+    /**
+     * Depois de config:cache o .env nao e lido: env() fora de config/ devolve
+     * nulo. Por isso o link vem do config, e este teste falharia com env().
+     */
+    public function test_link_de_senha_aponta_para_o_frontend_configurado(): void
+    {
+        Notification::fake();
+        config(['app.frontend_url' => 'https://sigtu.example.gov.br/', 'app.url' => 'https://api.example.gov.br']);
+        $conta = User::factory()->create(['email' => 'ana@example.com']);
+
+        $this->postJson('/api/password/email', ['email' => 'ana@example.com'])->assertOk();
+
+        Notification::assertSentTo($conta, ResetPassword::class, function (ResetPassword $aviso) use ($conta) {
+            $url = $aviso->toMail($conta)->actionUrl;
+
+            return str_starts_with($url, 'https://sigtu.example.gov.br/reset-password?token=')
+                && str_contains($url, 'email=ana%40example.com');
+        });
     }
 
     public function test_banco_tambem_impede_apagar_presenca_em_cascata(): void

@@ -45,7 +45,7 @@ class AppServiceProvider extends ServiceProvider
 
         // O link de redefinição aponta para o frontend (SPA), não para uma rota web do Laravel.
         ResetPassword::createUrlUsing(function ($notifiable, string $token) {
-            $base = rtrim((string) env('FRONTEND_URL', config('app.url')), '/');
+            $base = rtrim((string) config('app.frontend_url'), '/');
 
             return $base.'/reset-password?token='.$token.'&email='.urlencode($notifiable->getEmailForPasswordReset());
         });
