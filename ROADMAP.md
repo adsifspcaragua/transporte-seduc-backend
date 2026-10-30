@@ -757,13 +757,15 @@ Novas: `veiculos.*`, `viagens.*`, `geocercas.*`, `dispositivos.view/analise`, `p
 | `PRESENCA_RETENCAO_TENTATIVAS_DIAS` | nulo | Nada é expurgado até D10 ser decidido |
 | `PRESENCA_GEOCERCA_POLITICA` | `pontos` | Única implementada (Alternativa A) |
 
+A conta do estudante é criada por `POST /api/estudantes/{id}/conta` (`estudantes.write`), e cada conta pode estar ligada a um único estudante. A fonte dos horários é `horarios_viagem`; `linhas.departure_time` e `return_time` são espelho. Linha, estudante e viagem com presença não podem ser excluídos. O comando `presenca:carga-inicial` prepara um ambiente existente (ver README).
+
 ### 18.5. Pendências
 
 - **Frontend (Next.js):** geração/guarda da chave (Web Crypto + IndexedDB), scanner restrito ao domínio do SIGTU, coleta da localização, telas, arte do QR para impressão e CSP.
-- **Conta do estudante:** o perfil `estudante` existe, mas `POST /api/users` continua recusando-o (decisão já coberta por teste). Falta definir como a conta do estudante é criada e ligada a `estudantes.user_id`. O seeder cria `estudante@example.com` para desenvolvimento.
+- **Autorização por ponto de embarque (`student_stop_authorizations`):** não implementada; depende da D06.
 - **PO / gestão:** todas as decisões D01–D10; coordenadas e raios reais (os do seeder são fictícios); regiões ou corredor de rota, se D02 pedir.
 - **Relação com a chamada do motorista:** a presença por QR é independente de `chamadas`/`frequencias` e ainda não alimenta a regra de perda do benefício. Integrar ou substituir é decisão do PO.
-- **Fuso da aplicação:** `config/app.php` está em UTC. O módulo de presença converte explicitamente (`App\Support\HorarioLocal`), mas o restante do sistema usa `today()` em UTC — por exemplo, depois das 21h locais a chamada do motorista já enxerga o dia seguinte. Vale avaliar à parte.
+- **Fuso da aplicação:** `config/app.php` continua em UTC. A presença e a chamada do motorista convertem explicitamente (`App\Support\HorarioLocal`); um novo uso de `today()` volta a errar o dia depois das 21h locais.
 - **Fase 6:** piloto, testes em aparelhos reais e aceite formal dos riscos residuais.
 
 ---

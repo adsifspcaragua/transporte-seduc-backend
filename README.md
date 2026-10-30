@@ -17,7 +17,7 @@ controle de acesso baseado em papéis (RBAC).
 |---|---|
 | Linguagem | **PHP 8.3** |
 | Framework | **Laravel 13** |
-| Autenticação | **Laravel Sanctum** (tokens) + **Laravel Fortify** |
+| Autenticação | **Laravel Sanctum** (sessão e tokens) |
 | Monitoramento | **Laravel Pulse** |
 | Documentação da API | **Scribe** (`knuckleswtf/scribe`) |
 | Testes | **PHPUnit** + **Infection** (mutation testing) |
@@ -187,6 +187,39 @@ e o que já foi implementado estão no [`ROADMAP.md`](ROADMAP.md) (seção 18).
   ```bash
   php artisan schedule:work
   ```
+
+- **Conta do estudante:** `POST /api/estudantes/{id}/conta` cria o login e envia
+  o link para ele definir a senha. `POST /api/users` continua só para a equipe.
+- **Horários:** a fonte é `horarios_viagem`. `departure_time` e `return_time` da
+  linha são um espelho: alterar um lado atualiza o outro.
+
+### Implantar em um ambiente que já tem dados
+
+```bash
+php artisan migrate
+php artisan db:seed --class=RolePermissionSeeder   # permissões novas
+php artisan presenca:carga-inicial --vans          # horários e vans que faltam
+```
+
+A carga pode rodar de novo, porque só cria o que falta, e mostra as linhas ainda
+sem van ou sem ponto de embarque. Sem `--vans`, nenhuma van é criada. Guarde as
+URLs de QR exibidas: elas só aparecem uma vez. O `RolePermissionSeeder` refaz as
+permissões dos perfis padrão, então ajustes manuais nesses perfis precisam ser
+reaplicados.
+
+## Acesso do estudante sem login
+
+O CPF sozinho não dá acesso a nada: ele dispara um código de 6 dígitos para o
+e-mail do cadastro, e os dados e o token só saem com esse código.
+
+| Etapa | Área do estudante | Recadastro |
+|---|---|---|
+| Informar o CPF | `POST /api/area-estudante/acesso` | `POST /api/reecadastro/consulta` |
+| Confirmar o código | `POST /api/area-estudante/acesso/verificar` | `POST /api/reecadastro/consulta/verificar` |
+
+O código vale 10 minutos, aceita 5 tentativas e é limitado a 5 envios por hora
+para cada CPF. O e-mail sai pela fila, então é preciso um worker rodando. Quem
+não tem mais acesso ao e-mail cadastrado precisa procurar o atendimento.
 
 ---
 
