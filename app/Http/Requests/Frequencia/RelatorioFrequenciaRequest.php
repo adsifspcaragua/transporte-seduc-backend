@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Frequencia;
 
+use App\Support\HorarioLocal;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Carbon;
@@ -45,7 +46,7 @@ class RelatorioFrequenciaRequest extends FormRequest
                 }
 
                 $de = Carbon::parse($this->input('de'));
-                $ate = $this->filled('ate') ? Carbon::parse($this->input('ate')) : today();
+                $ate = $this->filled('ate') ? Carbon::parse($this->input('ate')) : HorarioLocal::hojeNaAplicacao();
 
                 if ($de->diffInDays($ate) > self::MAXIMO_DIAS) {
                     $validator->errors()->add('de', 'O intervalo do relatório não pode passar de '.self::MAXIMO_DIAS.' dias.');

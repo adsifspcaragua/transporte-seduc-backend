@@ -11,6 +11,7 @@ use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use Tests\Support\AcessoPorCodigo;
 use Tests\TestCase;
 
 /**
@@ -21,7 +22,7 @@ use Tests\TestCase;
  */
 class CamposPendentesTest extends TestCase
 {
-    use RefreshDatabase;
+    use AcessoPorCodigo, RefreshDatabase;
 
     private Estudante $estudante;
 
@@ -87,7 +88,7 @@ class CamposPendentesTest extends TestCase
         ])->assertOk();
 
         // O acesso pelo CPF e publico: e assim que o estudante volta, sem login.
-        $campos = $this->postJson('/api/area-estudante/acesso', ['cpf' => $this->estudante->cpf])
+        $campos = $this->acessarComCodigo('/api/area-estudante/acesso', $this->estudante->cpf)
             ->assertOk()
             ->json('data.campos_pendentes');
 

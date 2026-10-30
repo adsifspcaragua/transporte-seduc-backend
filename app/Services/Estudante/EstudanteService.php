@@ -5,6 +5,8 @@ namespace App\Services\Estudante;
 use App\Exports\EstudantesExport;
 use App\Http\Resources\Estudante\EstudanteResource;
 use App\Models\Estudante;
+use App\Models\User;
+use App\Services\Auditoria\AuditoriaService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Dompdf\Dompdf;
 use Illuminate\Http\JsonResponse;
@@ -15,6 +17,8 @@ use Throwable;
 
 class EstudanteService
 {
+    public function __construct(private readonly AuditoriaService $auditoria) {}
+
     public function index(int $perPage = 10): JsonResponse|AnonymousResourceCollection
     {
         $allowedPerPage = [10, 15, 20, 30];
@@ -172,7 +176,7 @@ class EstudanteService
         }
     }
 
-    public function destroy(string $id): JsonResponse
+    public function destroy(?User $user, string $id): JsonResponse
     {
         try {
             $estudante = Estudante::find($id);
@@ -181,8 +185,23 @@ class EstudanteService
                 return response()->json(['message' => 'Estudante não encontrado'], 404);
             }
 
+            // Presenca e historico: o caminho para quem saiu do transporte e
+            // inativar, nao apagar.
+            $presencas = $estudante->presencas()->count();
+
+            if ($presencas > 0) {
+                return response()->json([
+                    'message' => "Este estudante tem {$presencas} presença(s) registrada(s). Inative-o em vez de excluir.",
+                ], 409);
+            }
+
             $estudanteExibir = $estudante;
+            $removidos = [
+                'dispositivos_removidos' => $estudante->dispositivos()->count(),
+                'solicitacoes_removidas' => $estudante->solicitacoesDispositivo()->count(),
+            ];
             $estudante->delete();
+            $this->auditoria->registrar($user, 'estudante.excluir', null, ['estudante_id' => (int) $id, ...$removidos]);
 
             return response()->json([
                 'data' => new EstudanteResource($estudanteExibir),

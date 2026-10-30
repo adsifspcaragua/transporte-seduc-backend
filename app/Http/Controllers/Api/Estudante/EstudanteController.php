@@ -72,9 +72,9 @@ class EstudanteController extends Controller
      *
      * @urlParam estudante integer required ID do estudante. Example: 1
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        return $this->estudanteService->destroy($id);
+        return $this->estudanteService->destroy($request->user(), $id);
     }
 
     /**

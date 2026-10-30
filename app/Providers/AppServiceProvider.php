@@ -35,6 +35,12 @@ class AppServiceProvider extends ServiceProvider
         // mesma rede movel. Uma tentativa de presenca sao 3 chamadas (QR,
         // desafio, confirmacao), entao 30/min deixa folga para novas leituras.
         RateLimiter::for('presenca', fn (Request $request) => Limit::perMinute(30)->by('presenca:'.($request->user()?->id ?: $request->ip())));
+        // O acesso sem login limita por IP e tambem por CPF: uma rede grande (o
+        // campus) nao trava todos, e quem insiste em um CPF para nele.
+        RateLimiter::for('acesso-cpf', fn (Request $request) => [
+            Limit::perMinute(30)->by('acesso-ip:'.$request->ip()),
+            Limit::perMinute(10)->by('acesso-cpf:'.$request->input('cpf')),
+        ]);
         RateLimiter::for('dispositivo', fn (Request $request) => Limit::perMinute(10)->by('dispositivo:'.($request->user()?->id ?: $request->ip())));
 
         // O link de redefinição aponta para o frontend (SPA), não para uma rota web do Laravel.

@@ -8,6 +8,7 @@ use App\Models\Estudante;
 use App\Models\Frequencia;
 use App\Models\Linha;
 use App\Models\User;
+use App\Support\HorarioLocal;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Carbon;
@@ -55,7 +56,7 @@ class ChamadaService
             ->get();
 
         $hoje = Chamada::whereIn('linha_id', $linhas->pluck('id'))
-            ->whereDate('data', today())
+            ->whereDate('data', HorarioLocal::hoje()->toDateString())
             ->get()
             ->keyBy('linha_id');
 
@@ -127,7 +128,7 @@ class ChamadaService
             $existente = Chamada::where('linha_id', $linha->id)->whereDate('data', $dia)->first();
 
             if ($existente) {
-                if ($existente->estaAberta() && $dia->isToday()) {
+                if ($existente->estaAberta() && $dia->toDateString() === HorarioLocal::hoje()->toDateString()) {
                     $this->sincronizarEsperados($existente);
                 }
 

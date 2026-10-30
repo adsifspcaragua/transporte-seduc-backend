@@ -15,7 +15,32 @@ use Illuminate\Support\Str;
 
 class AcessoEstudanteService
 {
-    public function acessar(string $cpf): JsonResponse
+    public function __construct(private readonly CodigoAcessoService $codigos) {}
+
+    /**
+     * Primeira etapa: CPF novo segue para a inscricao; com cadastro, so o envio
+     * do codigo, sem nenhum dado da pessoa.
+     */
+    public function solicitar(string $cpf): JsonResponse
+    {
+        if (Estudante::where('cpf', $cpf)->exists() || Inscricao::where('cpf', $cpf)->exists()) {
+            return $this->codigos->solicitar($cpf);
+        }
+
+        return response()->json([
+            'fluxo' => 'inscricao',
+            'data' => ['cpf' => $cpf],
+        ]);
+    }
+
+    public function verificar(string $cpf, string $codigo): JsonResponse
+    {
+        return $this->codigos->confirmar($cpf, $codigo)
+            ? $this->acessar($cpf)
+            : $this->codigos->recusa();
+    }
+
+    private function acessar(string $cpf): JsonResponse
     {
         $estudante = Estudante::with(['inscricao.inscricao_instituicao'])->where('cpf', $cpf)->first();
 

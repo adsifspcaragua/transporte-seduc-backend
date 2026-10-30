@@ -8,6 +8,7 @@ use App\Models\DocumentacaoReecadastro;
 use App\Models\Estudante;
 use App\Models\PeriodoReecadastro;
 use App\Models\SolicitacaoReecadastro;
+use App\Services\Estudante\CodigoAcessoService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -15,8 +16,8 @@ use Illuminate\Support\Str;
 use Throwable;
 
 /**
- * Fluxo do estudante, sem login: ele informa o CPF e, se já estiver no sistema
- * e o recadastro estiver aberto, envia os documentos do período.
+ * Fluxo do estudante, sem login: ele informa o CPF, confirma o código recebido
+ * por e-mail e, se o recadastro estiver aberto, envia os documentos do período.
  *
  * A consulta devolve um token de curta duração que autoriza os envios
  * seguintes, para que o ID da solicitação sozinho não dê acesso aos dados.
@@ -26,12 +27,39 @@ class ReecadastroPublicoService
     /** Validade do token da sessão pública, em horas. */
     private const TOKEN_HORAS = 2;
 
+    public function __construct(private readonly CodigoAcessoService $codigos) {}
+
     /**
-     * Consulta a situação do estudante pelo CPF e abre a solicitação do período
-     * corrente quando ainda não existir.
+     * Primeira etapa: confere se há o que recadastrar e envia o código ao e-mail
+     * do cadastro. A situação do estudante só aparece depois do código.
      */
-    public function consulta(string $cpf): JsonResponse
+    public function solicitarCodigo(string $cpf): JsonResponse
     {
+        if (! PeriodoReecadastro::aberto()) {
+            return response()->json([
+                'message' => 'O período de recadastro está fechado no momento.',
+            ], 409);
+        }
+
+        if (! Estudante::where('cpf', $cpf)->exists()) {
+            return response()->json([
+                'message' => 'CPF não encontrado. Somente estudantes já cadastrados no transporte podem recadastrar.',
+            ], 404);
+        }
+
+        return $this->codigos->solicitar($cpf);
+    }
+
+    /**
+     * Com o código certo, consulta a situação do estudante e abre a solicitação
+     * do período corrente quando ainda não existir.
+     */
+    public function consulta(string $cpf, string $codigo): JsonResponse
+    {
+        if (! $this->codigos->confirmar($cpf, $codigo)) {
+            return $this->codigos->recusa();
+        }
+
         try {
             $periodo = PeriodoReecadastro::aberto();
 

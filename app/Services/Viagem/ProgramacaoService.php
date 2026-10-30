@@ -25,6 +25,7 @@ class ProgramacaoService
 {
     public function __construct(
         private readonly GeradorViagens $gerador,
+        private readonly HorariosDaLinha $horariosDaLinha,
         private readonly AuditoriaService $auditoria,
     ) {}
 
@@ -61,6 +62,7 @@ class ProgramacaoService
     {
         try {
             $horario = HorarioViagem::create($data);
+            $this->horariosDaLinha->espelharNaLinha($horario->linha_id);
             $this->gerador->gerar(HorarioLocal::hoje(), HorarioLocal::hoje(), $horario->linha_id);
             $this->auditoria->registrar($user, 'horario.criar', $horario, $horario->only(['linha_id', 'sentido', 'horario_saida', 'dias_semana']));
 
@@ -88,12 +90,19 @@ class ProgramacaoService
             }
 
             $antes = $horario->only(array_keys($data));
+            $linhaAnterior = $horario->linha_id;
 
             $descartadas = DB::transaction(function () use ($horario, $data) {
                 $horario->update($data);
 
                 return $this->gerador->descartarFuturas($horario);
             });
+
+            $this->horariosDaLinha->espelharNaLinha($horario->linha_id);
+
+            if ($linhaAnterior !== $horario->linha_id) {
+                $this->horariosDaLinha->espelharNaLinha($linhaAnterior);
+            }
 
             $this->gerador->gerar(HorarioLocal::hoje(), HorarioLocal::hoje(), $horario->linha_id);
             $this->auditoria->registrar($user, 'horario.atualizar', $horario, [
@@ -128,6 +137,8 @@ class ProgramacaoService
                 $this->gerador->descartarFuturas($horario);
                 $horario->delete();
             });
+
+            $this->horariosDaLinha->espelharNaLinha($horario->linha_id);
 
             $this->auditoria->registrar($user, 'horario.remover', null, ['horario_id' => (int) $id, ...$horario->only(['linha_id', 'sentido', 'horario_saida'])]);
 

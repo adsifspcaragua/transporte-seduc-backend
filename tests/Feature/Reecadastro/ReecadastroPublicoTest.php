@@ -9,13 +9,15 @@ use App\Models\SolicitacaoReecadastro;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Tests\Support\AcessoPorCodigo;
 use Tests\TestCase;
 
 /**
  * TESTE FUNCIONAL (caixa-preta) do fluxo publico do recadastro.
  *
- * O estudante nao faz login: informa o CPF e, se ja estiver no sistema e o
- * periodo estiver aberto, envia os tres documentos exigidos.
+ * O estudante nao faz login: informa o CPF, confirma o codigo recebido por e-mail
+ * e, se o periodo estiver aberto, envia os tres documentos exigidos. O codigo em
+ * si e testado em Feature/Estudante/CodigoAcessoTest.
  *
  * Classes de equivalencia cobertas na consulta:
  *   - periodo fechado            -> 409
@@ -28,7 +30,7 @@ use Tests\TestCase;
  */
 class ReecadastroPublicoTest extends TestCase
 {
-    use RefreshDatabase;
+    use AcessoPorCodigo, RefreshDatabase;
 
     protected function setUp(): void
     {
@@ -45,7 +47,7 @@ class ReecadastroPublicoTest extends TestCase
     /** Consulta o CPF e devolve o token da sessao publica. */
     private function consultar(Estudante $estudante): array
     {
-        $resposta = $this->postJson('/api/reecadastro/consulta', ['cpf' => $estudante->cpf])
+        $resposta = $this->acessarComCodigo('/api/reecadastro/consulta', $estudante->cpf)
             ->assertOk()
             ->json('data');
 
@@ -80,7 +82,7 @@ class ReecadastroPublicoTest extends TestCase
         $this->periodoAberto();
         $estudante = Estudante::factory()->inativo()->create();
 
-        $this->postJson('/api/reecadastro/consulta', ['cpf' => $estudante->cpf])
+        $this->acessarComCodigo('/api/reecadastro/consulta', $estudante->cpf)
             ->assertForbidden();
     }
 
@@ -98,7 +100,7 @@ class ReecadastroPublicoTest extends TestCase
         $periodo = $this->periodoAberto();
         $estudante = Estudante::factory()->create();
 
-        $resposta = $this->postJson('/api/reecadastro/consulta', ['cpf' => $estudante->cpf])
+        $resposta = $this->acessarComCodigo('/api/reecadastro/consulta', $estudante->cpf)
             ->assertOk()
             ->assertJsonPath('data.status', 'Pendente')
             ->assertJsonPath('data.pode_enviar', true)
@@ -335,7 +337,7 @@ class ReecadastroPublicoTest extends TestCase
             'periodo_id' => $periodo->id,
         ]);
 
-        $this->postJson('/api/reecadastro/consulta', ['cpf' => $estudante->cpf])
+        $this->acessarComCodigo('/api/reecadastro/consulta', $estudante->cpf)
             ->assertOk()
             ->assertJsonPath('data.status', 'Em analise')
             ->assertJsonPath('data.pode_enviar', false)

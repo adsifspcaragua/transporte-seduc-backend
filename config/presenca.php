@@ -34,6 +34,12 @@ return [
         'depois_minutos' => (int) env('PRESENCA_JANELA_DEPOIS_MIN', 15),
     ],
 
+    /*
+     * Dias de operacao de um horario criado a partir da linha (0 = domingo),
+     * que nao informa dias. A gestao ajusta em horarios-viagem.
+     */
+    'dias_padrao' => [1, 2, 3, 4, 5],
+
     'desafio' => [
         // Tempo para o navegador assinar e devolver o desafio. Curto, mas
         // suficiente para uma leitura de GPS lenta (ate 15 s no frontend).

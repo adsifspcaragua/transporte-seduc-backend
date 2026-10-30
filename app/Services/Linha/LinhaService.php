@@ -7,12 +7,21 @@ use App\Http\Resources\Linha\LinhaResource;
 use App\Models\Chamada;
 use App\Models\Frequencia;
 use App\Models\Linha;
+use App\Models\Presenca;
+use App\Models\User;
+use App\Services\Auditoria\AuditoriaService;
+use App\Services\Viagem\HorariosDaLinha;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Throwable;
 
 class LinhaService
 {
+    public function __construct(
+        private readonly HorariosDaLinha $horarios,
+        private readonly AuditoriaService $auditoria,
+    ) {}
+
     public function estudantes(Linha $linha, int $perPage = 10): AnonymousResourceCollection
     {
         $estudantes = $linha->estudantes()
@@ -76,6 +85,7 @@ class LinhaService
     {
         try {
             $linha = Linha::create($data);
+            $this->horarios->aplicarDaLinha($linha);
 
             return response()->json([
                 'data' => new LinhaResource($linha->load('motorista:id,name')),
@@ -125,10 +135,13 @@ class LinhaService
             }
 
             $linha->update($data);
+            $naoAplicados = $this->horarios->aplicarDaLinha($linha);
 
             return response()->json([
                 'data' => new LinhaResource($linha->load('motorista:id,name')),
                 'message' => 'Linha atualizada com sucesso',
+                // Mais de um horario no sentido: nao ha como saber qual mudar.
+                ...($naoAplicados ? ['aviso' => 'A linha tem mais de um horário em: '.implode(', ', $naoAplicados).'. Ajuste-os na programação.'] : []),
             ], 200);
         } catch (Throwable $e) {
             report($e);
@@ -139,7 +152,7 @@ class LinhaService
         }
     }
 
-    public function destroy(string $id): JsonResponse
+    public function destroy(?User $user, string $id): JsonResponse
     {
         try {
             $linha = Linha::find($id);
@@ -171,8 +184,19 @@ class LinhaService
                 ], 409);
             }
 
+            // Mesma coisa com a presenca por QR: ela pertence as viagens da linha.
+            $presencas = Presenca::whereHas('viagem', fn ($query) => $query->where('linha_id', $linha->id))->count();
+
+            if ($presencas > 0) {
+                return response()->json([
+                    'message' => "Esta linha tem {$presencas} presença(s) registrada(s) e não pode ser excluída sem perder o histórico.",
+                ], 409);
+            }
+
             $linhaExibir = $linha;
+            $viagens = $linha->viagens()->count();
             $linha->delete();
+            $this->auditoria->registrar($user, 'linha.excluir', null, ['linha_id' => (int) $id, 'nome' => $linha->name, 'viagens_removidas' => $viagens]);
 
             return response()->json([
                 'data' => new LinhaResource($linhaExibir),

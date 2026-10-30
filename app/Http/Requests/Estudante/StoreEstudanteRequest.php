@@ -41,7 +41,7 @@ class StoreEstudanteRequest extends FormRequest
             'situacao' => 'prohibited',
 
             'linha_id' => ['nullable', 'integer', 'exists:linhas,id', new LinhaComVaga],
-            'user_id' => 'nullable|integer|exists:users,id',
+            'user_id' => 'nullable|integer|exists:users,id|unique:estudantes,user_id',
             'inscricao_id' => 'required|integer|exists:inscricoes,id',
             'instituicao_id' => 'required|exists:instituicoes,id',
         ];

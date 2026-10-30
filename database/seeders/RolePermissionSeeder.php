@@ -14,6 +14,7 @@ class RolePermissionSeeder extends Seeder
      * @var list<string>
      */
     private array $permissions = [
+        'dashboard.view',
         'users.view', 'users.write', 'users.delete',
         'roles.view', 'roles.write', 'roles.delete',
         'estudantes.view', 'estudantes.write', 'estudantes.delete',
@@ -47,6 +48,7 @@ class RolePermissionSeeder extends Seeder
      */
     private array $matrix = [
         'gestor' => [
+            'dashboard.view',
             'estudantes.view', 'estudantes.write', 'estudantes.delete',
             'inscricoes.view', 'inscricoes.delete', 'inscricoes.analise',
             'instituicoes.write', 'instituicoes.delete',
@@ -66,6 +68,7 @@ class RolePermissionSeeder extends Seeder
         // Acompanha tudo, mas nao aprova dispositivo nem abre excecao de
         // presenca: quem libera a credencial ainda e decisao da gestao (D07).
         'operador' => [
+            'dashboard.view',
             'estudantes.view', 'estudantes.write',
             'inscricoes.view',
             'linhas.view',
@@ -81,6 +84,7 @@ class RolePermissionSeeder extends Seeder
         // estudante, inscricao nem documento. A presenca por QR nao depende
         // dele, entao nenhuma permissao nova entra aqui.
         'motorista' => [
+            'dashboard.view',
             'frequencias.view', 'frequencias.write',
         ],
         // A conta do estudante (estudantes.user_id): so registra e consulta a

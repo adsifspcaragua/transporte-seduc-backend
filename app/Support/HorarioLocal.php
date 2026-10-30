@@ -13,8 +13,8 @@ use Illuminate\Support\Carbon;
  * nele que os instantes vao para o banco e que now() responde. Sem converter,
  * a janela das 17h30 seria comparada com as 20h30 locais.
  *
- * Regra do modulo de presenca: datas e horas da programacao entram por aqui;
- * instantes (janelas, registros) ficam sempre no fuso da aplicacao.
+ * Regra: datas e horas da operacao (programacao, chamada do dia) entram por
+ * aqui; instantes (janelas, registros) ficam sempre no fuso da aplicacao.
  */
 final class HorarioLocal
 {
@@ -27,6 +27,15 @@ final class HorarioLocal
     public static function hoje(): Carbon
     {
         return now(self::fuso())->startOfDay();
+    }
+
+    /**
+     * Hoje no fuso da operacao, a meia-noite do fuso da aplicacao: substitui
+     * today() onde o valor e comparado com datas lidas do banco.
+     */
+    public static function hojeNaAplicacao(): Carbon
+    {
+        return Carbon::parse(self::hoje()->toDateString());
     }
 
     /** O dia local de um instante. */

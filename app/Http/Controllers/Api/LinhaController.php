@@ -82,8 +82,8 @@ class LinhaController extends Controller
      *
      * @urlParam linha integer required ID da linha. Example: 1
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        return $this->linhaService->destroy($id);
+        return $this->linhaService->destroy($request->user(), $id);
     }
 }

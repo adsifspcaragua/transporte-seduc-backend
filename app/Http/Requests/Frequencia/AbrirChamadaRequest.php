@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Frequencia;
 
+use App\Support\HorarioLocal;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -22,7 +23,9 @@ class AbrirChamadaRequest extends FormRequest
     {
         return [
             'linha_id' => 'required|integer|exists:linhas,id',
-            'data' => 'required|date_format:Y-m-d|before_or_equal:today',
+            // "Hoje" e o dia em Caraguatatuba: a aplicacao roda em UTC e, depois das
+            // 21h locais, today() ja seria amanha.
+            'data' => 'required|date_format:Y-m-d|before_or_equal:'.HorarioLocal::hoje()->toDateString(),
             'observacoes' => 'nullable|string|max:1000',
         ];
     }

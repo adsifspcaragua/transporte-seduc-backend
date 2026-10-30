@@ -7,11 +7,12 @@ use App\Models\Inscricao;
 use App\Models\InscricaoInstituicoes;
 use App\Models\PeriodoReecadastro;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\AcessoPorCodigo;
 use Tests\TestCase;
 
 class AcessoEstudanteTest extends TestCase
 {
-    use RefreshDatabase;
+    use AcessoPorCodigo, RefreshDatabase;
 
     public function test_cpf_novo_abre_o_fluxo_de_inscricao(): void
     {
@@ -29,7 +30,7 @@ class AcessoEstudanteTest extends TestCase
             'days_of_week' => [1, 3, 5],
         ]);
 
-        $this->postJson('/api/area-estudante/acesso', ['cpf' => $inscricao->cpf])
+        $this->acessarComCodigo('/api/area-estudante/acesso', $inscricao->cpf)
             ->assertOk()
             ->assertJsonPath('fluxo', 'lista_espera')
             ->assertJsonPath('data.inscricao.id', $inscricao->id)
@@ -41,7 +42,7 @@ class AcessoEstudanteTest extends TestCase
     {
         $inscricao = Inscricao::factory()->create(['status' => 'Em revisao']);
 
-        $this->postJson('/api/area-estudante/acesso', ['cpf' => $inscricao->cpf])
+        $this->acessarComCodigo('/api/area-estudante/acesso', $inscricao->cpf)
             ->assertOk()
             ->assertJsonPath('fluxo', 'lista_espera')
             ->assertJsonPath('data.pode_editar', true);
@@ -56,7 +57,7 @@ class AcessoEstudanteTest extends TestCase
             'days_of_week' => [1, 2, 4],
         ]);
 
-        $this->postJson('/api/area-estudante/acesso', ['cpf' => $estudante->cpf])
+        $this->acessarComCodigo('/api/area-estudante/acesso', $estudante->cpf)
             ->assertOk()
             ->assertJsonPath('fluxo', 'recadastro')
             ->assertJsonPath('data.cadastro.name', $estudante->inscricao->name)
@@ -72,7 +73,7 @@ class AcessoEstudanteTest extends TestCase
             'inscricao_id' => $estudante->inscricao_id,
             'days_of_week' => [1, 2, 4],
         ]);
-        $acesso = $this->postJson('/api/area-estudante/acesso', ['cpf' => $estudante->cpf])
+        $acesso = $this->acessarComCodigo('/api/area-estudante/acesso', $estudante->cpf)
             ->assertOk()
             ->json('data');
 

@@ -5,6 +5,7 @@ namespace App\Services\Frequencia;
 use App\Models\Estudante;
 use App\Models\Frequencia;
 use App\Models\User;
+use App\Support\HorarioLocal;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;
@@ -110,7 +111,7 @@ class RelatorioFrequenciaService
                 // olha todas as linhas do estudante, entao so a secretaria ve;
                 // o motorista enxergaria faltas de linhas que nao conduz.
                 'beneficio' => $this->escopo->linhas($user) === null
-                    ? $this->beneficio->situacao($estudante, today())
+                    ? $this->beneficio->situacao($estudante, HorarioLocal::hojeNaAplicacao())
                     : null,
                 'historico' => $registros
                     ->sortByDesc('data')
@@ -218,7 +219,7 @@ class RelatorioFrequenciaService
      */
     private function periodo(array $filtros): array
     {
-        $ate = isset($filtros['ate']) ? Carbon::parse($filtros['ate']) : today();
+        $ate = isset($filtros['ate']) ? Carbon::parse($filtros['ate']) : HorarioLocal::hojeNaAplicacao();
         $de = isset($filtros['de']) ? Carbon::parse($filtros['de']) : $ate->copy()->subDays(self::DIAS_PADRAO - 1);
 
         return [$de->startOfDay(), $ate->startOfDay()];

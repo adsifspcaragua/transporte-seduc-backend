@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckPermission;
+use App\Http\Middleware\EnsureContaAtiva;
 use App\Http\Middleware\ResolveEstudanteDaConta;
 use App\Http\Middleware\VerifyInscricaoToken;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -27,8 +28,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
+        // Nao ha tela de login neste backend: quem nao esta autenticado recebe o
+        // 401 em JSON do tratamento de excecoes abaixo, nunca um redirecionamento.
+        $middleware->redirectGuestsTo(fn () => null);
         $middleware->alias([
             'permission' => CheckPermission::class,
+            'conta.ativa' => EnsureContaAtiva::class,
             'inscricao.token' => VerifyInscricaoToken::class,
             'estudante' => ResolveEstudanteDaConta::class,
         ]);

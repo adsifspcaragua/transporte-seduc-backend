@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\Dispositivo\AnaliseDispositivoController;
 use App\Http\Controllers\Api\Dispositivo\MeuDispositivoController;
 use App\Http\Controllers\Api\Estudante\AcessoEstudanteController;
+use App\Http\Controllers\Api\Estudante\ContaEstudanteController;
 use App\Http\Controllers\Api\Estudante\Documento\InscricaoDocumentoController;
 use App\Http\Controllers\Api\Estudante\EstudanteController;
 use App\Http\Controllers\Api\Estudante\InscricaoController;
@@ -34,7 +35,6 @@ use App\Http\Controllers\Api\Viagem\ViagemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
-
 
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/auth/token', [AuthController::class, 'tokenLogin'])->middleware('throttle:5,1');
@@ -65,7 +65,13 @@ Route::middleware('inscricao.token')->group(function () {
 Route::withoutMiddleware(EnsureFrontendRequestsAreStateful::class)->group(function () {
     Route::post('inscricoes/validar-step', [InscricaoController::class, 'validateStep']);
     Route::post('inscricoes', [InscricaoController::class, 'store'])->middleware('throttle:10,1');
-    Route::post('area-estudante/acesso', AcessoEstudanteController::class)->middleware('throttle:10,1');
+    // CPF nao e segredo: a primeira etapa so envia o codigo ao e-mail do cadastro.
+    Route::middleware('throttle:acesso-cpf')->group(function () {
+        Route::post('area-estudante/acesso', [AcessoEstudanteController::class, 'solicitar']);
+        Route::post('area-estudante/acesso/verificar', [AcessoEstudanteController::class, 'verificar']);
+        Route::post('reecadastro/consulta', [ReecadastroPublicoController::class, 'solicitarCodigo']);
+        Route::post('reecadastro/consulta/verificar', [ReecadastroPublicoController::class, 'consulta']);
+    });
 
     // Lista de espera: o estudante nao faz login, entao cada inscrição só é
     // acessível com o token devolvido na criação.
@@ -79,14 +85,19 @@ Route::withoutMiddleware(EnsureFrontendRequestsAreStateful::class)->group(functi
         Route::delete('inscricoes/{inscricao}/documentos/{documento}', [InscricaoDocumentoController::class, 'destroy']);
     });
 
-    // Recadastro do estudante: acesso pelo CPF, sem login, com token de sessão.
-    Route::post('reecadastro/consulta', [ReecadastroPublicoController::class, 'consulta'])->middleware('throttle:10,1');
+    // Recadastro do estudante: sem login, com o token de sessão devolvido depois do código.
     Route::post('reecadastro/solicitacoes/{solicitacao}/documentos', [ReecadastroPublicoController::class, 'documento'])->middleware('throttle:30,1');
     Route::put('reecadastro/solicitacoes/{solicitacao}/dados', [ReecadastroPublicoController::class, 'dados'])->middleware('throttle:10,1');
     Route::post('reecadastro/solicitacoes/{solicitacao}/finalizar', [ReecadastroPublicoController::class, 'finalizar'])->middleware('throttle:10,1');
 });
 
+// Encerrar o acesso continua possivel para quem foi inativado.
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/token/revoke', [AuthController::class, 'tokenLogout']);
+});
+
+Route::middleware(['auth:sanctum', 'conta.ativa'])->group(function () {
     /**
      * Exibir usuario autenticado.
      *
@@ -110,12 +121,9 @@ Route::middleware('auth:sanctum')->group(function () {
         }
     });
 
-    Route::post('/logout', [AuthController::class, 'logout']);
-
-    // Tela inicial: contadores agregados, sem dado individual, entao basta estar
-    // autenticado. Cada numero leva para a tela que ja tem sua propria permissao.
-    Route::get('/dashboard', [DashboardController::class, 'index']);
-    Route::post('/auth/token/revoke', [AuthController::class, 'tokenLogout']);
+    // Tela inicial da equipe: contadores agregados, sem dado individual. O
+    // estudante tambem faz login, mas esses numeros nao sao para ele.
+    Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('permission:dashboard.view');
 
     // A seleção expõe somente id e nome de motoristas ativos a quem gerencia linhas.
     Route::get('users/motoristas', [UserController::class, 'motoristas'])->middleware('permission:linhas.write');
@@ -133,6 +141,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('roles', RoleController::class)->only(['destroy'])->middleware('permission:roles.delete');
 
     // Estudantes
+    Route::post('estudantes/{estudante}/conta', [ContaEstudanteController::class, 'store'])->middleware('permission:estudantes.write');
     Route::apiResource('estudantes', EstudanteController::class)->only(['index', 'show'])->middleware('permission:estudantes.view');
     Route::apiResource('estudantes', EstudanteController::class)->only(['store', 'update'])->middleware('permission:estudantes.write');
     Route::apiResource('estudantes', EstudanteController::class)->only(['destroy'])->middleware('permission:estudantes.delete');

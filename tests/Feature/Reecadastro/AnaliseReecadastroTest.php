@@ -13,6 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
+use Tests\Support\AcessoPorCodigo;
 use Tests\TestCase;
 
 /**
@@ -24,7 +25,7 @@ use Tests\TestCase;
  */
 class AnaliseReecadastroTest extends TestCase
 {
-    use RefreshDatabase;
+    use AcessoPorCodigo, RefreshDatabase;
 
     protected function setUp(): void
     {
@@ -144,7 +145,7 @@ class AnaliseReecadastroTest extends TestCase
         // O estudante volta pelo CPF, sem login, e recebe um novo token.
         app('auth')->forgetGuards();
         $estudante = Estudante::find($solicitacao->estudante_id);
-        $token = $this->postJson('/api/reecadastro/consulta', ['cpf' => $estudante->cpf])
+        $token = $this->acessarComCodigo('/api/reecadastro/consulta', $estudante->cpf)
             ->assertOk()
             ->assertJsonPath('data.status', 'Pendencia')
             ->assertJsonPath('data.pode_enviar', true)

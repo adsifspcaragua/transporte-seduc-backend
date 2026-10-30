@@ -12,6 +12,7 @@ use App\Services\Inscricao\InscricaoStatusService;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use Tests\Support\AcessoPorCodigo;
 use Tests\TestCase;
 
 /**
@@ -26,7 +27,7 @@ use Tests\TestCase;
  */
 class DevolucaoInscricaoTest extends TestCase
 {
-    use RefreshDatabase;
+    use AcessoPorCodigo, RefreshDatabase;
 
     protected function setUp(): void
     {
@@ -88,7 +89,7 @@ class DevolucaoInscricaoTest extends TestCase
         ])->assertOk();
 
         // O estudante nao faz login: volta pela area do estudante com o CPF.
-        $resposta = $this->postJson('/api/area-estudante/acesso', ['cpf' => $inscricao->cpf])
+        $resposta = $this->acessarComCodigo('/api/area-estudante/acesso', $inscricao->cpf)
             ->assertOk()
             ->json();
 
@@ -164,7 +165,7 @@ class DevolucaoInscricaoTest extends TestCase
         $this->assertSame(['name', 'number'], $inscricao->refresh()->campos_pendentes);
 
         // O estudante volta pelo CPF e ve os campos com o rotulo pronto.
-        $campos = $this->postJson('/api/area-estudante/acesso', ['cpf' => $inscricao->cpf])
+        $campos = $this->acessarComCodigo('/api/area-estudante/acesso', $inscricao->cpf)
             ->assertOk()
             ->json('data.inscricao.campos_pendentes');
 
@@ -236,7 +237,7 @@ class DevolucaoInscricaoTest extends TestCase
 
         $this->assertSame('Rejeitado', $inscricao->refresh()->status);
 
-        $this->postJson('/api/area-estudante/acesso', ['cpf' => $inscricao->cpf])
+        $this->acessarComCodigo('/api/area-estudante/acesso', $inscricao->cpf)
             ->assertStatus(409);
     }
 }

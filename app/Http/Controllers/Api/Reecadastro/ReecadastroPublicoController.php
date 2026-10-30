@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Reecadastro;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Estudante\VerificarCodigoRequest;
 use App\Http\Requests\Reecadastro\Publico\AtualizarDadosRequest;
 use App\Http\Requests\Reecadastro\Publico\ConsultaCpfRequest;
 use App\Http\Requests\Reecadastro\Publico\EnviarDocumentoRequest;
@@ -12,22 +13,36 @@ use App\Services\Reecadastro\ReecadastroPublicoService;
 /**
  * @group Recadastro (estudante)
  *
- * Rotas publicas usadas pelo estudante para recadastrar-se pelo CPF, sem login.
- * A consulta devolve um token de curta duracao exigido nas rotas seguintes.
+ * Rotas publicas usadas pelo estudante para recadastrar-se sem login: o CPF
+ * dispara um codigo por e-mail, e a consulta com o codigo devolve um token de
+ * curta duracao exigido nas rotas seguintes.
  */
 class ReecadastroPublicoController extends Controller
 {
     public function __construct(private readonly ReecadastroPublicoService $reecadastroPublicoService) {}
 
     /**
-     * Consultar recadastro pelo CPF.
+     * Informar o CPF.
      *
-     * Informa se o estudante esta no sistema, se o periodo esta aberto e quais
-     * documentos ainda faltam. Abre a solicitacao do periodo quando necessario.
+     * Confere se o periodo esta aberto e se o CPF esta no sistema, e envia o
+     * codigo ao e-mail do cadastro. Nao devolve nenhum dado do estudante.
      */
-    public function consulta(ConsultaCpfRequest $request)
+    public function solicitarCodigo(ConsultaCpfRequest $request)
     {
-        return $this->reecadastroPublicoService->consulta($request->validated()['cpf']);
+        return $this->reecadastroPublicoService->solicitarCodigo($request->validated()['cpf']);
+    }
+
+    /**
+     * Consultar recadastro com o codigo.
+     *
+     * Informa a situacao do estudante e quais documentos ainda faltam. Abre a
+     * solicitacao do periodo quando necessario e devolve o token de sessao.
+     */
+    public function consulta(VerificarCodigoRequest $request)
+    {
+        $data = $request->validated();
+
+        return $this->reecadastroPublicoService->consulta($data['cpf'], $data['codigo']);
     }
 
     /**
