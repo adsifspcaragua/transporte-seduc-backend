@@ -1,5 +1,23 @@
 # Testes
 
+## Proteção contra banco fora de testes
+
+`Tests\TestCase` bloqueia a inicialização antes de `RefreshDatabase` quando há cache de configuração ativo, ambiente diferente de `testing`, ou banco que não seja SQLite `:memory:` nem tenha sufixo `_test`. Variáveis do `phpunit.xml` não substituem configurações já cacheadas. Não execute a suíte contra o banco da aplicação.
+
+Exemplo isolado em PowerShell, sem apagar o cache usado pela aplicação:
+
+```powershell
+$env:APP_ENV = 'testing'
+$env:DB_CONNECTION = 'sqlite'
+$env:DB_DATABASE = ':memory:'
+$env:DB_URL = ''
+$env:APP_CONFIG_CACHE = Join-Path $env:TEMP 'unibus-isolated-testing-config.php'
+if (Test-Path -LiteralPath $env:APP_CONFIG_CACHE) { throw 'Escolha um caminho de cache inexistente.' }
+php -d memory_limit=512M vendor/bin/phpunit
+```
+
+O limite de memória acima é restrito ao processo de teste. A execução com SQLite pode revelar diferenças em relação às regras e constraints de MySQL. O bloqueio preventivo não recupera dados eventualmente afetados por execuções anteriores sem essa proteção.
+
 Estratégia de testes do projeto, organizada por técnica.
 
 ## Como rodar
