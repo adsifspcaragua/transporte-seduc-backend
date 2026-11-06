@@ -20,14 +20,17 @@ class EstudanteService
 {
     public function __construct(private readonly AuditoriaService $auditoria) {}
 
-    public function index(int $perPage = 10): JsonResponse|AnonymousResourceCollection
+    public function index(int $perPage = 10, string $search = ''): JsonResponse|AnonymousResourceCollection
     {
         $allowedPerPage = [10, 15, 20, 30];
         $perPage = in_array($perPage, $allowedPerPage, true) ? $perPage : 10;
 
-        $estudantes = Estudante::with(['inscricao.inscricao_instituicao', 'inscricao.inscricao_documentos'])->paginate($perPage);
+        $estudantes = Estudante::with(['inscricao.inscricao_instituicao', 'inscricao.inscricao_documentos'])
+            ->when($search !== '', fn ($query) => $query->where('name', 'like', '%'.addcslashes($search, '%_\\').'%'))
+            ->orderBy('id')
+            ->paginate($perPage);
 
-        if ($estudantes->isEmpty()) {
+        if ($estudantes->isEmpty() && $search === '') {
             return response()->json(['message' => 'Nenhum estudante cadastrado'], 200);
         }
 

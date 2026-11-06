@@ -26,8 +26,11 @@ class EstudanteController extends Controller
      */
     public function index(Request $request)
     {
+        $validated = $request->validate(['search' => ['nullable', 'string', 'max:100']]);
+
         return $this->estudanteService->index(
-            (int) $request->query('per_page', 10)
+            (int) $request->query('per_page', 10),
+            trim($validated['search'] ?? ''),
         );
     }
 
