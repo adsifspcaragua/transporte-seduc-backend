@@ -256,8 +256,11 @@ class PresencaAdminService
                 'viagem_id' => $viagem->id,
                 'veiculo_id' => $tentativa?->veiculo_id ?? $viagem->veiculo_id,
                 'dispositivo_id' => $tentativa?->dispositivo_id,
-                'metodo' => Presenca::MANUAL,
-                'registrada_em' => now(),
+                // Comprovante offline aprovado conta como do momento da leitura.
+                'metodo' => $tentativa?->etapa === TentativaPresenca::OFFLINE ? Presenca::OFFLINE : Presenca::MANUAL,
+                'registrada_em' => $tentativa?->capturado_em ?? now(),
+                'distancia_metros' => $tentativa?->distancia_metros,
+                'precisao_metros' => $tentativa?->precisao_metros,
                 'registrada_por' => $user->id,
                 'justificativa' => $justificativa,
             ]);

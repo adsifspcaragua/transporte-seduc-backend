@@ -33,7 +33,7 @@ class PresencaController extends Controller
             'estudante_id' => 'sometimes|integer',
             'viagem_id' => 'sometimes|integer',
             'linha_id' => 'sometimes|integer',
-            'metodo' => ['sometimes', Rule::in([Presenca::DISPOSITIVO, Presenca::MANUAL])],
+            'metodo' => ['sometimes', Rule::in([Presenca::DISPOSITIVO, Presenca::MANUAL, Presenca::OFFLINE])],
             'de' => 'sometimes|date_format:Y-m-d',
             'ate' => 'sometimes|date_format:Y-m-d',
             'per_page' => 'sometimes|integer|in:10,15,20,30',
@@ -61,7 +61,7 @@ class PresencaController extends Controller
     public function tentativas(Request $request)
     {
         $filtros = $request->validate([
-            'resultado' => ['sometimes', Rule::in([TentativaPresenca::REGISTRADA, TentativaPresenca::NEGADA])],
+            'resultado' => ['sometimes', Rule::in(TentativaPresenca::RESULTADOS)],
             'codigo' => ['sometimes', Rule::enum(CodigoPresenca::class)],
             'revisao_status' => ['sometimes', Rule::in([TentativaPresenca::REVISAO_PENDENTE, TentativaPresenca::REVISAO_APROVADA, TentativaPresenca::REVISAO_REJEITADA])],
             'estudante_id' => 'sometimes|integer',

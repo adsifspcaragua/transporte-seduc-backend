@@ -59,7 +59,7 @@
 - Leitura de IMEI, serial, MAC ou qualquer identificador físico inacessível a páginas web.
 - Garantia absoluta de que dois estudantes não usam o mesmo **celular físico** em navegadores diferentes.
 - Garantia absoluta de embarque a partir de QR fixo e localização web.
-- Registro de presença offline com sincronização posterior.
+- Registro de presença offline com sincronização posterior *(feito depois, só como comprovante para revisão da gestão: ver seção 18.2)*.
 
 ---
 
@@ -499,7 +499,7 @@ Não expor detalhes que ajudem terceiros a enumerar contas ou chaves.
 - Mensagens claras, contraste adequado, suporte a leitores de tela e botões amplos no celular.
 - Alternativa acessível se a câmera não funcionar, **sem dispensar** validações de veículo/viagem/dispositivo/localização sem justificativa administrativa.
 - Não prometer que instalação PWA recupera chave após limpeza de dados do site.
-- Sem conexão com a API, não confirmar presença localmente; permitir nova tentativa ou revisão.
+- Sem conexão com a API, não confirmar presença localmente; permitir nova tentativa ou revisão. *(Implementado: o celular guarda um comprovante assinado e o envia depois para a revisão da gestão.)*
 
 ---
 
@@ -732,6 +732,7 @@ O backend das Fases 1 a 5 está implementado e coberto por testes. **Nenhuma dec
 | `POST /api/presencas` | estudante | Confirma: assinatura + localização (ou `erro_localizacao`) |
 | `GET /api/me/viagens`, `/api/me/presencas`, `/api/me/presencas/tentativas` | estudante | Próximas viagens, histórico e negativas |
 | `POST /api/me/presencas/tentativas/{id}/revisao` | estudante | Pede revisão de negativa por GPS/horário/geocerca |
+| `POST /api/presencas/offline` | estudante | Envia o comprovante gravado sem conexão; entra na revisão da gestão (202), nunca vira presença sozinho |
 | `/api/dispositivos/solicitacoes[/{id}/aprovar\|rejeitar]`, `/api/dispositivos[/{id}/revogar]` | atendimento | Fila, aprovação com parecer, revogação |
 | `/api/veiculos[/{id}/qr]`, `/api/veiculos/atribuicoes` | gestão | Vans, rotação de QR, atribuição van × linha |
 | `/api/horarios-viagem`, `/api/dias-sem-operacao`, `/api/viagens[/gerar]` | gestão | Programação, feriados, ajuste de janela/van/status |
@@ -755,6 +756,17 @@ Novas: `veiculos.*`, `viagens.*`, `geocercas.*`, `dispositivos.view/analise`, `p
 | `PRESENCA_PRECISAO_MAXIMA_METROS` | 100 | Pior que isso pede nova leitura; **não** amplia o raio |
 | `PRESENCA_RAIO_MAXIMO_METROS` | 1000 | Só o teto do cadastro (D03). Cada ponto informa o raio; não há raio padrão |
 | `PRESENCA_RETENCAO_TENTATIVAS_DIAS` | nulo | Nada é expurgado até D10 ser decidido |
+| `PRESENCA_OFFLINE_PRAZO_HORAS` | 24 | Prazo para enviar o comprovante feito sem conexão |
+| `PRESENCA_OFFLINE_TOLERANCIA_MINUTOS` | 10 | Quanto o relógio do celular pode estar adiantado |
+
+### 18.6. Presença sem conexão
+
+Sem internet não há desafio do servidor. O navegador monta um comprovante num formato fixo, definido em `App\Services\Presenca\ComprovanteOffline`: id gerado no celular, dispositivo, token do QR, horário do celular e localização (ou o erro do GPS). Ele assina esse texto com a chave do dispositivo e o guarda no IndexedDB. Quando a conexão volta, o envia para `POST /api/presencas/offline`.
+
+- **Recusado na hora:** assinatura inválida, dispositivo que não está mais ativo, prazo vencido, relógio adiantado, QR inválido ou linha não autorizada.
+- **Vai para a revisão:** todo o resto entra como tentativa `Em revisao` (etapa `offline`), com o que não conferiu em `codigo`, como fora do horário, longe do ponto ou sem GPS. Aprovado pela gestão, vira presença com método `Offline` no horário da leitura.
+- **Reenvio:** mandar o mesmo comprovante de novo devolve o registro já feito, sem duplicar.
+- **Limite:** a página do portal precisa estar aberta antes de cair a conexão. Ler o QR pela câmera do celular, que abre a URL, não funciona sem internet.
 | `PRESENCA_GEOCERCA_POLITICA` | `pontos` | Única implementada (Alternativa A) |
 
 A conta do estudante é criada por `POST /api/estudantes/{id}/conta` (`estudantes.write`), e cada conta pode estar ligada a um único estudante. A fonte dos horários é `horarios_viagem`; `linhas.departure_time` e `return_time` são espelho. Linha, estudante e viagem com presença não podem ser excluídos, nem estudante com frequência marcada. O comando `presenca:carga-inicial` prepara um ambiente existente (ver README).

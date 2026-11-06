@@ -28,6 +28,9 @@ class TentativaPresencaResource extends JsonResource
             'distancia_metros' => $this->distancia_metros,
             'precisao_metros' => $this->precisao_metros,
             'recebida_em' => $this->recebida_em,
+            // So nos comprovantes feitos sem conexao: horario do celular.
+            'capturado_em' => $this->capturado_em,
+            'comprovante_id' => $this->comprovante_id,
             'pode_pedir_revisao' => $this->admiteRevisao(),
             'revisao' => $this->revisao_status === null ? null : [
                 'status' => $this->revisao_status,

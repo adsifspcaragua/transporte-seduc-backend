@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api\Presenca;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Presenca\ComprovanteOfflineRequest;
 use App\Http\Requests\Presenca\ConfirmarPresencaRequest;
 use App\Http\Requests\Presenca\PedirRevisaoRequest;
 use App\Http\Requests\Presenca\QrTokenRequest;
+use App\Services\Presenca\PresencaOfflineService;
 use App\Services\Presenca\RegistroPresencaService;
 use Illuminate\Http\Request;
 
@@ -55,6 +57,21 @@ class RegistroPresencaController extends Controller
     public function confirmar(ConfirmarPresencaRequest $request)
     {
         return $this->service->confirmar($request->attributes->get('estudante'), $request->validated());
+    }
+
+    /**
+     * Enviar registro feito sem conexao.
+     *
+     * Comprovante que o navegador montou e assinou sem internet. Nao vira
+     * presenca: entra na fila de revisao da gestao (202), com alertas do que
+     * nao conferiu (horario, localizacao). Reenviar o mesmo comprovante
+     * devolve o registro ja feito.
+     */
+    public function offline(ComprovanteOfflineRequest $request, PresencaOfflineService $offline)
+    {
+        $data = $request->validated();
+
+        return $offline->receber($request->attributes->get('estudante'), $data['comprovante'], $data['assinatura']);
     }
 
     /**

@@ -254,6 +254,8 @@ Route::middleware(['auth:sanctum', 'conta.ativa'])->group(function () {
             Route::post('presencas/resolver-qr', [RegistroPresencaController::class, 'resolverQr']);
             Route::post('presencas/desafios', [RegistroPresencaController::class, 'desafio']);
             Route::post('presencas', [RegistroPresencaController::class, 'confirmar']);
+            // Comprovante gravado sem conexao: vai para a revisao da gestao.
+            Route::post('presencas/offline', [RegistroPresencaController::class, 'offline']);
         });
     });
 

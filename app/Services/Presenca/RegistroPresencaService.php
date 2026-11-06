@@ -247,7 +247,7 @@ class RegistroPresencaService
     {
         $tentativas = TentativaPresenca::with(['viagem.linha:id,name', 'veiculo:id,identificacao'])
             ->where('estudante_id', $estudante->id)
-            ->where('resultado', TentativaPresenca::NEGADA)
+            ->whereIn('resultado', [TentativaPresenca::NEGADA, TentativaPresenca::EM_REVISAO])
             ->orderByDesc('recebida_em')
             ->paginate($filtros['per_page'] ?? 15);
 

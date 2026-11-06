@@ -15,6 +15,9 @@ class Presenca extends Model
     /** Excecao administrativa, com justificativa e responsavel. */
     public const MANUAL = 'Manual';
 
+    /** Comprovante gravado sem conexao, aprovado pela gestao. */
+    public const OFFLINE = 'Offline';
+
     protected $table = 'presencas';
 
     protected $fillable = [

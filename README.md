@@ -190,6 +190,9 @@ e o que já foi implementado estão no [`ROADMAP.md`](ROADMAP.md) (seção 18).
 
 - **Conta do estudante:** `POST /api/estudantes/{id}/conta` cria o login e envia
   o link para ele definir a senha. `POST /api/users` continua só para a equipe.
+- **Sem conexão:** o portal guarda um comprovante assinado no celular e o envia
+  depois (`POST /api/presencas/offline`). Ele entra na fila de revisão da gestão;
+  nunca vira presença sozinho. Detalhes na seção 18.6 do `ROADMAP.md`.
 - **Horários:** a fonte é `horarios_viagem`. `departure_time` e `return_time` da
   linha são um espelho: alterar um lado atualiza o outro.
 

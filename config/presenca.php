@@ -49,6 +49,16 @@ return [
         'retencao_horas' => (int) env('PRESENCA_DESAFIO_RETENCAO_HORAS', 24),
     ],
 
+    'offline' => [
+        // Ate quantas horas depois da leitura o comprovante feito sem conexao
+        // ainda e aceito. Depois disso, so pelo atendimento.
+        'prazo_horas' => (int) env('PRESENCA_OFFLINE_PRAZO_HORAS', 24),
+
+        // Quanto o relogio do celular pode estar adiantado em relacao ao do
+        // servidor antes de o comprovante ser recusado.
+        'tolerancia_relogio_minutos' => (int) env('PRESENCA_OFFLINE_TOLERANCIA_MINUTOS', 10),
+    ],
+
     'dispositivo' => [
         // A aprovacao do atendimento vale para uma tentativa concreta: o
         // estudante conclui o vinculo ali, nao dias depois (D07).

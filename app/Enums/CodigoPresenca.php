@@ -28,6 +28,8 @@ enum CodigoPresenca: string
     case CHALLENGE_ALREADY_USED = 'CHALLENGE_ALREADY_USED';
     case ATTENDANCE_ALREADY_RECORDED = 'ATTENDANCE_ALREADY_RECORDED';
     case MANUAL_REVIEW_REQUIRED = 'MANUAL_REVIEW_REQUIRED';
+    case OFFLINE_PROOF_EXPIRED = 'OFFLINE_PROOF_EXPIRED';
+    case OFFLINE_CLOCK_INVALID = 'OFFLINE_CLOCK_INVALID';
 
     public function status(): int
     {
@@ -65,6 +67,8 @@ enum CodigoPresenca: string
             self::CHALLENGE_ALREADY_USED => 'Esta confirmação já foi utilizada. Leia o QR Code novamente.',
             self::ATTENDANCE_ALREADY_RECORDED => 'Sua presença nesta viagem já foi registrada.',
             self::MANUAL_REVIEW_REQUIRED => 'Não foi possível validar a presença automaticamente. Você pode pedir revisão.',
+            self::OFFLINE_PROOF_EXPIRED => 'Este registro feito sem conexão passou do prazo de envio. Procure o atendimento do transporte universitário.',
+            self::OFFLINE_CLOCK_INVALID => 'O horário deste celular parece incorreto. Ajuste a data e a hora do aparelho e registre de novo.',
         };
     }
 

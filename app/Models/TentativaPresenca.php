@@ -21,9 +21,17 @@ class TentativaPresenca extends Model
 
     public const CONFIRMACAO = 'confirmacao';
 
+    /** Comprovante gravado sem conexao e enviado depois. */
+    public const OFFLINE = 'offline';
+
     public const REGISTRADA = 'Registrada';
 
     public const NEGADA = 'Negada';
+
+    /** Comprovante offline: nao e presenca ate a gestao aprovar. */
+    public const EM_REVISAO = 'Em revisao';
+
+    public const RESULTADOS = [self::REGISTRADA, self::NEGADA, self::EM_REVISAO];
 
     public const REVISAO_PENDENTE = 'Pendente';
 
@@ -39,6 +47,8 @@ class TentativaPresenca extends Model
         'veiculo_id',
         'dispositivo_id',
         'presenca_id',
+        'comprovante_id',
+        'capturado_em',
         'etapa',
         'resultado',
         'codigo',
@@ -58,6 +68,7 @@ class TentativaPresenca extends Model
         'distancia_metros' => 'integer',
         'precisao_metros' => 'integer',
         'recebida_em' => 'datetime',
+        'capturado_em' => 'datetime',
         'revisao_solicitada_em' => 'datetime',
         'revisao_analisada_em' => 'datetime',
     ];
