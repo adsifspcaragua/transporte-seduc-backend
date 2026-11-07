@@ -203,6 +203,25 @@ class ResolvedorViagemTest extends TestCase
         $this->assertSame($this->van->id, $this->resolver(hora: '2026-10-20 17:30:00')->veiculo_id);
     }
 
+    /**
+     * Carga inicial antes do seeder das vans: as viagens nasceram sem van e o
+     * QR nao achava nenhuma. A proxima leitura completa a van.
+     */
+    public function test_viagem_gerada_antes_da_van_existir_passa_a_ter_a_van(): void
+    {
+        $semVan = Linha::factory()->create();
+        $this->horario($semVan, HorarioViagem::IDA, '17:30:00');
+        $outro = $this->estudanteComConta($semVan);
+
+        app(GeradorViagens::class)->gerar(Carbon::parse(self::DIA), Carbon::parse(self::DIA));
+        $this->assertNull(Viagem::where('linha_id', $semVan->id)->value('veiculo_id'));
+
+        $van = Veiculo::factory()->create();
+        AtribuicaoVeiculo::create(['veiculo_id' => $van->id, 'linha_id' => $semVan->id, 'inicio' => '2026-01-01']);
+
+        $this->assertSame($van->id, $this->resolver(van: $van, estudante: $outro)->veiculo_id);
+    }
+
     public function test_van_inativa_nao_identifica_viagem(): void
     {
         $this->van->update(['ativo' => false]);

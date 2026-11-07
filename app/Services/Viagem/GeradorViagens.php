@@ -76,7 +76,34 @@ class GeradorViagens
             }
         }
 
+        $this->completarVeiculos($de, $ate, $linhaId);
+
         return $criadas;
+    }
+
+    /**
+     * Viagem gerada antes de a linha ter van fica sem van, e nenhum QR a
+     * encontra. Quem atribui pela API ja sincroniza; aqui cobre o resto
+     * (seeder, carga inicial, banco ajustado a mao), sem tocar em viagem que a
+     * gestao trocou de van ou que ja terminou.
+     */
+    private function completarVeiculos(Carbon $de, Carbon $ate, ?int $linhaId): void
+    {
+        Viagem::whereNull('veiculo_id')
+            ->where('veiculo_substituido', false)
+            ->where('status', Viagem::PROGRAMADA)
+            ->where('janela_fim', '>=', now())
+            ->whereDate('data', '>=', $de->toDateString())
+            ->whereDate('data', '<=', $ate->toDateString())
+            ->when($linhaId, fn ($q) => $q->where('linha_id', $linhaId))
+            ->get()
+            ->each(function (Viagem $viagem) {
+                $veiculoId = AtribuicaoVeiculo::veiculoDaLinha($viagem->linha_id, $viagem->data);
+
+                if ($veiculoId !== null) {
+                    $viagem->update(['veiculo_id' => $veiculoId]);
+                }
+            });
     }
 
     /**
